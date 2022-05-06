@@ -1,4 +1,4 @@
-package engineer.engine.board;
+package engineer.engine.board.logic;
 
 // TODO Implement this interface
 public interface FieldContent {

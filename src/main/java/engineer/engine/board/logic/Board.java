@@ -1,4 +1,4 @@
-package engineer.engine.board;
+package engineer.engine.board.logic;
 
 import engineer.engine.board.exceptions.IndexOutOfBoardException;
 import engineer.engine.board.exceptions.InvalidBoardDescriptionException;
@@ -25,12 +25,11 @@ public class Board {
 
     /* Observer part end */
 
-    private final FieldFactory fieldFactory = new FieldFactory();
     private final int width;
     private final int height;
     private final Field[][] board;
 
-    public Board(BoardDescription description) throws InvalidBoardDescriptionException {
+    public Board(FieldFactory factory, BoardDescription description) throws InvalidBoardDescriptionException {
         width = description.getWidth();
         height = description.getHeight();
 
@@ -40,7 +39,7 @@ public class Board {
         board = new Field[getWidth()][getHeight()];
         for (int row=0;row<getWidth();row++)
             for(int column=0;column<getHeight();column++)
-                board[row][column] = fieldFactory.produce();
+                board[row][column] = factory.produce(description.getBackground(row, column));
     }
 
     public int getWidth() { return width; }
