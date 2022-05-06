@@ -1,7 +1,11 @@
 package engineer.engine.board;
 
-// TODO Implement this class
 public class Field {
-    // Store information about field
-    // Position, Background Texture, Field Content
+    private FieldContent content = null;
+
+    public Field() {}
+
+    public FieldContent getContent() { return content; }
+
+    public void setContent(FieldContent content) { this.content = content; }
 }

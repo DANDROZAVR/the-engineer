@@ -1,16 +1,61 @@
 package engineer.engine.board;
 
-// TODO Implement this class
-// TODO Consider splitting it into interface and implementation
+import engineer.engine.board.exceptions.IndexOutOfBoardException;
+import engineer.engine.board.exceptions.InvalidBoardDescriptionException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Board {
-    // Store info about board
-    // Uses FieldFactory to build board
+    /* Observer part start */
 
-    // Creates FieldFactory
+    public interface Observer {
+        void onFieldChanged(int row, int column);
+    }
 
-    // For now, it should create hardcoded map or from file with fixed path
+    private final List<Observer> observerList = new ArrayList<>();
 
-    // public Board()
+    public void addObserver(Observer observer) { observerList.add(observer); }
+    public void removeObserver(Observer observer) { observerList.remove(observer); }
 
-    // public Field getField()
+    private void onFieldChanged(int row, int column) {
+        for (Observer o : observerList)
+            o.onFieldChanged(row, column);
+    }
+
+    /* Observer part end */
+
+    private final FieldFactory fieldFactory = new FieldFactory();
+    private final int width;
+    private final int height;
+    private final Field[][] board;
+
+    public Board(BoardDescription description) throws InvalidBoardDescriptionException {
+        width = description.getWidth();
+        height = description.getHeight();
+
+        if(getWidth() <= 0 || getHeight() <= 0)
+            throw new InvalidBoardDescriptionException();
+
+        board = new Field[getWidth()][getHeight()];
+        for (int row=0;row<getWidth();row++)
+            for(int column=0;column<getHeight();column++)
+                board[row][column] = fieldFactory.produce();
+    }
+
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+
+    Field getField(int row, int column) throws IndexOutOfBoardException {
+        try {
+            return board[row][column];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new IndexOutOfBoardException();
+        }
+    }
+
+    public void setFieldContent(int row, int column, FieldContent content) throws IndexOutOfBoardException {
+        getField(row, column).setContent(content);
+        onFieldChanged(row, column);
+    }
 }
