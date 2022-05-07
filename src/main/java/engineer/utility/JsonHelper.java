@@ -1,18 +1,17 @@
 package engineer.utility;
 
-import javax.json.*;
-import engineer.engine.board.Board;
-import engineer.engine.board.Field;
+import engineer.engine.board.logic.Board;
+import engineer.engine.board.logic.Field;
 
-import java.io.*;
+import javax.json.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static java.lang.System.in;
 
 public class JsonHelper {
     public static Board readBoard(String pathName) throws IOException {
