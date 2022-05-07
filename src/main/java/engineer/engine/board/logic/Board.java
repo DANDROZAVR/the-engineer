@@ -1,4 +1,4 @@
-package engineer.engine.board.logic;
+    package engineer.engine.board.logic;
 
 import engineer.engine.board.exceptions.IndexOutOfBoardException;
 import engineer.engine.board.exceptions.InvalidBoardDescriptionException;

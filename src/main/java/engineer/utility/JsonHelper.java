@@ -1,5 +1,5 @@
 package engineer.utility;
-
+/*
 import engineer.engine.board.logic.Board;
 import engineer.engine.board.logic.Field;
 
@@ -55,4 +55,4 @@ public class JsonHelper {
             e.printStackTrace();
     }
 }
-}
+}*/
