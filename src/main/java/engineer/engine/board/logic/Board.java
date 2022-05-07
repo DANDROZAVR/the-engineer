@@ -45,7 +45,7 @@ public class Board {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-    Field getField(int row, int column) throws IndexOutOfBoardException {
+    public Field getField(int row, int column) throws IndexOutOfBoardException {
         try {
             return board[row][column];
         } catch (ArrayIndexOutOfBoundsException e) {

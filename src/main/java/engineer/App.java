@@ -1,29 +1,30 @@
 package engineer;
-import engineer.Game;
 import javafx.application.Application;
-import javafx.beans.property.BooleanProperty;
-import javafx.scene.Scene;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class App extends Application {
     private Stage stage;
-    private BooleanProperty fullBody;
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
+        //primaryStage.initStyle(StageStyle.UNDECORATED); uncomment if full screen
         stage = primaryStage;
-        stage.show();
         configStage();
-        Game game = new Game();
-        //game.run();
+        stage.show();
+        Game game = new Game(primaryStage);
+        game.run();
         System.out.println("started");
     }
     public void configStage() {
-        stage.setFullScreen(true);;
-        stage.setMaximized(true);
+        stage.setTitle("The engineer");
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
         stage.setFullScreenExitKeyCombination(KeyCombination.valueOf("F11"));
+
     }
 }
