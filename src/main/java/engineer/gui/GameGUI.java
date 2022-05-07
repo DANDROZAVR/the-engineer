@@ -1,11 +1,15 @@
 package engineer.gui;
 
+import javafx.scene.Scene;
+
 // TODO Implement this class
 public class GameGUI {
     // Draw board, toolbar, etc.
     // Make it drawable (depends on framework)
 
-    // Gets Window, BoardGUI, TextureManager in constructor
+    // Gets Scene, BoardGUI, TextureManager in constructor
     
-    // public GameGUI(Window, BoardGUI, TextureManager)
+    public GameGUI(Scene scene, BoardGUI boardGUI, TextureManager textureManager) {
+
+    }
 }
