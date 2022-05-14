@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class BoardTest {
-    public record SampleDescription(int width, int height) implements BoardDescription {
+    public record SampleDescription(int rows, int columns) implements BoardDescription {
         @Override
-        public int getRows() { return width; }
+        public int getRows() { return rows; }
         @Override
-        public int getColumns() { return height; }
+        public int getColumns() { return columns; }
         @Override
         public String getBackground(int row, int column) {
             return String.format("Row %d; Column %d", row, column);

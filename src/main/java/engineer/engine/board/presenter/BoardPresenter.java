@@ -20,7 +20,7 @@ public class BoardPresenter {
     // Need to be called at the beginning and at the end of lifetime
     public void start() { board.addObserver(boardObserver); }
     public void stop() { board.removeObserver(boardObserver); }
-    public Field getField(int col, int row) throws IndexOutOfBoardException {
+    public Field getField(int row, int col) throws IndexOutOfBoardException {
         return board.getField(row, col);
     }
     public int getRows() { return board.getRows(); }
