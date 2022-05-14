@@ -17,7 +17,7 @@ public class App extends Application {
         game.run();
         System.out.println("started");
     }
-    public void configStage() {
+    private void configStage() {
         stage.setTitle("The engineer");
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX(primaryScreenBounds.getMinX());

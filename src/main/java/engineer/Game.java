@@ -23,31 +23,24 @@ import static java.lang.System.exit;
 public class Game extends App {
     // Start game
     // Creates Scene, GameGUI, Board
-    Scene scene;
-    Board board = null;
-    GameGUI gameGUI = null;
-    BoardGUI boardGUI = null;
-    BoardPresenter boardPresenter;
-    TextureManager textureManager;
-    final static int defWidth = 60;
-    final static int defHeight = 60;
-    final static int fieldWidth = 30, fieldHeight = 30;
-    final static int maxFieldWidth = 50, maxFieldHeight = 50;
-    final static int paddingWidth = 15, paddingHeight = 15;
+    private Scene scene;
+    private Board board = null;
+    private GameGUI gameGUI = null;
+    private BoardGUI boardGUI = null;
+    private BoardPresenter boardPresenter;
+    private TextureManager textureManager;
+    private final static int defWidth = 100;
+    private final static int defHeight = 100;
+    private double fieldWidth = 30, fieldHeight = 30;
+    private final static int maxFieldWidth = 50, maxFieldHeight = 50, minFieldWidth = 5, minFieldHeight = 5;
+    private final static int paddingWidth = 15, paddingHeight = 15;
+    final static double speedChangingSize = 1.1;
     public Game(Stage mainStage) {
         this(mainStage, defWidth, defHeight);
     }
 
     public Game(Stage mainStage, int width, int height) {
-        //...
-        int widthSz = maxFieldWidth * width + 2 * paddingWidth;
-        int heightSz = maxFieldHeight * height + 2 * paddingHeight;
-        Canvas canvas = new Canvas(widthSz,  heightSz);
-        Pane pane = new Pane(canvas);
-        pane.setMinSize(widthSz , heightSz);
-        pane.setPrefSize(widthSz, heightSz);
-        pane.setMaxSize(widthSz, heightSz);
-        scene = new Scene(new BorderPane(pane), mainStage.getWidth(), mainStage.getHeight());
+        createScene(mainStage, width, height);
         mainStage.setScene(scene);
         createTextureManager();
         createBoard(width, height);
@@ -58,24 +51,35 @@ public class Game extends App {
         createBoardGUI();
         boardPresenter.start();
     }
+    private void createScene(Stage mainStage, int width, int height) {
+        int widthSz = maxFieldWidth * width + 2 * paddingWidth;
+        int heightSz = maxFieldHeight * height + 2 * paddingHeight;
+        Canvas canvas = new Canvas(widthSz,  heightSz);
+        Pane pane = new Pane(canvas);
+        pane.setMinSize(widthSz , heightSz);
+        pane.setPrefSize(widthSz, heightSz);
+        pane.setMaxSize(widthSz, heightSz);
+        scene = new Scene(new BorderPane(pane), mainStage.getWidth(), mainStage.getHeight());
+    }
+
     private void createTextureManager() {
         this.textureManager = new TextureManager();
     }
     private void createBoard(int width, int height) {
         List<Color> colors = new ArrayList<>();
-        colors.add(Color.GRAY);
+        colors.add(Color.GRAY); // TEMP
         colors.add(Color.WHITE);
         colors.add(Color.BLUE);
         colors.add(Color.GREEN);
         try {
             board = new Board(new FieldFactoryImpl(), new BoardDescription() {
                 @Override
-                public int getWidth() {
+                public int getRows() {
                     return width;
                 }
 
                 @Override
-                public int getHeight() {
+                public int getColumns() {
                     return height;
                 }
 
@@ -90,20 +94,43 @@ public class Game extends App {
         }
     }
     private void createBoardGUI() {
-        boardGUI = new BoardGUI(scene, board, textureManager, fieldWidth, fieldHeight, paddingWidth, paddingHeight);
+        BoardGUI.FieldSizeNotifier notifier = new BoardGUI.FieldSizeNotifier() {
+            @Override
+            public void increaseRequest() {
+                increaseFieldsSize();
+            }
+            @Override
+            public void decreaseRequest() {
+                decreaseFieldsSize();
+            }
+        };
+        boardGUI = new BoardGUI(scene, textureManager, boardPresenter, notifier, fieldWidth, fieldHeight, paddingWidth, paddingHeight);
     }
     private void createBoardPresenter() {
-        assert board != null;
-        boardPresenter = new BoardPresenter(board, (row, column) -> {
-            if (boardGUI != null) {
-                boardGUI.onFieldChange(row, column); // correct use?
-            }
-        });
+        if (board == null)
+            throw new RuntimeException("board is null for presenter");
+        boardPresenter = new BoardPresenter(board, this::onFieldChange);
+    }
+    private void onFieldChange(int row, int col) {
+        boardGUI.onFieldChange(row, col);
     }
     private void createGameGUI() {
-        assert board != null;
+        if (board == null)
+            throw new RuntimeException("board is null for GameGui");
         gameGUI = new GameGUI(scene, boardGUI, new TextureManager());
     }
-
-
+    private void increaseFieldsSize() {
+        if (fieldWidth * speedChangingSize < maxFieldWidth && fieldHeight * speedChangingSize < maxFieldHeight) {
+            fieldWidth *= speedChangingSize;
+            fieldHeight *= speedChangingSize;
+            boardGUI.setFieldsSize(fieldWidth, fieldHeight);
+        }
+    }
+    private void decreaseFieldsSize() {
+        if (fieldWidth / speedChangingSize > minFieldWidth && fieldHeight * speedChangingSize > minFieldHeight) {
+            fieldWidth /= speedChangingSize;
+            fieldHeight /= speedChangingSize;
+            boardGUI.setFieldsSize(fieldWidth, fieldHeight);
+        }
+    }
 }

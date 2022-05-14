@@ -1,7 +1,7 @@
 package engineer.engine.board.logic;
 
 public interface BoardDescription {
-    int getWidth();
-    int getHeight();
+    int getRows();
+    int getColumns();
     String getBackground(int row, int column);
 }

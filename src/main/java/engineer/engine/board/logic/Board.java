@@ -25,25 +25,25 @@ public class Board {
 
     /* Observer part end */
 
-    private final int width;
-    private final int height;
+    private final int rows;
+    private final int columns;
     private final Field[][] board;
 
     public Board(FieldFactory factory, BoardDescription description) throws InvalidBoardDescriptionException {
-        width = description.getWidth();
-        height = description.getHeight();
+        rows = description.getRows();
+        columns = description.getColumns();
 
-        if(getWidth() <= 0 || getHeight() <= 0)
+        if(getRows() <= 0 || getColumns() <= 0)
             throw new InvalidBoardDescriptionException();
 
-        board = new Field[getWidth()][getHeight()];
-        for (int row=0;row<getWidth();row++)
-            for(int column=0;column<getHeight();column++)
+        board = new Field[getRows()][getColumns()];
+        for (int row = 0; row< getRows(); row++)
+            for(int column = 0; column< getColumns(); column++)
                 board[row][column] = factory.produce(description.getBackground(row, column));
     }
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
+    public int getRows() { return rows; }
+    public int getColumns() { return columns; }
 
     public Field getField(int row, int column) throws IndexOutOfBoardException {
         try {

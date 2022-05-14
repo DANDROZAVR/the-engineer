@@ -10,9 +10,9 @@ import static org.mockito.Mockito.*;
 public class BoardTest {
     public record SampleDescription(int width, int height) implements BoardDescription {
         @Override
-        public int getWidth() { return width; }
+        public int getRows() { return width; }
         @Override
-        public int getHeight() { return height; }
+        public int getColumns() { return height; }
         @Override
         public String getBackground(int row, int column) {
             return String.format("Row %d; Column %d", row, column);
@@ -31,8 +31,8 @@ public class BoardTest {
             FieldFactory factory = mock(FieldFactory.class);
             Board board = new Board(factory, d1);
 
-            assertEquals(3, board.getWidth());
-            assertEquals(5, board.getHeight());
+            assertEquals(3, board.getRows());
+            assertEquals(5, board.getColumns());
             for(int row=0;row<3;row++)
                 for(int column=0;column<5;column++)
                     verify(factory).produce(d1.getBackground(row, column));
