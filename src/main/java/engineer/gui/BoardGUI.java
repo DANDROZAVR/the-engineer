@@ -19,10 +19,13 @@ public class BoardGUI {
     private final Scene scene;
     private final Canvas canvas;
     private final Pane pane;
+
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final TextureManager textureManager;
     private final BoardPresenter boardPresenter;
+
     private boolean pMovingLeft, pMovingRight, pMovingUp, pMovingDown, pIncreaseFieldsSize, pDecreaseFieldsSize; // player's camera moves
-    private final int speed = 1000; // player's camera pixels per sec
+    private final int cameraSpeed = 1000; // player's camera pixels per sec
     private double paddingWidth, paddingHeight;
 
     public BoardGUI(Scene scene, TextureManager textureManager, BoardPresenter boardPresenter,
@@ -77,10 +80,10 @@ public class BoardGUI {
                 // Animate
                 double seconds = (nextFrame - lastFrame) / 1_000_000_000.0;
                 double deltaX = 0, deltaY = 0;
-                if (pMovingDown) deltaY += speed * seconds;
-                if (pMovingUp) deltaY -= speed * seconds;
-                if (pMovingRight) deltaX += speed * seconds;
-                if (pMovingLeft) deltaX -= speed * seconds;
+                if (pMovingDown) deltaY += cameraSpeed * seconds;
+                if (pMovingUp) deltaY -= cameraSpeed * seconds;
+                if (pMovingRight) deltaX += cameraSpeed * seconds;
+                if (pMovingLeft) deltaX -= cameraSpeed * seconds;
                 if (pIncreaseFieldsSize) {
                     boardPresenter.increaseFieldsSize();
                     pIncreaseFieldsSize = false;
@@ -100,12 +103,19 @@ public class BoardGUI {
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(scene.widthProperty());
         clip.heightProperty().bind(scene.heightProperty());
+
         clip.xProperty().bind(Bindings.createDoubleBinding(
-                () -> checkCamBorders(boardPresenter.getCameraX(), 0, pane.getWidth()), // add padding!
-                boardPresenter.getCameraXProperty() , scene.widthProperty()));
+            boardPresenter::getCameraX,
+            boardPresenter.getCameraXProperty(),
+            scene.widthProperty())
+        );
+
         clip.yProperty().bind(Bindings.createDoubleBinding(
-                () -> checkCamBorders(boardPresenter.getCameraY(), 0, pane.getHeight()),
-                boardPresenter.getCameraYProperty(), scene.heightProperty()));
+            boardPresenter::getCameraY,
+            boardPresenter.getCameraYProperty(),
+            scene.heightProperty())
+        );
+
         canvas.setClip(clip);
         pane.translateXProperty().bind(clip.xProperty().multiply(-1));
         pane.translateYProperty().bind(clip.yProperty().multiply(-1));
@@ -141,11 +151,6 @@ public class BoardGUI {
         boardPresenter.setCamera(newCamX, newCamY, scene.getWidth() - paddingWidth * 2, scene.getHeight() - paddingHeight * 2);
     }
 
-    private double checkCamBorders(double val, double min, double max) {
-        if (val < min) return min;
-        return Math.min(val, max);
-    }
-
     private Canvas extractCanvas(Pane pane) {
         ObservableList <?> lst = pane.getChildren();
         for (Object obj: lst)
@@ -167,8 +172,7 @@ public class BoardGUI {
             case DOWN -> pMovingDown = onMove;
             case PLUS,ADD -> pIncreaseFieldsSize = onMove;
             case MINUS,SUBTRACT -> pDecreaseFieldsSize = onMove;
-            default -> {
-            }
+            default -> {}
         }
     }
 }
