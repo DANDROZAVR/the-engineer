@@ -20,7 +20,7 @@ import java.util.List;
 
 import static java.lang.System.exit;
 
-public class Game extends App {
+public class Game {
     // Start game
     // Creates Scene, GameGUI, Board
     private Scene scene;
@@ -49,7 +49,7 @@ public class Game extends App {
     public void run() {
         createGameGUI();
         createBoardGUI();
-        boardPresenter.start();
+        boardPresenter.startObserve();
     }
     private void createScene(Stage mainStage, int width, int height) {
         int widthSz = maxFieldWidth * width + 2 * paddingWidth;
@@ -67,7 +67,7 @@ public class Game extends App {
     }
     private void createBoard(int width, int height) {
         List<Color> colors = new ArrayList<>();
-        colors.add(Color.GRAY); // TEMP
+        colors.add(Color.GRAY);
         colors.add(Color.WHITE);
         colors.add(Color.BLUE);
         colors.add(Color.GREEN);
@@ -94,43 +94,16 @@ public class Game extends App {
         }
     }
     private void createBoardGUI() {
-        BoardGUI.FieldSizeNotifier notifier = new BoardGUI.FieldSizeNotifier() {
-            @Override
-            public void increaseRequest() {
-                increaseFieldsSize();
-            }
-            @Override
-            public void decreaseRequest() {
-                decreaseFieldsSize();
-            }
-        };
-        boardGUI = new BoardGUI(scene, textureManager, boardPresenter, notifier, fieldWidth, fieldHeight, paddingWidth, paddingHeight);
+        boardGUI = new BoardGUI(scene, textureManager, boardPresenter, paddingWidth, paddingHeight);
     }
     private void createBoardPresenter() {
         if (board == null)
             throw new RuntimeException("board is null for presenter");
-        boardPresenter = new BoardPresenter(board, this::onFieldChange);
-    }
-    private void onFieldChange(int row, int col) {
-        boardGUI.onFieldChange(row, col);
+        boardPresenter = new BoardPresenter(board);
     }
     private void createGameGUI() {
         if (board == null)
             throw new RuntimeException("board is null for GameGui");
         gameGUI = new GameGUI(scene, boardGUI, new TextureManager());
-    }
-    private void increaseFieldsSize() {
-        if (fieldWidth * speedChangingSize < maxFieldWidth && fieldHeight * speedChangingSize < maxFieldHeight) {
-            fieldWidth *= speedChangingSize;
-            fieldHeight *= speedChangingSize;
-            boardGUI.setFieldsSize(fieldWidth, fieldHeight);
-        }
-    }
-    private void decreaseFieldsSize() {
-        if (fieldWidth / speedChangingSize > minFieldWidth && fieldHeight * speedChangingSize > minFieldHeight) {
-            fieldWidth /= speedChangingSize;
-            fieldHeight /= speedChangingSize;
-            boardGUI.setFieldsSize(fieldWidth, fieldHeight);
-        }
     }
 }

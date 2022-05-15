@@ -9,7 +9,6 @@ public class App extends Application {
     private Stage stage;
     @Override
     public void start(Stage primaryStage) {
-        //primaryStage.initStyle(StageStyle.UNDECORATED); uncomment if full screen
         stage = primaryStage;
         configStage();
         stage.show();
@@ -22,9 +21,7 @@ public class App extends Application {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX(primaryScreenBounds.getMinX());
         stage.setY(primaryScreenBounds.getMinY());
-        stage.setWidth(primaryScreenBounds.getWidth());
-        stage.setHeight(primaryScreenBounds.getHeight());
-        stage.setFullScreenExitKeyCombination(KeyCombination.valueOf("F11"));
-
+        stage.setWidth(1000);
+        stage.setHeight(700);
     }
 }
