@@ -31,10 +31,8 @@ public class Game {
     private TextureManager textureManager;
     private final static int defWidth = 100;
     private final static int defHeight = 100;
-    private double fieldWidth = 30, fieldHeight = 30;
-    private final static int maxFieldWidth = 50, maxFieldHeight = 50, minFieldWidth = 5, minFieldHeight = 5;
+    private final static int maxFieldWidth = 50, maxFieldHeight = 50;
     private final static int paddingWidth = 15, paddingHeight = 15;
-    final static double speedChangingSize = 1.1;
     public Game(Stage mainStage) {
         this(mainStage, defWidth, defHeight);
     }
@@ -94,7 +92,7 @@ public class Game {
         }
     }
     private void createBoardGUI() {
-        boardGUI = new BoardGUI(scene, textureManager, boardPresenter, paddingWidth, paddingHeight);
+        boardGUI = new BoardGUI(scene, textureManager, boardPresenter);
     }
     private void createBoardPresenter() {
         if (board == null)

@@ -26,17 +26,15 @@ public class BoardGUI {
 
     private boolean pMovingLeft, pMovingRight, pMovingUp, pMovingDown, pIncreaseFieldsSize, pDecreaseFieldsSize; // player's camera moves
     private final int cameraSpeed = 1000; // player's camera pixels per sec
-    private double paddingWidth, paddingHeight;
+    private final double paddingWidth = 15, paddingHeight = 15;
 
-    public BoardGUI(Scene scene, TextureManager textureManager, BoardPresenter boardPresenter,
-                    double paddingWidth, double paddingHeight) {
+    public BoardGUI(Scene scene, TextureManager textureManager, BoardPresenter boardPresenter) {
         pMovingLeft = pMovingRight = pMovingUp = pMovingDown = pIncreaseFieldsSize = pDecreaseFieldsSize = false;
         this.boardPresenter = boardPresenter;
         this.scene = scene;
         this.textureManager = textureManager;
         this.pane = extractPane(scene);
         this.canvas = extractCanvas(this.pane);
-        configFieldsSizes(paddingWidth, paddingHeight);
         configPresenter();
         configClip();
         configFrames();
@@ -119,11 +117,6 @@ public class BoardGUI {
         canvas.setClip(clip);
         pane.translateXProperty().bind(clip.xProperty().multiply(-1));
         pane.translateYProperty().bind(clip.yProperty().multiply(-1));
-    }
-
-    private void configFieldsSizes(double paddingWidth, double paddingHeight) {
-        this.paddingWidth = paddingWidth;
-        this.paddingHeight = paddingHeight;
     }
 
     private void configPresenter() {
