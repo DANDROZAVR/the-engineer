@@ -13,8 +13,9 @@ public class BoardPresenter {
         void drawField(Box box, String texture);
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final double fieldWidth = 70, fieldHeight = 70;
+    private final static double zoomSpeed = 1.1;
+
+    private double fieldWidth = 70, fieldHeight = 70;
 
     private final Board board;
     private final View view;
@@ -26,6 +27,7 @@ public class BoardPresenter {
         this.board = board;
         this.view = view;
     }
+
 
 
     private Box getFieldBox(int i, int j) {
@@ -78,4 +80,12 @@ public class BoardPresenter {
 
     public void setCameraSpeedX(double speedX) { cameraSpeedX = speedX; }
     public void setCameraSpeedY(double speedY) { cameraSpeedY = speedY; }
+    public void zoomIn() {
+        fieldWidth *= zoomSpeed;
+        fieldHeight *= zoomSpeed;
+    }
+    public void zoomOut() {
+        fieldWidth /= zoomSpeed;
+        fieldHeight /= zoomSpeed;
+    }
 }

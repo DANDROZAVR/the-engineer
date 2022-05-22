@@ -49,6 +49,7 @@ public class BoardGui implements BoardPresenter.View {
 
     public void close() {
         presenter.close();
+        presenter = null;
         timer.stop();
     }
 
@@ -61,6 +62,8 @@ public class BoardGui implements BoardPresenter.View {
                 case RIGHT -> presenter.setCameraSpeedX(pressed ? cameraSpeed : 0.0);
                 case UP -> presenter.setCameraSpeedY(pressed ? -cameraSpeed : 0.0);
                 case DOWN -> presenter.setCameraSpeedY(pressed ? cameraSpeed : 0.0);
+                case I -> { if(pressed) presenter.zoomIn(); }
+                case O -> { if(pressed) presenter.zoomOut(); }
             }
         };
     }

@@ -21,14 +21,14 @@ public class Gui {
             window.setResizable(false);
 
             Canvas canvas = new Canvas(windowWidth, windowHeight);
-            boardGui = new BoardGui(canvas.getGraphicsContext2D());
 
             Group root = new Group();
             root.getChildren().add(canvas);
             window.setScene(new Scene(root));
             window.show();
-            window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
 
+            boardGui = new BoardGui(canvas.getGraphicsContext2D());
+            window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
             window.getScene().setOnKeyPressed(e -> boardGui.getKeyHandler().handleKey(e.getCode(), true));
             window.getScene().setOnKeyReleased(e -> boardGui.getKeyHandler().handleKey(e.getCode(), false));
 
