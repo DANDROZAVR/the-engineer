@@ -1,27 +1,31 @@
 package engineer;
 
-import javafx.application.Application;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
+import engineer.engine.board.logic.Board;
+import engineer.engine.board.logic.BoardDescription;
+import engineer.engine.board.logic.FieldFactoryImpl;
+import engineer.engine.board.presenter.BoardPresenter;
+import engineer.gui.javafx.Gui;
 
-public class App extends Application {
-    private Stage stage;
-    @Override
-    public void start(Stage primaryStage) {
-        stage = primaryStage;
-        configStage();
-        stage.show();
-        Game game = new Game(primaryStage);
-        game.run();
-        System.out.println("started");
-    }
-    private void configStage() {
-        stage.setTitle("The engineer");
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX());
-        stage.setY(primaryScreenBounds.getMinY());
-        stage.setWidth(1000);
-        stage.setHeight(700);
+public class App {
+    public static void main(String[] args) {
+        // Sample board
+        String[] colors = new String[]{ "#F00", "#0F0", "#00F" };
+        Board board = new Board(new FieldFactoryImpl(), new BoardDescription() {
+            @Override
+            public int getRows() { return 40; }
+            @Override
+            public int getColumns() { return 50; }
+            @Override
+            public String getBackground(int row, int column) {
+                return colors[(row+column) % colors.length];
+            }
+        });
+
+        // Sample
+        Gui gui = new Gui();
+        gui.start(() -> {
+            BoardPresenter boardPresenter = new BoardPresenter(board, gui.getBoardGui());
+            gui.getBoardGui().start(boardPresenter);
+        });
     }
 }
