@@ -3,8 +3,12 @@ package engineer.gui.javafx;
 import engineer.engine.board.presenter.BoardPresenter;
 import engineer.engine.board.presenter.Box;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 public class BoardGui implements BoardPresenter.View {
     private static final double cameraSpeed = 300;
@@ -23,8 +27,7 @@ public class BoardGui implements BoardPresenter.View {
 
     @Override
     public void drawField(Box box, String texture) {
-        gc.setFill(Color.web(texture));
-        gc.fillRect(box.left(), box.top(), box.width(), box.height());
+        gc.drawImage(new Image("file:src/main/resources/images/"+texture+".png"), box.left(), box.top(), box.width(), box.height());
     }
 
 
@@ -65,6 +68,16 @@ public class BoardGui implements BoardPresenter.View {
                 case I -> { if(pressed) presenter.zoomIn(); }
                 case O -> { if(pressed) presenter.zoomOut(); }
             }
+        };
+    }
+
+    public EventHandler<ActionEvent> getButtonClickedHandler() {
+        return event -> presenter.setPressedButton((Button)event.getTarget());
+    }
+
+    public EventHandler<? super MouseEvent> getOnFieldClickHandler() {
+        return (event) -> {
+            presenter.changeContent(event.getSceneX(), event.getSceneY());
         };
     }
 }
