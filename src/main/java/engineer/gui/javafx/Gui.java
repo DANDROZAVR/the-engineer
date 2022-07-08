@@ -21,7 +21,6 @@ public class Gui {
             window.setResizable(false);
 
             Canvas canvas = new Canvas(windowWidth, windowHeight);
-
             Group root = new Group();
             root.getChildren().add(canvas);
             window.setScene(new Scene(root));

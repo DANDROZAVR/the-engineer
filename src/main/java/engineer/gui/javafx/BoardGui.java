@@ -32,7 +32,6 @@ public class BoardGui implements BoardPresenter.View {
     private final AnimationTimer timer = new AnimationTimer() {
         private static final long NANOS_IN_SEC = 1_000_000_000;
         private long last = -1;
-
         @Override
         public void handle(long now) {
             if (last != -1)
