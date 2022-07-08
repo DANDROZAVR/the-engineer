@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -21,8 +22,24 @@ public class Gui {
             window.setResizable(false);
 
             Canvas canvas = new Canvas(windowWidth, windowHeight);
+
+            Button button = new Button("house");
+            button.setFocusTraversable(false);
+            button.setId("house");
+            button.setLayoutX(20);
+            button.setLayoutY(20);
+
+            Button button2 = new Button("house2");
+            button2.setFocusTraversable(false);
+            button2.setId("house2");
+            button2.setLayoutX(20);
+            button2.setLayoutY(60);
+
+
             Group root = new Group();
             root.getChildren().add(canvas);
+            root.getChildren().add(button);
+            root.getChildren().add(button2);
             window.setScene(new Scene(root));
             window.show();
 
@@ -30,6 +47,11 @@ public class Gui {
             window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
             window.getScene().setOnKeyPressed(e -> boardGui.getKeyHandler().handleKey(e.getCode(), true));
             window.getScene().setOnKeyReleased(e -> boardGui.getKeyHandler().handleKey(e.getCode(), false));
+
+            window.getScene().setOnMouseClicked(boardGui.getOnFieldClickHandler());
+
+            button.setOnAction(boardGui.getButtonClickedHandler());
+            button2.setOnAction(boardGui.getButtonClickedHandler());
 
             runnable.run();
         });

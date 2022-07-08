@@ -17,7 +17,7 @@ public class App {
             public int getColumns() { return 50; }
             @Override
             public String getBackground(int row, int column) {
-                return colors[(row+column) % colors.length];
+                return "tile";
             }
         });
 

@@ -17,7 +17,7 @@ class FieldTest {
     @Test
     public void testSetContent() {
         Field field = new Field(null);
-        FieldContent content = new FieldContent() {};
+        FieldContent content = new FieldContentImpl("name") {};
 
         assertNull(field.getContent());
         field.setContent(content);

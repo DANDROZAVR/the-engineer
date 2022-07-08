@@ -1,11 +1,17 @@
 package engineer.engine.board.presenter;
 
 import engineer.engine.board.logic.Board;
+import engineer.engine.board.logic.FieldContentImpl;
+import javafx.scene.control.Button;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class BoardPresenter {
+
+
+
+
     public interface View {
         double getViewHeight();
         double getViewWidth();
@@ -23,6 +29,7 @@ public class BoardPresenter {
     private double cameraX = 0.0, cameraY = 0.0;
     private double cameraSpeedX = 0.0, cameraSpeedY = 0.0;
 
+    private String pressedButton = null;
     public BoardPresenter(Board board, View view) {
         this.board = board;
         this.view = view;
@@ -47,8 +54,13 @@ public class BoardPresenter {
     private void redrawVisibleFields() {
         for(int i=0;i<board.getRows();i++)
             for(int j=0;j<board.getColumns();j++)
-                if(isVisible(getFieldBox(i,j)))
-                    view.drawField(getFieldBox(i,j), board.getField(i,j).getBackground());
+                if(isVisible(getFieldBox(i,j))) {
+                    view.drawField(getFieldBox(i, j), board.getField(i, j).getBackground());
+                    if(board.getField(i, j).getContent() != null){
+                        view.drawField(getFieldBox(i, j), board.getField(i, j).getContent().getPicture());
+                    }
+
+                }
     }
 
 
@@ -87,5 +99,13 @@ public class BoardPresenter {
     public void zoomOut() {
         fieldWidth /= zoomSpeed;
         fieldHeight /= zoomSpeed;
+    }
+    public void setPressedButton(Button button) {
+        pressedButton = button.getId();
+    }
+
+    public void changeContent(double x, double y) {
+        board.setFieldContent((int) (( x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight ), new FieldContentImpl(pressedButton));
+        pressedButton = null;
     }
 }
