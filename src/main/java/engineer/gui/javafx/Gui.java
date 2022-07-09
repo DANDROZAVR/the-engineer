@@ -1,10 +1,10 @@
 package engineer.gui.javafx;
 
 import javafx.application.Platform;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -35,11 +35,9 @@ public class Gui {
             button2.setLayoutX(20);
             button2.setLayoutY(60);
 
+            AnchorPane root = new AnchorPane();
+            root.getChildren().addAll(canvas, button, button2);
 
-            Group root = new Group();
-            root.getChildren().add(canvas);
-            root.getChildren().add(button);
-            root.getChildren().add(button2);
             window.setScene(new Scene(root));
             window.show();
 
