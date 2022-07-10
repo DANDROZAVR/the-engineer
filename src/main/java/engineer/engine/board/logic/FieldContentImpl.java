@@ -4,7 +4,7 @@ public class FieldContentImpl implements FieldContent {
     String fileName;
 
     public FieldContentImpl(String fileName){
-        this.fileName=fileName;
+        this.fileName = fileName;
     }
 
     @Override

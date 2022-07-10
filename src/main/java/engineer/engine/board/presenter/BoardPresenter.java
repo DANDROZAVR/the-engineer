@@ -43,8 +43,8 @@ public class BoardPresenter {
     }
 
     private boolean isVisible(Box box) {
-        return (box.right() > 0 || box.left() < view.getViewWidth()) &&
-                (box.bottom() > 0 || box.top() < view.getViewHeight());
+        return (box.right() > 0 && box.left() < view.getViewWidth()) &&
+                (box.bottom() > 0 && box.top() < view.getViewHeight());
     }
 
     private void redrawVisibleFields() {
@@ -58,7 +58,7 @@ public class BoardPresenter {
     }
 
 
-
+/*
     // USELESS FOR NOW
     private final Board.Observer boardObserver = (row, column) -> {};
 
@@ -68,7 +68,7 @@ public class BoardPresenter {
         redrawVisibleFields();
     }
     public void close() { board.removeObserver(boardObserver); }
-
+*/
 
 
     public void update(double time) {
@@ -97,7 +97,11 @@ public class BoardPresenter {
     public void setPressedButton(String button) { pressedButton = button; }
 
     public void changeContent(double x, double y) {
-        board.setFieldContent((int) ((x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight), new FieldContentImpl(pressedButton));
+        board.setFieldContent(
+                (int) ((x + cameraX) / fieldWidth),
+                (int) ((y + cameraY) / fieldHeight),
+                new FieldContentImpl(pressedButton)
+        );
         pressedButton = null;
     }
 }

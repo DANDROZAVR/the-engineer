@@ -46,12 +46,10 @@ public class BoardGui implements BoardPresenter.View {
 
     public void start(BoardPresenter presenter) {
         this.presenter = presenter;
-        presenter.start();
         timer.start();
     }
 
     public void close() {
-        presenter.close();
         presenter = null;
         timer.stop();
     }
