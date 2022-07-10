@@ -45,12 +45,10 @@ public class BoardGui implements BoardPresenter.View {
 
     public void start(BoardPresenter presenter) {
         this.presenter = presenter;
-        presenter.start();
         timer.start();
     }
 
     public void close() {
-        presenter.close();
         presenter = null;
         timer.stop();
     }
@@ -71,12 +69,10 @@ public class BoardGui implements BoardPresenter.View {
     }
 
     public EventHandler<ActionEvent> getButtonClickedHandler() {
-        return event -> presenter.setPressedButton((Button)event.getTarget());
+        return event -> presenter.setPressedButton(((Button) event.getTarget()).getId());
     }
 
     public EventHandler<? super MouseEvent> getOnFieldClickHandler() {
-        return (event) -> {
-            presenter.changeContent(event.getSceneX(), event.getSceneY());
-        };
+        return event -> presenter.changeContent(event.getSceneX(), event.getSceneY());
     }
 }
