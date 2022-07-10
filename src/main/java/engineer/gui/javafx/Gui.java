@@ -51,7 +51,6 @@ public class Gui {
 
         root.getChildren().addAll(backgroundImgView, vbox);
 
-
         window.setScene(new Scene(root, windowWidth, windowHeight));
         window.show();
     }
