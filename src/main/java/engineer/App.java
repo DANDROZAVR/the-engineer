@@ -5,6 +5,7 @@ import engineer.engine.board.logic.BoardDescription;
 import engineer.engine.board.logic.FieldFactoryImpl;
 import engineer.engine.board.presenter.BoardPresenter;
 import engineer.gui.javafx.Gui;
+import engineer.gui.javafx.TextureManager;
 
 public class App {
     public static void main(String[] args) {
@@ -25,7 +26,8 @@ public class App {
         Gui gui = new Gui();
         gui.start(() -> {
             BoardPresenter boardPresenter = new BoardPresenter(board, gui.getBoardGui());
-            gui.getBoardGui().start(boardPresenter);
+            TextureManager textureManager = new TextureManager();
+            gui.getBoardGui().start(boardPresenter, textureManager);
         });
     }
 }

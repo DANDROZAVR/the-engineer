@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 
 public class BoardGui implements BoardPresenter.View {
@@ -16,6 +15,7 @@ public class BoardGui implements BoardPresenter.View {
     private final GraphicsContext gc;
     private BoardPresenter presenter;
 
+    private TextureManager textureManager;
     public BoardGui(GraphicsContext gc) {
         this.gc = gc;
     }
@@ -27,7 +27,7 @@ public class BoardGui implements BoardPresenter.View {
 
     @Override
     public void drawField(Box box, String texture) {
-        gc.drawImage(new Image("file:src/main/resources/images/"+texture+".png"), box.left(), box.top(), box.width(), box.height());
+        gc.drawImage(textureManager.getTexture(texture), box.left(), box.top(), box.width(), box.height());
     }
 
 
@@ -44,7 +44,8 @@ public class BoardGui implements BoardPresenter.View {
         }
     };
 
-    public void start(BoardPresenter presenter) {
+    public void start(BoardPresenter presenter, TextureManager textureManager) {
+        this.textureManager = textureManager;
         this.presenter = presenter;
         presenter.start();
         timer.start();
