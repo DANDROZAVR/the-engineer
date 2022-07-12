@@ -15,7 +15,7 @@ public class GameGui {
     private static final int windowWidth = 1080;
     private static final int windowHeight = 720;
     private final BoardGui boardGui;
-    private final boolean[] pausing = new boolean[1];
+    boolean pausing;
 
     interface ExitGameCallback {
         void exit();
@@ -69,7 +69,7 @@ public class GameGui {
 
         boardGui = new BoardGui(canvas.getGraphicsContext2D());
         root.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            if (!pausing[0]) {
+            if (!pausing) {
                 boardGui.getOnFieldClickHandler().handle(mouseEvent);
             }
             mouseEvent.consume();
@@ -77,8 +77,8 @@ public class GameGui {
         button.setOnAction(boardGui.getButtonClickedHandler());
         button2.setOnAction(boardGui.getButtonClickedHandler());
         pauseImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            pausing[0] = !pausing[0];
-            if (pausing[0]) {
+            pausing = !pausing;
+            if (pausing) {
                 disableInterface(pauseTextImgView, stopImgView);
             } else {
                 enableInterface(pauseTextImgView, stopImgView);
@@ -87,7 +87,7 @@ public class GameGui {
             mouseEvent.consume();
         });
         stopImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            pausing[0] = false;
+            pausing = false;
             enableInterface(pauseTextImgView, stopImgView);
             exitGameCallback.exit();
         });
@@ -101,12 +101,12 @@ public class GameGui {
 
         window.getScene().setOnMouseClicked(boardGui.getOnFieldClickHandler());
         window.getScene().setOnKeyPressed(e -> {
-            if (!pausing[0])
+            if (!pausing)
                 boardGui.getKeyHandler().handleKey(e.getCode(), true);
             e.consume();
         });
         window.getScene().setOnKeyReleased(e -> {
-            if (!pausing[0])
+            if (!pausing)
                 boardGui.getKeyHandler().handleKey(e.getCode(), false);
             e.consume();
         });
