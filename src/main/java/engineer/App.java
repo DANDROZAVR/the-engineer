@@ -4,9 +4,12 @@ import engineer.gui.javafx.Gui;
 import javafx.application.Platform;
 
 public class App {
+    private static Gui gui;
     public static void main(String[] args) {
-        Gui gui = new Gui();
-        Platform.startup(gui::start);
+        Platform.startup( () -> {
+            gui = new Gui();
+            gui.start();
+        });
     }
 
 }
