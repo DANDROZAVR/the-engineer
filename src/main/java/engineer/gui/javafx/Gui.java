@@ -1,63 +1,78 @@
 package engineer.gui.javafx;
 
-import javafx.application.Platform;
-import javafx.scene.Group;
+import engineer.engine.board.logic.Board;
+import engineer.engine.board.logic.BoardDescription;
+import engineer.engine.board.logic.FieldFactoryImpl;
+import engineer.engine.board.presenter.BoardPresenter;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+
+import static engineer.gui.javafx.GameGui.title;
 
 public class Gui {
-    private static final String title = "The Engineer";
+    private static Stage window;
     private static final int windowWidth = 1080;
     private static final int windowHeight = 720;
+    private final Scene startingScene;
+    private final GameGui gameGui;
 
-    private BoardGui boardGui;
+    public Gui() {
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(5.);
 
-    public void start(Runnable runnable) {
-        Platform.startup(() -> {
-            Stage window = new Stage();
-            window.setTitle(title);
-            window.setResizable(false);
+        Image exitImg = new Image("file:src/main/resources/images/exit.png");
+        ImageView exitImgView = new ImageView(exitImg);
+        exitImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> window.close());
 
-            Canvas canvas = new Canvas(windowWidth, windowHeight);
+        Image startGameImg = new Image("file:src/main/resources/images/startGame.png");
+        ImageView startGameImgView = new ImageView(startGameImg);
+        startGameImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> startGame());
 
-            Button button = new Button("house");
-            button.setFocusTraversable(false);
-            button.setId("house");
-            button.setLayoutX(20);
-            button.setLayoutY(20);
+        vbox.getChildren().addAll(startGameImgView, exitImgView);
 
-            Button button2 = new Button("house2");
-            button2.setFocusTraversable(false);
-            button2.setId("house2");
-            button2.setLayoutX(20);
-            button2.setLayoutY(60);
+        StackPane root = new StackPane();
+        Image backgroundImg = new Image("file:src/main/resources/images/startBackground.png");
+        ImageView backgroundImgView = new ImageView(backgroundImg);
+        backgroundImgView.setFitWidth(windowWidth);
+        backgroundImgView.setFitHeight(windowHeight);
 
+        root.getChildren().addAll(backgroundImgView, vbox);
+        startingScene = new Scene(root, windowWidth, windowHeight);
 
-            Group root = new Group();
-            root.getChildren().add(canvas);
-            root.getChildren().add(button);
-            root.getChildren().add(button2);
-            window.setScene(new Scene(root));
-            window.show();
-
-            boardGui = new BoardGui(canvas.getGraphicsContext2D());
-            window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
-            window.getScene().setOnKeyPressed(e -> boardGui.getKeyHandler().handleKey(e.getCode(), true));
-            window.getScene().setOnKeyReleased(e -> boardGui.getKeyHandler().handleKey(e.getCode(), false));
-
-            window.getScene().setOnMouseClicked(boardGui.getOnFieldClickHandler());
-
-            button.setOnAction(boardGui.getButtonClickedHandler());
-            button2.setOnAction(boardGui.getButtonClickedHandler());
-
-            runnable.run();
-        });
+        window = new Stage();
+        gameGui = new GameGui(window, this::start);
     }
 
-    public BoardGui getBoardGui() {
-        return boardGui;
+    public void start() {
+        window.setTitle(title);
+        window.setResizable(false);
+        window.setScene(startingScene);
+        window.show();
+    }
+
+    public void startGame() {
+        Board board = new Board(new FieldFactoryImpl(), new BoardDescription() {
+            @Override
+            public int getRows() { return 40; }
+            @Override
+            public int getColumns() { return 50; }
+            @Override
+            public String getBackground(int row, int column) {
+                return "tile";
+            }
+        });
+
+        // Sample
+        gameGui.start(() -> {
+            BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui());
+            gameGui.getBoardGui().start(boardPresenter);
+        });
     }
 }

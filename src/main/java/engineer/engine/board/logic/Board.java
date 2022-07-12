@@ -1,8 +1,7 @@
-    package engineer.engine.board.logic;
+package engineer.engine.board.logic;
 
 import engineer.engine.board.exceptions.IndexOutOfBoardException;
 import engineer.engine.board.exceptions.InvalidBoardDescriptionException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,7 @@ public class Board {
     public void removeObserver(Observer observer) { observerList.remove(observer); }
 
     private void onFieldChanged(int row, int column) {
-        for (Observer o : observerList)
-            o.onFieldChanged(row, column);
+        observerList.forEach(o -> o.onFieldChanged(row, column));
     }
 
     /* Observer part end */
@@ -49,7 +47,7 @@ public class Board {
         try {
             return board[row][column];
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IndexOutOfBoardException();
+            throw new IndexOutOfBoardException(e);
         }
     }
 
