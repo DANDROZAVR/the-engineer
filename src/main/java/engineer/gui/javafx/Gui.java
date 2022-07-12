@@ -17,28 +17,33 @@ import static engineer.gui.javafx.GameGui.title;
 
 public class Gui {
     private static Stage window;
+
     private static final int windowWidth = 1080;
     private static final int windowHeight = 720;
+
     private final Scene startingScene;
     private final GameGui gameGui;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final TextureManager textureManager = new TextureManager();
 
     public Gui() {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(5.);
 
-        Image exitImg = new Image("file:src/main/resources/images/exit.png");
+        Image exitImg = textureManager.getTexture("exit");
         ImageView exitImgView = new ImageView(exitImg);
         exitImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> window.close());
 
-        Image startGameImg = new Image("file:src/main/resources/images/startGame.png");
+        Image startGameImg = textureManager.getTexture("startGame");
         ImageView startGameImgView = new ImageView(startGameImg);
         startGameImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> startGame());
 
         vbox.getChildren().addAll(startGameImgView, exitImgView);
 
         StackPane root = new StackPane();
-        Image backgroundImg = new Image("file:src/main/resources/images/startBackground.png");
+        Image backgroundImg = textureManager.getTexture("startBackground");
         ImageView backgroundImgView = new ImageView(backgroundImg);
         backgroundImgView.setFitWidth(windowWidth);
         backgroundImgView.setFitHeight(windowHeight);
@@ -47,7 +52,7 @@ public class Gui {
         startingScene = new Scene(root, windowWidth, windowHeight);
 
         window = new Stage();
-        gameGui = new GameGui(window, this::start);
+        gameGui = new GameGui(window, textureManager, this::start);
     }
 
     public void start() {

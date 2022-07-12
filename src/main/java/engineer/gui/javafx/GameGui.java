@@ -26,8 +26,13 @@ public class GameGui {
     private final Stage window;
     private final Button button, button2;
 
-    public GameGui(Stage window, ExitGameCallback exitGameCallback) {
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private final TextureManager textureManager;
+
+    public GameGui(Stage window, TextureManager textureManager, ExitGameCallback exitGameCallback) {
         this.window = window;
+        this.textureManager = textureManager;
+
         Canvas canvas = new Canvas(windowWidth, windowHeight);
 
         button = new Button("house");
@@ -42,17 +47,16 @@ public class GameGui {
         button2.setLayoutX(20);
         button2.setLayoutY(60);
 
-        // TODO: change to TextureManager
-        Image pauseImg = new Image("file:src/main/resources/images/pause.png");
+        Image pauseImg = textureManager.getTexture("pause");
         ImageView pauseImgView = new ImageView(pauseImg);
 
         AnchorPane root = new AnchorPane();
 
-        Image pauseTextImg = new Image("file:src/main/resources/images/pauseText.png");
+        Image pauseTextImg = textureManager.getTexture("pauseText");
         ImageView pauseTextImgView = new ImageView(pauseTextImg);
         pauseTextImgView.setVisible(false);
 
-        Image stopImg = new Image("file:src/main/resources/images/stop.png");
+        Image stopImg = textureManager.getTexture("stop");
         ImageView stopImgView = new ImageView(stopImg);
         stopImgView.setVisible(false);
 
@@ -69,7 +73,7 @@ public class GameGui {
         root.getChildren().addAll(canvas, pauseTextImgView, pauseImgView, stopImgView, button, button2);
         gameScene = new Scene(root);
 
-        boardGui = new BoardGui(canvas.getGraphicsContext2D());
+        boardGui = new BoardGui(canvas.getGraphicsContext2D(), textureManager);
         root.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (!pausing) {
                 boardGui.getOnFieldClickHandler().handle(mouseEvent);
