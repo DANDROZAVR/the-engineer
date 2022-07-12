@@ -105,6 +105,7 @@ public class BoardPresenter {
     }
 
     public void changeContent(double x, double y) {
+        if (!board.getField((int) (( x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight )).getBuildingEnabled()){ return; }
         board.setFieldContent((int) (( x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight ), new FieldContentImpl(pressedButton));
         pressedButton = null;
     }

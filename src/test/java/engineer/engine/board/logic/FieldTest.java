@@ -23,4 +23,16 @@ class FieldTest {
         field.setContent(content);
         assertSame(content, field.getContent());
     }
+
+    @Test
+    public void testSetBackgroundFeatures() {
+        Field field = new Field("Texture name");
+        assertEquals(1, field.getNumberOfMovesNeeded());
+        assertTrue(field.getBuildingEnabled());
+        field.setNumberOfMovesNeeded(4);
+        field.setBuildingEnabled(false);
+        assertEquals(4, field.getNumberOfMovesNeeded());
+        assertFalse(field.getBuildingEnabled());
+
+    }
 }
