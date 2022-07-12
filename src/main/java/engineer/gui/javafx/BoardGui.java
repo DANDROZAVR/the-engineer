@@ -15,9 +15,11 @@ public class BoardGui implements BoardPresenter.View {
     private final GraphicsContext gc;
     private BoardPresenter presenter;
 
-    private TextureManager textureManager;
-    public BoardGui(GraphicsContext gc) {
+    private final TextureManager textureManager;
+
+    public BoardGui(GraphicsContext gc, TextureManager textureManager) {
         this.gc = gc;
+        this.textureManager = textureManager;
     }
 
     @Override
@@ -43,8 +45,7 @@ public class BoardGui implements BoardPresenter.View {
         }
     };
 
-    public void start(BoardPresenter presenter, TextureManager textureManager) {
-        this.textureManager = textureManager;
+    public void start(BoardPresenter presenter) {
         this.presenter = presenter;
         timer.start();
     }
