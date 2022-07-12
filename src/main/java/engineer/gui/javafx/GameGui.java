@@ -14,25 +14,27 @@ public class GameGui {
     public static final String title = "The Engineer";
     private static final int windowWidth = 1080;
     private static final int windowHeight = 720;
-    private BoardGui boardGui;
+    private final BoardGui boardGui;
+    private final boolean[] pausing = new boolean[1];
 
     interface ExitGameCallback {
         void exit();
     }
 
-    public void start(Runnable runnable, Stage window, ExitGameCallback exitGameCallback) {
-        window.setTitle(title);
-        window.setResizable(false);
-
+    private final Scene gameScene;
+    private final Stage window;
+    private final Button button, button2;
+    public GameGui(Stage window, ExitGameCallback exitGameCallback) {
+        this.window = window;
         Canvas canvas = new Canvas(windowWidth, windowHeight);
 
-        Button button = new Button("house");
+        button = new Button("house");
         button.setFocusTraversable(false);
         button.setId("house");
         button.setLayoutX(20);
         button.setLayoutY(20);
 
-        Button button2 = new Button("house2");
+        button2 = new Button("house2");
         button2.setFocusTraversable(false);
         button2.setId("house2");
         button2.setLayoutX(20);
@@ -63,38 +65,40 @@ public class GameGui {
         AnchorPane.setLeftAnchor(stopImgView, canvas.getWidth() / 2 - stopImg.getWidth() / 2);
 
         root.getChildren().addAll(canvas, pauseTextImgView, pauseImgView, stopImgView, button, button2);
-
-        window.setScene(new Scene(root));
+        gameScene = new Scene(root);
 
         boardGui = new BoardGui(canvas.getGraphicsContext2D());
-        window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
-
-        boolean[] pausing = new boolean[1];
-        pauseImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            pausing[0] = !pausing[0];
-            if (pausing[0]) {
-                button.setDisable(true);
-                button2.setDisable(true);
-                pauseTextImgView.setVisible(true);
-                stopImgView.setVisible(true);
-                //   As soon as new buttons will appear, add them here
-                //   can be changed to List of Objects, in the case of a big number of buttons
-            } else {
-                button.setDisable(false);
-                button2.setDisable(false);
-                pauseTextImgView.setVisible(false);
-                stopImgView.setVisible(false);
-                // and here
-            }
-            System.out.println("Pause pressed");
-            mouseEvent.consume();
-        });
         root.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (!pausing[0]) {
                 boardGui.getOnFieldClickHandler().handle(mouseEvent);
             }
             mouseEvent.consume();
         });
+        button.setOnAction(boardGui.getButtonClickedHandler());
+        button2.setOnAction(boardGui.getButtonClickedHandler());
+        pauseImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            pausing[0] = !pausing[0];
+            if (pausing[0]) {
+                disableInterface(pauseTextImgView, stopImgView);
+            } else {
+                enableInterface(pauseTextImgView, stopImgView);
+            }
+            System.out.println("Pause pressed");
+            mouseEvent.consume();
+        });
+        stopImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            pausing[0] = false;
+            enableInterface(pauseTextImgView, stopImgView);
+            exitGameCallback.exit();
+        });
+        window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> boardGui.close());
+    }
+
+    public void start(Runnable runnable) {
+        window.setTitle(title);
+        window.setResizable(false);
+        window.setScene(gameScene);
+
         window.getScene().setOnMouseClicked(boardGui.getOnFieldClickHandler());
         window.getScene().setOnKeyPressed(e -> {
             if (!pausing[0])
@@ -107,15 +111,28 @@ public class GameGui {
             e.consume();
         });
 
-        button.setOnAction(boardGui.getButtonClickedHandler());
-        button2.setOnAction(boardGui.getButtonClickedHandler());
-        stopImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> exitGameCallback.exit());
-
         window.show();
         runnable.run();
     }
 
     public BoardGui getBoardGui() {
         return boardGui;
+    }
+
+    private void disableInterface(ImageView pauseTextImgView, ImageView stopImgView) {
+        button.setDisable(true);
+        button2.setDisable(true);
+        pauseTextImgView.setVisible(true);
+        stopImgView.setVisible(true);
+        //   As soon as new buttons will appear, add them here
+        //   can be changed to List of Objects, in the case of a big number of buttons
+    }
+
+    private void enableInterface(ImageView pauseTextImgView, ImageView stopImgView) {
+        button.setDisable(false);
+        button2.setDisable(false);
+        pauseTextImgView.setVisible(false);
+        stopImgView.setVisible(false);
+        // and here
     }
 }

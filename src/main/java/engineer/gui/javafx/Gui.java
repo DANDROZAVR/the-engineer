@@ -19,14 +19,10 @@ public class Gui {
     private static Stage window;
     private final int windowWidth = 1080;
     private final int windowHeight = 720;
+    private final Scene startingScene;
+    private final GameGui gameGui;
 
-    public void start() {
-        if (window == null) {
-            window = new Stage();
-        }
-        window.setTitle(title);
-        window.setResizable(false);
-
+    public Gui() {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(5.);
@@ -41,17 +37,23 @@ public class Gui {
 
         vbox.getChildren().addAll(startGameImgView, exitImgView);
 
-
         StackPane root = new StackPane();
-
         Image backgroundImg = new Image("file:src/main/resources/images/startBackground.png");
         ImageView backgroundImgView = new ImageView(backgroundImg);
         backgroundImgView.setFitWidth(windowWidth);
         backgroundImgView.setFitHeight(windowHeight);
 
         root.getChildren().addAll(backgroundImgView, vbox);
+        startingScene = new Scene(root, windowWidth, windowHeight);
 
-        window.setScene(new Scene(root, windowWidth, windowHeight));
+        window = new Stage();
+        gameGui = new GameGui(window, this::start);
+    }
+
+    public void start() {
+        window.setTitle(title);
+        window.setResizable(false);
+        window.setScene(startingScene);
         window.show();
     }
 
@@ -68,10 +70,9 @@ public class Gui {
         });
 
         // Sample
-        GameGui gameGui = new GameGui();
         gameGui.start(() -> {
             BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui());
             gameGui.getBoardGui().start(boardPresenter);
-        }, window, this::start);
+        });
     }
 }
