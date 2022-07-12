@@ -1,7 +1,7 @@
 package engineer.engine.board.logic;
 
 public class Field {
-    private FieldContent content = null;
+    private FieldContent content;
     private final String background;
     private boolean buildingEnabled = true;
     private int numberOfMovesNeeded = 1;

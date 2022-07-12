@@ -15,9 +15,11 @@ public class BoardGui implements BoardPresenter.View {
     private final GraphicsContext gc;
     private BoardPresenter presenter;
 
-    private TextureManager textureManager;
-    public BoardGui(GraphicsContext gc) {
+    private final TextureManager textureManager;
+
+    public BoardGui(GraphicsContext gc, TextureManager textureManager) {
         this.gc = gc;
+        this.textureManager = textureManager;
     }
 
     @Override
@@ -35,7 +37,6 @@ public class BoardGui implements BoardPresenter.View {
     private final AnimationTimer timer = new AnimationTimer() {
         private static final long NANOS_IN_SEC = 1_000_000_000;
         private long last = -1;
-
         @Override
         public void handle(long now) {
             if (last != -1)
@@ -44,15 +45,12 @@ public class BoardGui implements BoardPresenter.View {
         }
     };
 
-    public void start(BoardPresenter presenter, TextureManager textureManager) {
-        this.textureManager = textureManager;
+    public void start(BoardPresenter presenter) {
         this.presenter = presenter;
-        presenter.start();
         timer.start();
     }
 
     public void close() {
-        presenter.close();
         presenter = null;
         timer.stop();
     }
@@ -73,12 +71,10 @@ public class BoardGui implements BoardPresenter.View {
     }
 
     public EventHandler<ActionEvent> getButtonClickedHandler() {
-        return event -> presenter.setPressedButton((Button)event.getTarget());
+        return event -> presenter.setPressedButton(((Button) event.getTarget()).getId());
     }
 
     public EventHandler<? super MouseEvent> getOnFieldClickHandler() {
-        return (event) -> {
-            presenter.changeContent(event.getSceneX(), event.getSceneY());
-        };
+        return event -> presenter.changeContent(event.getSceneX(), event.getSceneY());
     }
 }

@@ -6,16 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextureManager {
-    private final Map<String, Image> textureMap;
-    public TextureManager() {
-
-        textureMap = new HashMap<>();
-    }
+    private final Map<String, Image> textureMap = new HashMap<>();
 
     public void loadTexture(String name) {
-
-        if(textureMap.containsKey(name)) return;
-
+        if (textureMap.containsKey(name)) return;
         textureMap.put(name, new Image("file:src/main/resources/images/"+ name +".png"));
     }
 
