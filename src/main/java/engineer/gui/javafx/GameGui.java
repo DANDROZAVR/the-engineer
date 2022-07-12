@@ -12,10 +12,11 @@ import javafx.stage.WindowEvent;
 
 public class GameGui {
     public static final String title = "The Engineer";
+    // TODO: remove these two constants
     private static final int windowWidth = 1080;
     private static final int windowHeight = 720;
     private final BoardGui boardGui;
-    boolean pausing;
+    private boolean pausing;
 
     interface ExitGameCallback {
         void exit();
@@ -24,6 +25,7 @@ public class GameGui {
     private final Scene gameScene;
     private final Stage window;
     private final Button button, button2;
+
     public GameGui(Stage window, ExitGameCallback exitGameCallback) {
         this.window = window;
         Canvas canvas = new Canvas(windowWidth, windowHeight);
@@ -83,7 +85,7 @@ public class GameGui {
             } else {
                 enableInterface(pauseTextImgView, stopImgView);
             }
-            System.out.println("Pause pressed");
+//            System.out.println("Pause pressed");
             mouseEvent.consume();
         });
         stopImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {

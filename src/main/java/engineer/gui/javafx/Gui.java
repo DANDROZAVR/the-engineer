@@ -17,8 +17,8 @@ import static engineer.gui.javafx.GameGui.title;
 
 public class Gui {
     private static Stage window;
-    private final int windowWidth = 1080;
-    private final int windowHeight = 720;
+    private static final int windowWidth = 1080;
+    private static final int windowHeight = 720;
     private final Scene startingScene;
     private final GameGui gameGui;
 
