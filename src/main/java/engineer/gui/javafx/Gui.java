@@ -70,6 +70,8 @@ public class Gui {
             public int getColumns() { return 50; }
             @Override
             public String getBackground(int row, int column) {
+                if((row+column) % 5 == 1)
+                    return "wood";
                 return "tile";
             }
         });

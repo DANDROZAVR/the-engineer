@@ -11,11 +11,10 @@ public class Field {
 
 
     public String getBackground() { return background; }
-
     public FieldContent getContent() { return content; }
-    public void setContent(FieldContent content) { this.content = content; }
     public boolean getBuildingEnabled(){ return buildingEnabled; }
     public int getNumberOfMovesNeeded(){ return numberOfMovesNeeded; }
+    public void setContent(FieldContent content) { this.content = content; }
     public void setBuildingEnabled(boolean buildingEnabled){ this.buildingEnabled = buildingEnabled; }
     public void setNumberOfMovesNeeded(int numberOfMovesNeeded){ this.numberOfMovesNeeded = numberOfMovesNeeded; }
 }
