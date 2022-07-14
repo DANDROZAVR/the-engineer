@@ -1,5 +1,6 @@
 package engineer.gui.javafx;
 
+import engineer.gui.TextureManager;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;

@@ -97,7 +97,7 @@ public class BoardPresenter {
     public void setPressedButton(String button) { pressedButton = button; }
 
     public void changeContent(double x, double y) {
-        if(board.getField((int) ((x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight)).getBuildingEnabled()) {
+        if(board.getField((int) ((x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight)).isFree()) {
             board.setFieldContent(
                     (int) ((x + cameraX) / fieldWidth),
                     (int) ((y + cameraY) / fieldHeight),

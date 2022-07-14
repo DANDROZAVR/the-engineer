@@ -1,29 +1,18 @@
 package engineer.engine.board.logic;
 
-import engineer.engine.board.exceptions.TextureNotKnownException;
-
-import java.util.HashMap;
-import java.util.Map;
+import engineer.gui.TextureManager;
 
 public class FieldFactoryImpl implements FieldFactory {
-    //probably some file with setup needed
-    Map<String, Integer> NumberOfMoves = new HashMap<>(){{
-        put("tile", 1);
-        put("wood", 2);
-    }};
+    private final TextureManager textureManager;
 
-    Map<String, Boolean> BuildingsEnabled = new HashMap<>(){{
-        put("tile", true);
-        put("wood", false);
-    }};
+    public FieldFactoryImpl(TextureManager textureManager) {
+        this.textureManager = textureManager;
+    }
+
     @Override
-    public Field produce(String background) {
-        Field newField = new Field(background);
-        if(!NumberOfMoves.containsKey(background) || !BuildingsEnabled.containsKey(background)){
-            throw new TextureNotKnownException();
-        }
-        newField.setBuildingEnabled(BuildingsEnabled.get(background));
-        newField.setNumberOfMovesNeeded(NumberOfMoves.get(background));
+    public Field produce(String background, boolean free) {
+        Field newField = new Field(background, free);
+        textureManager.loadTexture(background);
         return newField;
     }
 }

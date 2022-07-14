@@ -43,8 +43,8 @@ class BoardPresenterTest {
         when(view.getViewWidth()).thenReturn(1*70.0);
         when(view.getViewHeight()).thenReturn(1*70.0);
 
-        when(nonEmptyField.getBuildingEnabled()).thenReturn(true);
-        when(emptyField.getBuildingEnabled()).thenReturn(true);
+        when(emptyField.isFree()).thenReturn(true);
+        when(nonEmptyField.isFree()).thenReturn(true);
 
         presenter = new BoardPresenter(board, view);
     }

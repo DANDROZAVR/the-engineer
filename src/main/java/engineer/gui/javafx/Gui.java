@@ -4,6 +4,7 @@ import engineer.engine.board.logic.Board;
 import engineer.engine.board.logic.BoardDescription;
 import engineer.engine.board.logic.FieldFactoryImpl;
 import engineer.engine.board.presenter.BoardPresenter;
+import engineer.gui.TextureManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -25,7 +26,7 @@ public class Gui {
     private final GameGui gameGui;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final TextureManager textureManager = new TextureManager();
+    private final TextureManager textureManager = new TextureManagerImpl();
 
     public Gui() {
         VBox vbox = new VBox();
@@ -63,7 +64,7 @@ public class Gui {
     }
 
     public void startGame() {
-        Board board = new Board(new FieldFactoryImpl(), new BoardDescription() {
+        Board board = new Board(new FieldFactoryImpl(textureManager), new BoardDescription() {
             @Override
             public int getRows() { return 40; }
             @Override

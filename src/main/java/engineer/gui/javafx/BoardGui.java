@@ -2,6 +2,7 @@ package engineer.gui.javafx;
 
 import engineer.engine.board.presenter.BoardPresenter;
 import engineer.engine.board.presenter.Box;
+import engineer.gui.TextureManager;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
