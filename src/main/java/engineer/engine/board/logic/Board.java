@@ -2,6 +2,7 @@ package engineer.engine.board.logic;
 
 import engineer.engine.board.exceptions.IndexOutOfBoardException;
 import engineer.engine.board.exceptions.InvalidBoardDescriptionException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class Board {
         board = new Field[getRows()][getColumns()];
         for (int row = 0; row< getRows(); row++)
             for(int column = 0; column< getColumns(); column++)
-                board[row][column] = factory.produce(description.getBackground(row, column));
+                board[row][column] = factory.produce(description.getBackground(row, column), true);
     }
 
     public int getRows() { return rows; }

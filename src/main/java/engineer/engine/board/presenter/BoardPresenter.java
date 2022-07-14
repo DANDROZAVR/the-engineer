@@ -97,11 +97,13 @@ public class BoardPresenter {
     public void setPressedButton(String button) { pressedButton = button; }
 
     public void changeContent(double x, double y) {
-        board.setFieldContent(
-                (int) ((x + cameraX) / fieldWidth),
-                (int) ((y + cameraY) / fieldHeight),
-                new FieldContentImpl(pressedButton)
-        );
-        pressedButton = null;
+        if(board.getField((int) ((x + cameraX) / fieldWidth), (int) ((y + cameraY) / fieldHeight)).isFree()) {
+            board.setFieldContent(
+                    (int) ((x + cameraX) / fieldWidth),
+                    (int) ((y + cameraY) / fieldHeight),
+                    new FieldContentImpl(pressedButton)
+            );
+            pressedButton = null;
+        }
     }
 }

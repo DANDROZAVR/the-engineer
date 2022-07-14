@@ -27,8 +27,8 @@ public class BoardTest {
 
     public static class SampleFieldFactory implements FieldFactory {
         @Override
-        public Field produce(String background) {
-            return new Field(background);
+        public Field produce(String background, boolean free) {
+            return new Field(background, free);
         }
     }
 
@@ -42,11 +42,11 @@ public class BoardTest {
         assertEquals(5, board.getColumns());
         for (int row = 0; row < 3; row++)
             for (int column = 0; column < 5; column++)
-                verify(factory).produce(d1.getBackground(row, column));
+                verify(factory).produce(d1.getBackground(row, column), true);
         verifyNoMoreInteractions(factory);
 
         BoardDescription d2 = new SampleDescription(0, 7);
-        assertThrows(InvalidBoardDescriptionException.class, () -> new Board(new FieldFactoryImpl(), d2));
+        assertThrows(InvalidBoardDescriptionException.class, () -> new Board(factory, d2));
     }
 
     @Test

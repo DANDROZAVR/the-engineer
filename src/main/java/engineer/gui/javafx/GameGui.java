@@ -1,5 +1,6 @@
 package engineer.gui.javafx;
 
+import engineer.gui.TextureManager;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -74,14 +75,13 @@ public class GameGui {
         gameScene = new Scene(root);
 
         boardGui = new BoardGui(canvas.getGraphicsContext2D(), textureManager);
-        root.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            if (!pausing) {
-                boardGui.getOnFieldClickHandler().handle(mouseEvent);
-            }
-            mouseEvent.consume();
+        root.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (!pausing)
+                boardGui.onFieldClicked(e.getX(), e.getY());
+            e.consume();
         });
-        button.setOnAction(boardGui.getButtonClickedHandler());
-        button2.setOnAction(boardGui.getButtonClickedHandler());
+        button.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));
+        button2.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));
         pauseImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             pausing = !pausing;
             if (pausing) {
@@ -105,7 +105,7 @@ public class GameGui {
         window.setResizable(false);
         window.setScene(gameScene);
 
-        window.getScene().setOnMouseClicked(boardGui.getOnFieldClickHandler());
+        window.getScene().setOnMouseClicked(e -> boardGui.onFieldClicked(e.getX(), e.getY()));
         window.getScene().setOnKeyPressed(e -> {
             if (!pausing)
                 boardGui.getKeyHandler().handleKey(e.getCode(), true);

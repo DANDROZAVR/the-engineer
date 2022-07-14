@@ -2,12 +2,9 @@ package engineer.gui.javafx;
 
 import engineer.engine.board.presenter.BoardPresenter;
 import engineer.engine.board.presenter.Box;
+import engineer.gui.TextureManager;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 
 public class BoardGui implements BoardPresenter.View {
     private static final double cameraSpeed = 300;
@@ -70,11 +67,12 @@ public class BoardGui implements BoardPresenter.View {
         };
     }
 
-    public EventHandler<ActionEvent> getButtonClickedHandler() {
-        return event -> presenter.setPressedButton(((Button) event.getTarget()).getId());
+    // Temporary solution
+    public void onButtonClicked(String button) {
+        presenter.setPressedButton(button);
     }
 
-    public EventHandler<? super MouseEvent> getOnFieldClickHandler() {
-        return event -> presenter.changeContent(event.getSceneX(), event.getSceneY());
+    public void onFieldClicked(double x, double y) {
+        presenter.changeContent(x, y);
     }
 }
