@@ -23,7 +23,7 @@ public class BoardPresenter {
 
     private double cameraX = 0.0, cameraY = 0.0;
     private double cameraSpeedX = 0.0, cameraSpeedY = 0.0;
-
+    private double cameraMoveX, cameraMoveY;
     private String pressedButton;
 
     public BoardPresenter(Board board, View view) {
@@ -72,8 +72,10 @@ public class BoardPresenter {
 
 
     public void update(double time) {
-        cameraX += cameraSpeedX * time;
-        cameraY += cameraSpeedY * time;
+        cameraX += cameraSpeedX * time + cameraMoveX;
+        cameraY += cameraSpeedY * time + cameraMoveY;
+        cameraMoveX = 0;
+        cameraMoveY = 0;
 
         cameraX = max(cameraX, 0);
         cameraY = max(cameraY, 0);
@@ -86,6 +88,8 @@ public class BoardPresenter {
 
     public void setCameraSpeedX(double speedX) { cameraSpeedX = speedX; }
     public void setCameraSpeedY(double speedY) { cameraSpeedY = speedY; }
+    public void setCameraMoveX(double speedX) { cameraMoveX = speedX; }
+    public void setCameraMoveY(double speedY) { cameraMoveY = speedY; }
     public void zoomIn() {
         fieldWidth *= zoomSpeed;
         fieldHeight *= zoomSpeed;

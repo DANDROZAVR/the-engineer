@@ -1,6 +1,7 @@
 package engineer.gui.javafx;
 
 import engineer.gui.TextureManager;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -75,11 +76,14 @@ public class GameGui {
         gameScene = new Scene(root);
 
         boardGui = new BoardGui(canvas.getGraphicsContext2D(), textureManager);
-        root.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (!pausing)
-                boardGui.onFieldClicked(e.getX(), e.getY());
-            e.consume();
-        });
+
+        addMouseHandler(root, MouseEvent.MOUSE_CLICKED);
+        addMouseHandler(root, MouseEvent.MOUSE_DRAGGED);
+        //addMouseHandler(root, MouseEvent.MOUSE_ENTERED);
+        //addMouseHandler(root, MouseEvent.MOUSE_EXITED);
+        addMouseHandler(root, MouseEvent.MOUSE_PRESSED);
+        addMouseHandler(root, MouseEvent.MOUSE_RELEASED);
+
         button.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));
         button2.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));
         pauseImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
@@ -89,7 +93,6 @@ public class GameGui {
             } else {
                 enableInterface(pauseTextImgView, stopImgView);
             }
-//            System.out.println("Pause pressed");
             mouseEvent.consume();
         });
         stopImgView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
@@ -105,7 +108,6 @@ public class GameGui {
         window.setResizable(false);
         window.setScene(gameScene);
 
-        window.getScene().setOnMouseClicked(e -> boardGui.onFieldClicked(e.getX(), e.getY()));
         window.getScene().setOnKeyPressed(e -> {
             if (!pausing)
                 boardGui.getKeyHandler().handleKey(e.getCode(), true);
@@ -140,5 +142,13 @@ public class GameGui {
         pauseTextImgView.setVisible(false);
         stopImgView.setVisible(false);
         // and here
+    }
+
+    private void addMouseHandler(AnchorPane root, EventType<MouseEvent> eventType) {
+        root.addEventHandler(eventType, e -> {
+            if (!pausing)
+                boardGui.onMouseEvent(eventType, e);
+            e.consume();
+        });
     }
 }
