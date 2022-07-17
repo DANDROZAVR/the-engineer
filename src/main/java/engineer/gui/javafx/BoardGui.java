@@ -34,7 +34,10 @@ public class BoardGui implements BoardPresenter.View {
         gc.drawImage(textureManager.getTexture(texture), box.left(), box.top(), box.width(), box.height());
     }
 
-
+    @Override
+    public void drawSelection(Box box) {
+        gc.drawImage(textureManager.getTexture("tileSelection"), box.left(), box.top(), box.width(), box.height());
+    }
 
     private final AnimationTimer timer = new AnimationTimer() {
         private static final long NANOS_IN_SEC = 1_000_000_000;

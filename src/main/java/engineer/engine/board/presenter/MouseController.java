@@ -16,6 +16,7 @@ public class MouseController {
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 if (mouseEvent.getClickCount() == 1) {
                     presenter.changeContent(mouseEvent.getX(), mouseEvent.getY());
+                    presenter.setSelectedField(mouseEvent.getX(), mouseEvent.getY());
                 } else if (mouseEvent.getClickCount() == 2) {
                     // we can create functionality later, f.e choosing troops from field
                 }

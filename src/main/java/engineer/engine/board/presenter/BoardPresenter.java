@@ -2,6 +2,7 @@ package engineer.engine.board.presenter;
 
 import engineer.engine.board.logic.Board;
 import engineer.engine.board.logic.FieldContentImpl;
+import javafx.util.Pair;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -10,8 +11,8 @@ public class BoardPresenter {
     public interface View {
         double getViewHeight();
         double getViewWidth();
-
         void drawField(Box box, String texture);
+        void drawSelection(Box box);
     }
 
     private final static double zoomSpeed = 1.1;
@@ -25,6 +26,7 @@ public class BoardPresenter {
     private double cameraSpeedX = 0.0, cameraSpeedY = 0.0;
     private double cameraMoveX, cameraMoveY;
     private String pressedButton;
+    private Pair<Integer, Integer> selectedField;
 
     public BoardPresenter(Board board, View view) {
         this.board = board;
@@ -55,6 +57,12 @@ public class BoardPresenter {
                     if(board.getField(i, j).getContent() != null)
                         view.drawField(getFieldBox(i, j), board.getField(i, j).getContent().getPicture());
                 }
+        if (selectedField != null) {
+            Box selectionBox = getFieldBox(selectedField.getKey(), selectedField.getValue());
+            if (isVisible(selectionBox)) {
+                view.drawSelection(selectionBox);
+            }
+        }
     }
 
 
@@ -110,4 +118,12 @@ public class BoardPresenter {
             pressedButton = null;
         }
     }
+    public void setSelectedField(double x, double y) {
+        int row = (int) ((x + cameraX) / fieldWidth);
+        int col = (int) ((y + cameraY) / fieldHeight);
+        selectedField = new Pair<>(row, col);
+    }
+
+    @SuppressWarnings("unused")
+    public void cancelSelectedField() { selectedField = null; }
 }
