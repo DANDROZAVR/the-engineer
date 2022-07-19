@@ -70,10 +70,10 @@ public class GameGui {
         stopImgView.setVisible(false);
 
 
-        HBox mainHbox = new HBox();
+        HBox mainHBox = new HBox();
         VBox vbox = new VBox();
         vbox.getChildren().addAll(miniMap, tempContextMenu);
-        mainHbox.getChildren().addAll(canvas, vbox);
+        mainHBox.getChildren().addAll(canvas, vbox);
 
         miniMap.getGraphicsContext2D().setFill(Color.valueOf("#77C2BB"));
         miniMap.getGraphicsContext2D().fillRect(0, 0, miniMapWidth, miniMapHeight);
@@ -93,7 +93,7 @@ public class GameGui {
         AnchorPane.setTopAnchor(stopImgView, windowHeight * 0.8 - stopImg.getHeight());
         AnchorPane.setLeftAnchor(stopImgView, windowWidth / 2 - stopImg.getWidth() / 2);
 
-        root.getChildren().addAll(mainHbox, pauseTextImgView, pauseImgView, stopImgView, button, button2);
+        root.getChildren().addAll(mainHBox, pauseTextImgView, pauseImgView, stopImgView, button, button2);
         gameScene = new Scene(root);
 
         boardGui = new BoardGui(canvas.getGraphicsContext2D(), textureManager);
