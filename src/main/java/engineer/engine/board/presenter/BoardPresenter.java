@@ -1,5 +1,6 @@
 package engineer.engine.board.presenter;
 
+import engineer.engine.board.controllers.MouseController;
 import engineer.engine.board.logic.Board;
 import engineer.engine.board.logic.FieldContentImpl;
 import javafx.util.Pair;
@@ -8,6 +9,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class BoardPresenter {
+
     public interface View {
         double getViewHeight();
         double getViewWidth();
@@ -22,18 +24,22 @@ public class BoardPresenter {
     private final Board board;
     private final View view;
 
+    @SuppressWarnings({"UnusedDeclaration"})
+    private final MouseController mouseController;
+
     private double cameraX = 0.0, cameraY = 0.0;
     private double cameraSpeedX = 0.0, cameraSpeedY = 0.0;
     private double cameraMoveX, cameraMoveY;
     private String pressedButton;
     private Pair<Integer, Integer> selectedField;
 
-    public BoardPresenter(Board board, View view) {
+
+    public BoardPresenter(Board board, View view, MouseController mouseController) {
         this.board = board;
         this.view = view;
+        this.mouseController = mouseController;
+        mouseController.setObserver(new MouseControllerObserver());
     }
-
-
 
     private Box getFieldBox(int i, int j) {
         return new Box(
@@ -128,4 +134,48 @@ public class BoardPresenter {
 
     @SuppressWarnings("unused")
     public void cancelSelectedField() { selectedField = null; }
+
+    private class MouseControllerObserver implements MouseController.Observer {
+        double x, y;
+
+        @SuppressWarnings("StatementWithEmptyBody")
+        @Override
+        public void onMouseClick(MouseController.SimpleMouseButton button, int clicksNumber, double eventX, double eventY) {
+            if (button.equals(MouseController.SimpleMouseButton.PRIMARY)) {
+                if (clicksNumber == 1) {
+                    changeContent(eventX, eventY);
+                    setSelectedField(eventX, eventY);
+                } else if (clicksNumber== 2) {
+                    // we can create functionality later, f.e choosing troops from field
+                }
+            }
+        }
+
+        @Override
+        public void onMousePressed(MouseController.SimpleMouseButton button, double eventX, double eventY) {
+            if (button.equals(MouseController.SimpleMouseButton.SECONDARY)) {
+                x = eventX;
+                y = eventY;
+            }
+        }
+
+        @Override
+        public void onMouseReleased(MouseController.SimpleMouseButton button, double eventX, double eventY) {
+        }
+
+        @SuppressWarnings("StatementWithEmptyBody")
+        @Override
+        public void onMouseDragged(MouseController.SimpleMouseButton button, double eventX, double eventY) {
+            if (button.equals(MouseController.SimpleMouseButton.SECONDARY)) {
+                setCameraMoveX(x - eventX);
+                setCameraMoveY(y - eventY);
+                x = eventX;
+                y = eventY;
+            } else
+            if (button.equals(MouseController.SimpleMouseButton.PRIMARY)) {
+                // can be used for setting troops trips
+
+            }
+        }
+    }
 }
