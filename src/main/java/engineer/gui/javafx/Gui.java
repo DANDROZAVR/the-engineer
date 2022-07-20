@@ -81,7 +81,7 @@ public class Gui {
         // Sample
         gameGui.start(() -> {
             MouseController mouseController = new MouseController();
-            BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui(), mouseController);
+            BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui());
             gameGui.getBoardGui().start(boardPresenter, mouseController);
         });
     }

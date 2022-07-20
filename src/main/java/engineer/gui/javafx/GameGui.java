@@ -102,6 +102,7 @@ public class GameGui {
         addMouseHandler(canvas, MouseEvent.MOUSE_DRAGGED);
         addMouseHandler(canvas, MouseEvent.MOUSE_PRESSED);
         addMouseHandler(canvas, MouseEvent.MOUSE_RELEASED);
+        addMouseHandler(canvas, MouseEvent.MOUSE_MOVED);
 
         button.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));
         button2.setOnAction(e -> boardGui.onButtonClicked(((Button) e.getTarget()).getId()));

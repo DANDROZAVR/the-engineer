@@ -71,8 +71,8 @@ class BoardPresenterTest {
 
         clearInvocations(board, emptyField, nonEmptyField, content);
 
-        presenter.setCameraSpeedX(30.0);
-        presenter.setCameraSpeedY(40.0);
+        presenter.addCameraSpeedX(30.0);
+        presenter.addCameraSpeedY(40.0);
         presenter.update(7.0);
 
         verify(board, never()).getField(0, 0);
@@ -109,8 +109,8 @@ class BoardPresenterTest {
 
     @Test
     public void testButtons() {
-        presenter.setCameraSpeedX(3*70.0);
-        presenter.setCameraSpeedY(4*70.0);
+        presenter.addCameraSpeedX(3*70.0);
+        presenter.addCameraSpeedY(4*70.0);
         presenter.update(1.0);
 
         ArgumentCaptor<FieldContent> captor = ArgumentCaptor.forClass(FieldContent.class);
@@ -127,4 +127,18 @@ class BoardPresenterTest {
         verify(board).setFieldContent(eq(3), eq(4), captor.capture());
         assertNull(captor.getValue().getPicture());
     }
+    @Test
+    public void testSelection() {
+        ArgumentCaptor<Box> captor = ArgumentCaptor.forClass(Box.class);
+        presenter.setSelectedField(0, 0);
+
+        presenter.update(0);
+        verify(view).drawSelection(captor.capture());
+
+        presenter.cancelSelectedField();
+
+        presenter.update(0);
+        verify(view).drawSelection(captor.capture());
+    }
+
 }

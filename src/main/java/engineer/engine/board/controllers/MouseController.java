@@ -5,6 +5,8 @@ import javafx.scene.input.MouseEvent;
 
 public class MouseController {
     public interface Observer {
+        void onMouseMoved(double eventX, double eventY);
+
         void onMouseClick(SimpleMouseButton button, int clicksNumber, double eventX, double eventY);
         void onMousePressed(SimpleMouseButton button, double eventX, double eventY);
         void onMouseReleased(SimpleMouseButton button, double eventX, double eventY);
@@ -16,6 +18,7 @@ public class MouseController {
         MIDDLE,
         BACK,
         FORWARD,
+        MOVED,
         NONE
     }
     private Observer observer;
@@ -23,7 +26,10 @@ public class MouseController {
     public void onMouseEvent(EventType<MouseEvent> eventType, MouseEvent mouseEvent) {
         if (observer == null)
             return;
-        SimpleMouseButton buttonType= SimpleMouseButton.valueOf(mouseEvent.getButton().toString());
+        SimpleMouseButton buttonType = SimpleMouseButton.valueOf(mouseEvent.getButton().toString());
+        if (eventType == MouseEvent.MOUSE_MOVED) {
+            observer.onMouseMoved(mouseEvent.getX(), mouseEvent.getY());
+        } else
         if (eventType == MouseEvent.MOUSE_CLICKED) {
             observer.onMouseClick(buttonType, mouseEvent.getClickCount(), mouseEvent.getX(), mouseEvent.getY());
         } else
