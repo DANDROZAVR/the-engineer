@@ -137,12 +137,41 @@ class BoardPresenterTest {
         presenter.setSelectedField(0, 0);
 
         presenter.update(0);
-        verify(view).drawSelection(captor.capture());
+        verify(view, atLeastOnce()).drawSelection(captor.capture());
 
         presenter.cancelSelectedField();
+        clearInvocations(view);
 
         presenter.update(0);
-        verify(view).drawSelection(captor.capture());
+        verify(view, never()).drawSelection(captor.capture());
     }
-
+    @Test
+    public void testClicks() {
+        ArgumentCaptor<Box> captor = ArgumentCaptor.forClass(Box.class);
+        presenter.onMouseClick(BoardPresenter.SimpleMouseButton.PRIMARY, 1, 1, 3);
+        presenter.update(0);
+        verify(view, atLeastOnce()).drawSelection(captor.capture());
+    }
+    @Test
+    public void testCameraDraggingType1() {
+        presenter.onMouseMoved(view.getViewWidth(), view.getViewHeight());
+        presenter.update(10);
+        verify(board, never()).getField(0, 0);
+    }
+    @Test
+    public void testCameraDraggingType2() {
+        presenter.update(0);
+        verify(board, atLeastOnce()).getField(0, 0);
+        verify(board, never()).getField(0, 1);
+        presenter.onMousePressed(BoardPresenter.SimpleMouseButton.SECONDARY, view.getViewWidth(), view.getViewHeight());
+        presenter.onMouseDragged(BoardPresenter.SimpleMouseButton.SECONDARY, 0, 0);
+        presenter.update(0);
+        verify(board, never()).getField(0, 1);
+        verify(board, atLeastOnce()).getField(1, 1);
+    }
+    @Test
+    public void testReleasedButton() {
+        presenter.onMouseReleased(BoardPresenter.SimpleMouseButton.PRIMARY, 0, 0);
+        // just to deal with coverage
+    }
 }
