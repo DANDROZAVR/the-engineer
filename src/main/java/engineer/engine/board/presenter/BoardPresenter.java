@@ -90,7 +90,6 @@ public class BoardPresenter {
 
         cameraX = min(cameraX, fieldWidth * board.getRows() - view.getViewWidth());
         cameraY = min(cameraY, fieldHeight * board.getColumns() - view.getViewHeight());
-
         redrawVisibleFields();
     }
 
@@ -147,10 +146,11 @@ public class BoardPresenter {
         dx = 0; dy = 0;
         final double viewWidth = view.getViewWidth();
         final double viewHeight = view.getViewHeight();
-        if (eventX <= viewWidth / 5) dx = -(viewWidth / 5 - eventX);
-        if (eventY <= viewHeight / 5) dy = -(viewHeight / 5 - eventY);
-        if (viewWidth- eventX <= viewHeight / 5) dx = viewWidth / 5 - (viewWidth - eventX);
-        if (viewHeight - eventY <= viewHeight / 5) dy = viewHeight / 5 - (viewHeight - eventY);
+        final int cnst = 5;
+        if (eventX <= viewWidth / cnst)               dx = -(viewWidth / cnst - eventX);
+        if (eventY <= viewHeight / cnst)              dy = -(viewHeight / cnst - eventY);
+        if (viewWidth- eventX <= viewHeight / cnst)   dx = viewWidth / cnst - (viewWidth - eventX);
+        if (viewHeight - eventY <= viewHeight / cnst) dy = viewHeight / cnst - (viewHeight - eventY);
         dx = Math.pow(Math.abs(dx), 0.42) * dx;
         dy = Math.pow(Math.abs(dy), 0.42) * dy;
         addCameraSpeedX(dx);
@@ -162,7 +162,7 @@ public class BoardPresenter {
             if (clicksNumber == 1) {
                 changeContent(eventX, eventY);
                 setSelectedField(eventX, eventY);
-            } else if (clicksNumber== 2) {
+            } else if (clicksNumber == 2) {
                 // we can create functionality later, f.e choosing troops from field
             }
         }
