@@ -96,6 +96,8 @@ public class BoardPresenter {
 
     public void addCameraSpeedX(double speedX) { cameraSpeedX += speedX; }
     public void addCameraSpeedY(double speedY) { cameraSpeedY += speedY; }
+    public void setCameraSpeedX(double speedX) { cameraSpeedX = speedX; }
+    public void setCameraSpeedY(double speedY) { cameraSpeedY = speedY; }
     public void setCameraMoveX(double speedX) { cameraMoveX = speedX; }
     public void setCameraMoveY(double speedY) { cameraMoveY = speedY; }
     public void zoomIn() {

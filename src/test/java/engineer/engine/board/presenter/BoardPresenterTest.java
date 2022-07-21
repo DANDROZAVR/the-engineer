@@ -72,6 +72,10 @@ class BoardPresenterTest {
         clearInvocations(board, emptyField, nonEmptyField, content);
 
         presenter.addCameraSpeedX(30.0);
+        presenter.setCameraSpeedX(0);
+        presenter.addCameraSpeedX(30.0);
+        presenter.addCameraSpeedY(40.0);
+        presenter.setCameraSpeedY(0);
         presenter.addCameraSpeedY(40.0);
         presenter.update(7.0);
 

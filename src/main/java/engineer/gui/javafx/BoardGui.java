@@ -10,7 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 
 public class BoardGui implements BoardPresenter.View {
-    private static final double cameraSpeed = 300;
+    private static final double cameraSpeed = 500;
 
     private final GraphicsContext gc;
     private BoardPresenter presenter;
@@ -67,10 +67,10 @@ public class BoardGui implements BoardPresenter.View {
     public KeyHandler getKeyHandler() {
         return (code, pressed) -> {
             switch (code) {
-                case LEFT -> presenter.addCameraSpeedX(pressed ? -cameraSpeed : +cameraSpeed);
-                case RIGHT -> presenter.addCameraSpeedX(pressed ? cameraSpeed : +cameraSpeed);
-                case UP -> presenter.addCameraSpeedY(pressed ? -cameraSpeed : +cameraSpeed);
-                case DOWN -> presenter.addCameraSpeedY(pressed ? cameraSpeed : +cameraSpeed);
+                case LEFT -> presenter.setCameraSpeedX(pressed ? -cameraSpeed : 0);
+                case RIGHT -> presenter.setCameraSpeedX(pressed ? cameraSpeed : 0);
+                case UP -> presenter.setCameraSpeedY(pressed ? -cameraSpeed : 0);
+                case DOWN -> presenter.setCameraSpeedY(pressed ? cameraSpeed : 0);
                 case I -> { if(pressed) presenter.zoomIn(); }
                 case O -> { if(pressed) presenter.zoomOut(); }
             }
