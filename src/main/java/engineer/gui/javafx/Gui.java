@@ -4,6 +4,7 @@ import engineer.engine.board.logic.Board;
 import engineer.engine.board.logic.BoardDescription;
 import engineer.engine.board.logic.FieldFactoryImpl;
 import engineer.engine.board.presenter.BoardPresenter;
+import engineer.engine.board.controllers.MouseController;
 import engineer.gui.TextureManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -79,8 +80,9 @@ public class Gui {
 
         // Sample
         gameGui.start(() -> {
+            MouseController mouseController = new MouseController();
             BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui());
-            gameGui.getBoardGui().start(boardPresenter);
+            gameGui.getBoardGui().start(boardPresenter, mouseController);
         });
     }
 }
