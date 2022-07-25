@@ -1,6 +1,5 @@
 package engineer.gui.javafx;
 
-import engineer.gui.exceptions.TextureNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.image.Image;
@@ -10,12 +9,7 @@ public class TextureManager {
 
   public void loadTexture(String name) {
     if (textureMap.containsKey(name)) return;
-
-    try {
-      textureMap.put(name, new Image("file:src/main/resources/images/" + name + ".png"));
-    } catch (IllegalArgumentException e) {
-      throw new TextureNotFoundException(e);
-    }
+    textureMap.put(name, new Image("file:src/main/resources/images/" + name + ".png"));
   }
 
   public Image getTexture(String name) {
