@@ -3,8 +3,7 @@ package engineer.engine.presenters;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import engineer.engine.gamestate.Board;
-import engineer.engine.gamestate.FieldContentImpl;
+import engineer.engine.gamestate.GameState;
 import engineer.utils.Box;
 import javafx.util.Pair;
 
@@ -24,7 +23,7 @@ public class BoardPresenter {
 
   private double fieldWidth = 70, fieldHeight = 70;
 
-  private final Board board;
+  private final GameState gameState;
   private final View view;
   private double cameraX, cameraY;
   private double cameraSpeedX, cameraSpeedY;
@@ -34,8 +33,8 @@ public class BoardPresenter {
 
   private double lastCameraTouchX, lastCameraTouchY;
 
-  public BoardPresenter(Board board, View view) {
-    this.board = board;
+  public BoardPresenter(GameState gameState, View view) {
+    this.gameState = gameState;
     this.view = view;
   }
 
@@ -49,12 +48,12 @@ public class BoardPresenter {
   }
 
   private void redrawVisibleFields() {
-    for (int i = 0; i < board.getRows(); i++)
-      for (int j = 0; j < board.getColumns(); j++)
+    for (int i = 0; i < gameState.getBoardRows(); i++)
+      for (int j = 0; j < gameState.getBoardColumns(); j++)
         if (isVisible(getFieldBox(i, j))) {
-          view.drawField(getFieldBox(i, j), board.getField(i, j).getBackground());
-          if (board.getField(i, j).getContent() != null)
-            view.drawField(getFieldBox(i, j), board.getField(i, j).getContent().getPicture());
+          view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBackground());
+          if (gameState.getField(i, j).getBuilding() != null)
+            view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBuilding().getPicture());
         }
     if (selectedField != null) {
       Box selectionBox = getFieldBox(selectedField.getKey(), selectedField.getValue());
@@ -85,8 +84,8 @@ public class BoardPresenter {
     cameraX = max(cameraX, 0);
     cameraY = max(cameraY, 0);
 
-    cameraX = min(cameraX, fieldWidth * board.getRows() - view.getViewWidth());
-    cameraY = min(cameraY, fieldHeight * board.getColumns() - view.getViewHeight());
+    cameraX = min(cameraX, fieldWidth * gameState.getBoardRows() - view.getViewWidth());
+    cameraY = min(cameraY, fieldHeight * gameState.getBoardColumns() - view.getViewHeight());
     redrawVisibleFields();
   }
 
@@ -131,8 +130,8 @@ public class BoardPresenter {
   public void changeContent(double x, double y) {
     int row = (int) ((x + cameraX) / fieldWidth);
     int col = (int) ((y + cameraY) / fieldHeight);
-    if (board.getField(row, col).isFree()) {
-      board.setFieldContent(row, col, new FieldContentImpl(pressedButton));
+    if (gameState.getField(row, col).isFree()) {
+      gameState.build(row, col, pressedButton);
       pressedButton = null;
     }
   }
@@ -150,12 +149,7 @@ public class BoardPresenter {
 
   public enum SimpleMouseButton {
     PRIMARY,
-    SECONDARY,
-    MIDDLE,
-    BACK,
-    FORWARD,
-    MOVED,
-    NONE
+    SECONDARY
   }
 
   private double dx = 0, dy = 0;

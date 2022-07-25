@@ -2,9 +2,10 @@ package engineer.gui.javafx.menu;
 
 import static engineer.gui.javafx.game.GameGui.title;
 
-import engineer.engine.gamestate.Board;
-import engineer.engine.gamestate.BoardDescription;
-import engineer.engine.gamestate.FieldFactoryImpl;
+import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.board.BoardFactory;
+import engineer.engine.gamestate.building.BuildingFactory;
+import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.presenters.BoardPresenter;
 import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.controllers.MouseController;
@@ -66,32 +67,14 @@ public class MenuGui {
   }
 
   public void startGame() {
-    Board board =
-        new Board(
-            new FieldFactoryImpl(),
-            new BoardDescription() {
-              @Override
-              public int getRows() {
-                return 40;
-              }
-
-              @Override
-              public int getColumns() {
-                return 50;
-              }
-
-              @Override
-              public String getBackground(int row, int column) {
-                if ((row + column) % 5 == 1) return "wood";
-                return "tile";
-              }
-            });
+    GameState gameState =
+        new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
 
     // Sample
     gameGui.start(
         () -> {
           MouseController mouseController = new MouseController();
-          BoardPresenter boardPresenter = new BoardPresenter(board, gameGui.getBoardGui());
+          BoardPresenter boardPresenter = new BoardPresenter(gameState, gameGui.getBoardGui());
           gameGui.getBoardGui().start(boardPresenter, mouseController);
         });
   }
