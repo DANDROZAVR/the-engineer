@@ -6,6 +6,8 @@ module the.engineer.main {
 
   opens engineer.gui.javafx.menu to
       javafx.fxml;
+  opens engineer.gui.javafx.game to
+      javafx.fxml;
 
   exports engineer;
 }

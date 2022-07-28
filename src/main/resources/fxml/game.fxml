@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx/18"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="engineer.gui.javafx.game.GameGui"
+           fx:id="root"
+           prefWidth="1080.0"
+           prefHeight="720.0">
+   <VBox prefWidth="1080.0" prefHeight="720.0">
+
+      <HBox fx:id="toolbar" alignment="CENTER_LEFT" prefHeight="30.0" style="-fx-background-color: red;">
+         <Button text="Pause" onAction="#pauseGame"/>
+      </HBox>
+
+      <HBox style="-fx-background-color: blue;">
+         <Canvas fx:id="board" width="880.0" height="690.0" />
+
+         <VBox prefWidth="200.0" style="-fx-background-color: green;">
+            <Canvas fx:id="minimap" width="200.0" height="160.0" style="-fx-background-color: blue;"/>
+            <VBox fx:id="contextMenu" prefHeight="530.0" style="-fx-background-color: yellow;" />
+         </VBox>
+      </HBox>
+   </VBox>
+
+   <VBox fx:id="pauseMenu"
+         prefWidth="1080.0"
+         prefHeight="720.0"
+         alignment="CENTER"
+         spacing="5.0"
+         style="-fx-background-color: gray;" >
+
+      <Button text="Resume" onAction="#resumeGame" />
+      <Button text="Back to Menu" onAction="#endGame" />
+   </VBox>
+</StackPane>

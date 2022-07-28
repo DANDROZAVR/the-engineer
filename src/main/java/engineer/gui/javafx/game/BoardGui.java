@@ -1,5 +1,6 @@
 package engineer.gui.javafx.game;
 
+import engineer.engine.gamestate.GameState;
 import engineer.engine.presenters.BoardPresenter;
 import engineer.gui.javafx.KeyHandler;
 import engineer.gui.javafx.TextureManager;
@@ -7,6 +8,7 @@ import engineer.gui.javafx.controllers.MouseController;
 import engineer.utils.Box;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventType;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 
@@ -14,15 +16,19 @@ public class BoardGui implements BoardPresenter.View {
   private static final double cameraSpeed = 500;
 
   private final GraphicsContext gc;
-  private BoardPresenter presenter;
+  private final BoardPresenter presenter;
 
-  private MouseController mouseController;
+  private final MouseController mouseController;
 
   private final TextureManager textureManager;
 
-  public BoardGui(GraphicsContext gc, TextureManager textureManager) {
-    this.gc = gc;
+  public BoardGui(Canvas canvas, TextureManager textureManager, GameState gameState) {
+    this.gc = canvas.getGraphicsContext2D();
     this.textureManager = textureManager;
+
+    mouseController = new MouseController();
+    mouseController.setObserver(new BoardPresenterObserver());
+    presenter = new BoardPresenter(gameState, this);
   }
 
   @Override
@@ -63,15 +69,12 @@ public class BoardGui implements BoardPresenter.View {
         }
       };
 
-  public void start(BoardPresenter presenter, MouseController mouseController) {
-    this.presenter = presenter;
-    this.mouseController = mouseController;
+  public void start() {
     mouseController.setObserver(new BoardPresenterObserver());
     timer.start();
   }
 
   public void close() {
-    presenter = null;
     timer.stop();
   }
 
