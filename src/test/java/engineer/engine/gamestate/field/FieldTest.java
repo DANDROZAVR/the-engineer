@@ -1,10 +1,10 @@
 package engineer.engine.gamestate.field;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class FieldTest {
   @Test

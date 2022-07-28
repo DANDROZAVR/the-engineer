@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 <StackPane xmlns="http://javafx.com/javafx/18"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="engineer.gui.javafx.menu.MenuGui"

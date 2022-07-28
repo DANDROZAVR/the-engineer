@@ -1,11 +1,11 @@
 package engineer.engine.gamestate.field;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FieldFactoryTest {
   @Test

@@ -6,7 +6,6 @@ import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.menu.MenuGui;
-import java.net.URL;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,6 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class GameGui {
   public interface MenuController {

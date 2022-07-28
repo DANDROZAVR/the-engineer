@@ -1,8 +1,9 @@
 package engineer.gui.javafx;
 
+import javafx.scene.image.Image;
+
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.image.Image;
 
 public class TextureManager {
   private final Map<String, Image> textureMap = new HashMap<>();

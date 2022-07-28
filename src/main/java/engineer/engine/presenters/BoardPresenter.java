@@ -1,11 +1,11 @@
 package engineer.engine.presenters;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import engineer.engine.gamestate.GameState;
 import engineer.utils.Box;
 import javafx.util.Pair;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class BoardPresenter {
 

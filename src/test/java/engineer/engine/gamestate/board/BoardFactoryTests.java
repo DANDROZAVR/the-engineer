@@ -1,8 +1,5 @@
 package engineer.engine.gamestate.board;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
@@ -11,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class BoardFactoryTests {
   @Mock private FieldFactory fieldFactory;

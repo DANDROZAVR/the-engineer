@@ -1,12 +1,13 @@
 package engineer.gui.javafx.menu;
 
 import engineer.gui.javafx.game.GameGui;
-import java.net.URL;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class MenuGui {
   private static final String TITLE = "The Engineer";
