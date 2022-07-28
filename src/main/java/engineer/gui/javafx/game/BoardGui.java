@@ -2,142 +2,93 @@ package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.GameState;
 import engineer.engine.presenters.BoardPresenter;
-import engineer.gui.javafx.KeyHandler;
 import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.controllers.MouseController;
 import engineer.utils.Box;
 import javafx.animation.AnimationTimer;
-import javafx.event.EventType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 
-public class BoardGui implements BoardPresenter.View {
-  private static final double cameraSpeed = 500;
+import static java.lang.Math.abs;
 
-  private final GraphicsContext gc;
+public class BoardGui implements BoardPresenter.View, MouseController.Observer {
+  private final Canvas canvas;
   private final BoardPresenter presenter;
 
+  private final TextureManager textureManager;
   private final MouseController mouseController;
 
-  private final TextureManager textureManager;
-
   public BoardGui(Canvas canvas, TextureManager textureManager, GameState gameState) {
-    this.gc = canvas.getGraphicsContext2D();
+    this.canvas = canvas;
     this.textureManager = textureManager;
 
-    mouseController = new MouseController();
-    mouseController.setObserver(new BoardPresenterObserver());
     presenter = new BoardPresenter(gameState, this);
+    mouseController = new MouseController(canvas);
   }
 
   @Override
   public double getViewHeight() {
-    return gc.getCanvas().getHeight();
+    return canvas.getHeight();
   }
 
   @Override
   public double getViewWidth() {
-    return gc.getCanvas().getWidth();
+    return canvas.getWidth();
   }
 
   @Override
   public void drawField(Box box, String texture) {
-    gc.drawImage(
-        textureManager.getTexture(texture), box.left(), box.top(), box.width(), box.height());
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.drawImage(textureManager.getTexture(texture), box.left(), box.top(), box.width(), box.height());
   }
 
   @Override
   public void drawSelection(Box box) {
-    gc.drawImage(
-        textureManager.getTexture("tileSelection"),
-        box.left(),
-        box.top(),
-        box.width(),
-        box.height());
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.drawImage(textureManager.getTexture("tileSelection"), box.left(), box.top(), box.width(), box.height());
   }
 
-  private final AnimationTimer timer =
-      new AnimationTimer() {
-        private static final long NANOS_IN_SEC = 1_000_000_000;
-        private long last = -1;
+  private final AnimationTimer timer = new AnimationTimer() {
+    private static final long NANOS_IN_SEC = 1_000_000_000;
+    private long last = -1;
 
-        @Override
-        public void handle(long now) {
-          if (last != -1) presenter.update((double) (now - last) / NANOS_IN_SEC);
-          last = now;
-        }
-      };
+    @Override
+    public void handle(long now) {
+      if (last != -1) presenter.update((double) (now - last) / NANOS_IN_SEC);
+      last = now;
+    }
+  };
+
+  @Override
+  public void onMouseExit() {
+    presenter.setCameraSpeedX(0);
+    presenter.setCameraSpeedY(0);
+  }
+
+  @Override
+  public void onMouseMove(double x, double y) {
+    double speedX = x - getViewWidth()/2;
+    double speedY = y - getViewHeight()/2;
+
+    if (abs(speedX) < getViewWidth()*3/8) speedX = 0;
+    if (abs(speedY) < getViewHeight()*3/8) speedY = 0;
+
+    presenter.setCameraSpeedX(speedX);
+    presenter.setCameraSpeedY(speedY);
+  }
+
+  @Override
+  public void onMouseClick(double x, double y) {
+    presenter.selectField(x, y);
+  }
 
   public void start() {
-    mouseController.setObserver(new BoardPresenterObserver());
     timer.start();
+    mouseController.addObserver(this);
   }
 
   public void close() {
     timer.stop();
-  }
-
-  public KeyHandler getKeyHandler() {
-    return (code, pressed) -> {
-      switch (code) {
-        case LEFT -> presenter.setCameraSpeedX(pressed ? -cameraSpeed : 0);
-        case RIGHT -> presenter.setCameraSpeedX(pressed ? cameraSpeed : 0);
-        case UP -> presenter.setCameraSpeedY(pressed ? -cameraSpeed : 0);
-        case DOWN -> presenter.setCameraSpeedY(pressed ? cameraSpeed : 0);
-        case I -> {
-          if (pressed) presenter.zoomIn();
-        }
-        case O -> {
-          if (pressed) presenter.zoomOut();
-        }
-      }
-    };
-  }
-
-  // Temporary solution
-  public void onButtonClicked(String button) {
-    presenter.setPressedButton(button);
-  }
-
-  public void onMouseEvent(EventType<MouseEvent> eventType, MouseEvent mouseEvent) {
-    mouseController.onMouseEvent(eventType, mouseEvent);
-    // presenter.changeContent(mouseEvent.getX(), mouseEvent.getY());
-  }
-
-  class BoardPresenterObserver implements MouseController.Observer {
-    private BoardPresenter.SimpleMouseButton convertButtonType(
-        MouseController.SimpleMouseButton button) {
-      return BoardPresenter.SimpleMouseButton.valueOf(button.toString());
-    }
-
-    @Override
-    public void onMouseMoved(double eventX, double eventY) {
-      presenter.onMouseMoved(eventX, eventY);
-    }
-
-    @Override
-    public void onMouseClick(
-        MouseController.SimpleMouseButton button, int clicksNumber, double eventX, double eventY) {
-      presenter.onMouseClick(convertButtonType(button), clicksNumber, eventX, eventY);
-    }
-
-    @Override
-    public void onMousePressed(
-        MouseController.SimpleMouseButton button, double eventX, double eventY) {
-      presenter.onMousePressed(convertButtonType(button), eventX, eventY);
-    }
-
-    @Override
-    public void onMouseReleased(
-        MouseController.SimpleMouseButton button, double eventX, double eventY) {
-      presenter.onMouseReleased(convertButtonType(button), eventX, eventY);
-    }
-
-    @Override
-    public void onMouseDragged(
-        MouseController.SimpleMouseButton button, double eventX, double eventY) {
-      presenter.onMouseDragged(convertButtonType(button), eventX, eventY);
-    }
+    mouseController.removeObserver(this);
   }
 }

@@ -1,54 +1,68 @@
 package engineer.gui.javafx.controllers;
 
+import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
-public class MouseController {
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class MouseController implements EventHandler<MouseEvent> {
+  private static final List<EventType<MouseEvent>> supportedEvents = Arrays.asList(
+          MouseEvent.MOUSE_CLICKED,
+          MouseEvent.MOUSE_ENTERED,
+          MouseEvent.MOUSE_EXITED,
+          MouseEvent.MOUSE_MOVED
+  );
+
   public interface Observer {
-    void onMouseMoved(double eventX, double eventY);
+    default void onMouseClick(double x, double y) {}
+    default void onMouseEnter() {}
+    default void onMouseExit() {}
+    default void onMouseMove(double x, double y) {}
 
-    void onMouseClick(SimpleMouseButton button, int clicksNumber, double eventX, double eventY);
-
-    void onMousePressed(SimpleMouseButton button, double eventX, double eventY);
-
-    void onMouseReleased(SimpleMouseButton button, double eventX, double eventY);
-
-    void onMouseDragged(SimpleMouseButton button, double eventX, double eventY);
+    @SuppressWarnings("unused")
+    default void onMouseScroll(double delta) {}
   }
 
-  public enum SimpleMouseButton {
-    PRIMARY,
-    SECONDARY,
-    MIDDLE,
-    BACK,
-    FORWARD,
-    MOVED,
-    NONE
+  private final List<Observer> observerList = new LinkedList<>();
+
+  public void addObserver(Observer observer) {
+    observerList.add(observer);
   }
 
-  private Observer observer;
+  public void removeObserver(Observer observer) {
+    observerList.remove(observer);
+  }
 
-  public void onMouseEvent(EventType<MouseEvent> eventType, MouseEvent mouseEvent) {
-    if (observer == null) return;
-    SimpleMouseButton buttonType = SimpleMouseButton.valueOf(mouseEvent.getButton().toString());
-    if (eventType == MouseEvent.MOUSE_MOVED) {
-      observer.onMouseMoved(mouseEvent.getX(), mouseEvent.getY());
-    } else if (eventType == MouseEvent.MOUSE_CLICKED) {
-      observer.onMouseClick(
-          buttonType, mouseEvent.getClickCount(), mouseEvent.getX(), mouseEvent.getY());
-    } else if (eventType == MouseEvent.MOUSE_PRESSED) {
-      observer.onMousePressed(buttonType, mouseEvent.getX(), mouseEvent.getY());
-    } else if (eventType == MouseEvent.MOUSE_RELEASED) {
-      // can be used for moving choosing trips end-point
-      observer.onMouseReleased(buttonType, mouseEvent.getX(), mouseEvent.getY());
-    } else if (eventType == MouseEvent.MOUSE_DRAGGED) {
-      observer.onMouseDragged(buttonType, mouseEvent.getX(), mouseEvent.getY());
+  public MouseController(Node node) {
+    supportedEvents.forEach(event -> node.addEventHandler(event, this));
+    node.setOnScroll(this::handleScroll);
+  }
+
+  private void handleScroll(ScrollEvent event) {
+    observerList.forEach(o -> o.onMouseScroll(event.getDeltaY()));
+  }
+
+  @Override
+  public void handle(MouseEvent event) {
+    EventType<? extends MouseEvent> type = event.getEventType();
+
+    if (type == MouseEvent.MOUSE_CLICKED) {
+      if (event.getButton() == MouseButton.PRIMARY)
+        observerList.forEach(o -> o.onMouseClick(event.getX(), event.getY()));
+    } else if (type == MouseEvent.MOUSE_ENTERED) {
+      observerList.forEach(Observer::onMouseEnter);
+    } else if (type == MouseEvent.MOUSE_EXITED) {
+      observerList.forEach(Observer::onMouseExit);
+    } else if (type == MouseEvent.MOUSE_MOVED) {
+      observerList.forEach(o -> o.onMouseMove(event.getX(), event.getY()));
     } else {
-      System.err.println("unsupported mouse event" + eventType.toString());
+      throw new RuntimeException("Unsupported mouse event type " + type);
     }
-  }
-
-  public void setObserver(Observer observer) {
-    this.observer = observer;
   }
 }

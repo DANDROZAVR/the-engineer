@@ -44,9 +44,12 @@ public class GameGui {
   @FXML private StackPane root;
   private Scene scene;
 
+  @SuppressWarnings("unused")
   @FXML private HBox toolbar;
   @FXML private Canvas board;
+  @SuppressWarnings("unused")
   @FXML private Canvas minimap;
+  @SuppressWarnings("unused")
   @FXML private VBox contextMenu;
   @FXML private VBox pauseMenu;
 
@@ -59,8 +62,7 @@ public class GameGui {
     scene = new Scene(root);
 
     // TODO: temporary solution
-    GameState gameState =
-        new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
+    GameState gameState = new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
     boardGui = new BoardGui(board, textureManager, gameState);
 
     root.getChildren().remove(pauseMenu);
@@ -78,6 +80,7 @@ public class GameGui {
     window.show();
   }
 
+  // TODO: implement PauseGui instead
   public void pauseGame() {
     root.getChildren().add(pauseMenu);
   }
@@ -87,6 +90,7 @@ public class GameGui {
   }
 
   public void endGame() {
+    boardGui.close();
     menuController.endGame();
   }
 }
