@@ -3,12 +3,12 @@ package engineer.engine.gamestate;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.field.Field;
-import javafx.util.Pair;
+import engineer.utils.Pair;
 
 public class GameState {
   private final BoardFactory boardFactory;
   private final Board board;
-  private Pair<Integer, Integer> selectedField;
+  private Pair selectedField;
 
   @SuppressWarnings("unused")
   public void addBoardObserver(Board.Observer observer) {
@@ -48,12 +48,12 @@ public class GameState {
     return board.getField(x, y);
   }
 
-  public Pair<Integer, Integer> getSelectedField() {
+  public Pair getSelectedField() {
     return selectedField;
   }
 
   public void selectField(int x, int y) {
-    selectedField = new Pair<>(x, y);
+    selectedField = new Pair(x, y);
   }
 
   @SuppressWarnings("unused")
@@ -61,6 +61,7 @@ public class GameState {
     selectedField = null;
   }
 
+  @SuppressWarnings("unused")
   public void build(int x, int y, String building) {
     Field field = getField(x, y);
     Field newField = boardFactory.produceField(

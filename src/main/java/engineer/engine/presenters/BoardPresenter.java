@@ -2,7 +2,7 @@ package engineer.engine.presenters;
 
 import engineer.engine.gamestate.GameState;
 import engineer.utils.Box;
-import javafx.util.Pair;
+import engineer.utils.Pair;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -48,9 +48,9 @@ public class BoardPresenter {
             view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBuilding().getPicture());
         }
 
-    Pair<Integer, Integer> selectedField = gameState.getSelectedField();
+    Pair selectedField = gameState.getSelectedField();
     if (gameState.getSelectedField() != null) {
-      Box selectionBox = getFieldBox(selectedField.getKey(), selectedField.getValue());
+      Box selectionBox = getFieldBox(selectedField.first(),selectedField.second());
       if (isVisible(selectionBox)) {
         view.drawSelection(selectionBox);
       }
@@ -89,14 +89,6 @@ public class BoardPresenter {
   public void zoomOut() {
     fieldWidth /= ZOOM_SPEED;
     fieldHeight /= ZOOM_SPEED;
-  }
-
-  @SuppressWarnings("unused")
-  public void changeContent(double x, double y, String building) {
-    int row = (int) ((x + cameraX) / fieldWidth);
-    int col = (int) ((y + cameraY) / fieldHeight);
-    if (gameState.getField(row, col).isFree())
-      gameState.build(row, col, building);
   }
 
   public void selectField(double x, double y) {
