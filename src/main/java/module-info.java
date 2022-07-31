@@ -4,7 +4,9 @@ module the.engineer.main {
   requires javafx.graphics;
   requires javafx.fxml;
 
-  opens engineer to
+  opens engineer.gui.javafx.menu to
+      javafx.fxml;
+  opens engineer.gui.javafx.game to
       javafx.fxml;
 
   exports engineer;
