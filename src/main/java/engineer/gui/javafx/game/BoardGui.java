@@ -1,7 +1,7 @@
 package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.GameState;
-import engineer.engine.presenters.BoardPresenter;
+import engineer.engine.presenters.game.BoardPresenter;
 import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.controllers.MouseController;
 import engineer.utils.Box;

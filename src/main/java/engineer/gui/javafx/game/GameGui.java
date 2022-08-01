@@ -47,14 +47,14 @@ public class GameGui {
   @SuppressWarnings("unused")
   @FXML private HBox toolbar;
   @FXML private Canvas board;
-  @SuppressWarnings("unused")
-  @FXML private Canvas minimap;
+  @FXML private StackPane minimap;
   @SuppressWarnings("unused")
   @FXML private VBox contextMenu;
   @FXML private VBox pauseMenu;
 
   private final TextureManager textureManager = new TextureManager();
   private BoardGui boardGui;
+  private MinimapGui minimapGui;
 
   private void setup(Stage window, MenuController menuController) {
     this.window = window;
@@ -64,6 +64,7 @@ public class GameGui {
     // TODO: temporary solution
     GameState gameState = new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
     boardGui = new BoardGui(board, textureManager, gameState);
+    minimapGui = new MinimapGui(minimap, textureManager, gameState);
 
     root.getChildren().remove(pauseMenu);
 
@@ -76,6 +77,7 @@ public class GameGui {
     window.setScene(scene);
 
     boardGui.start();
+    minimapGui.start();
 
     window.show();
   }

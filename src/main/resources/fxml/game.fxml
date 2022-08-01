@@ -16,10 +16,10 @@
       </HBox>
 
       <HBox style="-fx-background-color: blue;">
-         <Canvas fx:id="board" width="880.0" height="690.0" />
+         <Canvas fx:id="board" width="830.0" height="690.0" />
 
-         <VBox prefWidth="200.0" style="-fx-background-color: green;">
-            <Canvas fx:id="minimap" width="200.0" height="160.0" style="-fx-background-color: blue;"/>
+         <VBox prefWidth="250.0" style="-fx-background-color: green;">
+            <StackPane fx:id="minimap" prefHeight="160.0" style="-fx-background-color: blue;"/>
             <VBox fx:id="contextMenu" prefHeight="530.0" style="-fx-background-color: yellow;" />
          </VBox>
       </HBox>
