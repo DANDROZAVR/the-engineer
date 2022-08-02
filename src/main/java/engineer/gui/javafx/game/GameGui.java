@@ -1,11 +1,11 @@
 package engineer.gui.javafx.game;
 
+import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.gui.javafx.TextureManager;
-import engineer.gui.javafx.menu.MenuGui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,7 +27,7 @@ public class GameGui {
   public static void start(Stage window, MenuController menuController) {
     try {
       FXMLLoader loader = new FXMLLoader();
-      URL path = MenuGui.class.getResource("/fxml/game.fxml");
+      URL path = GameGui.class.getResource("/fxml/game.fxml");
       loader.setLocation(path);
       loader.load();
 
@@ -62,7 +62,10 @@ public class GameGui {
     scene = new Scene(root);
 
     // TODO: temporary solution
-    GameState gameState = new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
+    GameState gameState = new GameState(
+            new BoardFactory(new FieldFactory(), new BuildingFactory()),
+            new Camera(40, 50, board.getWidth(), board.getHeight())
+    );
     boardGui = new BoardGui(board, textureManager, gameState);
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
 

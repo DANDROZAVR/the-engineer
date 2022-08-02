@@ -26,14 +26,12 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
     mouseController = new MouseController(canvas);
   }
 
-  @Override
-  public double getHeight() {
-    return canvas.getHeight();
+  private double getWidth() {
+    return canvas.getWidth();
   }
 
-  @Override
-  public double getWidth() {
-    return canvas.getWidth();
+  private double getHeight() {
+    return canvas.getHeight();
   }
 
   @Override
@@ -48,33 +46,38 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
     gc.drawImage(textureManager.getTexture("tileSelection"), box.left(), box.top(), box.width(), box.height());
   }
 
+  private double cameraSpeedX, cameraSpeedY;
+
   private final AnimationTimer timer = new AnimationTimer() {
     private static final long NANOS_IN_SEC = 1_000_000_000;
     private long last = -1;
 
     @Override
     public void handle(long now) {
-      if (last != -1) presenter.update((double) (now - last) / NANOS_IN_SEC);
+      if (last != -1) {
+        double delta = (double) (now - last) / NANOS_IN_SEC;
+        presenter.moveCamera(
+                cameraSpeedX * delta,
+                cameraSpeedY * delta
+        );
+      }
       last = now;
     }
   };
 
   @Override
   public void onMouseExit() {
-    presenter.setCameraSpeedX(0);
-    presenter.setCameraSpeedY(0);
+    cameraSpeedX = 0.0;
+    cameraSpeedY = 0.0;
   }
 
   @Override
   public void onMouseMove(double x, double y) {
-    double speedX = x - getWidth()/2;
-    double speedY = y - getHeight()/2;
+    cameraSpeedX = x - getWidth()/2;
+    cameraSpeedY = y - getHeight()/2;
 
-    if (abs(speedX) < getWidth()*3/8) speedX = 0;
-    if (abs(speedY) < getHeight()*3/8) speedY = 0;
-
-    presenter.setCameraSpeedX(speedX);
-    presenter.setCameraSpeedY(speedY);
+    if (abs(cameraSpeedX) < getWidth()*3/8) cameraSpeedX = 0.0;
+    if (abs(cameraSpeedY) < getHeight()*3/8) cameraSpeedY = 0.0;
   }
 
   @Override
@@ -84,11 +87,13 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
 
   public void start() {
     timer.start();
+    presenter.start();
     mouseController.addObserver(this);
   }
 
   public void close() {
     timer.stop();
+    presenter.close();
     mouseController.removeObserver(this);
   }
 }

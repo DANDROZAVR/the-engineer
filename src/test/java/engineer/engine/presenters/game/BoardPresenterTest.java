@@ -1,130 +1,52 @@
 package engineer.engine.presenters.game;
 
+import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
-import engineer.engine.gamestate.building.Building;
-import engineer.engine.gamestate.field.Field;
-import engineer.utils.Box;
+import engineer.engine.gamestate.board.Board;
 import engineer.utils.Pair;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class BoardPresenterTest {
-  @Mock private GameState gameState;
-  @Mock private BoardPresenter.View view;
-  @Mock private Field emptyField;
-  @Mock private Field nonEmptyField;
-  @Mock private Building building;
-  private Pair selection;
+  @Test
+  public void testStartAndClose() {
+    GameState gameState = mock(GameState.class);
+    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
 
-  private static final double EPS = 0.001;
+    presenter.start();
+    presenter.close();
 
-  private BoardPresenter presenter;
+    ArgumentCaptor<Board.Observer> boardCaptor = ArgumentCaptor.forClass(Board.Observer.class);
+    ArgumentCaptor<Camera.Observer> cameraCaptor = ArgumentCaptor.forClass(Camera.Observer.class);
 
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-    when(emptyField.getBackground()).thenReturn("Empty");
-    when(nonEmptyField.getBackground()).thenReturn("Non-empty");
-    when(nonEmptyField.getBuilding()).thenReturn(building);
-
-    when(gameState.getColumns()).thenReturn(8);
-    when(gameState.getRows()).thenReturn(10);
-
-    when(gameState.getField(anyInt(), anyInt())).thenReturn(emptyField);
-    when(gameState.getField(3, 4)).thenReturn(nonEmptyField);
-
-    doAnswer(invocation ->
-            selection = new Pair(invocation.getArgument(0), invocation.getArgument(1))
-    ).when(gameState).selectField(anyInt(), anyInt());
-    doAnswer(invocation ->
-            selection = null
-    ).when(gameState).unselectField();
-    doAnswer(invocation ->
-            selection
-    ).when(gameState).getSelectedField();
-
-    when(view.getWidth()).thenReturn(1 * 70.0);
-    when(view.getHeight()).thenReturn(1 * 70.0);
-
-    when(emptyField.isFree()).thenReturn(true);
-    when(nonEmptyField.isFree()).thenReturn(true);
-
-    presenter = new BoardPresenter(gameState, view);
+    verify(gameState).addBoardObserver(boardCaptor.capture());
+    verify(gameState).addCameraObserver(cameraCaptor.capture());
+    verify(gameState).removeBoardObserver(boardCaptor.getValue());
+    verify(gameState).removeCameraObserver(cameraCaptor.getValue());
   }
 
   @Test
   public void testCameraMove() {
-    ArgumentCaptor<Box> captor = ArgumentCaptor.forClass(Box.class);
-    List<Box> list;
+    GameState gameState = mock(GameState.class);
+    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
 
-    presenter.update(0.0);
+    presenter.moveCamera(6.0, 9.0);
 
-    verify(gameState, atLeastOnce()).getField(0, 0);
-    verify(gameState, never()).getField(3, 4);
-    verify(emptyField, atLeastOnce()).getBackground();
-    verify(nonEmptyField, never()).getBackground();
-    verify(emptyField, atLeastOnce()).getBuilding();
-    verify(nonEmptyField, never()).getBuilding();
-
-    // Check what was drawn
-    verify(view).drawField(captor.capture(), anyString());
-    list = captor.getAllValues();
-    assertFalse(list.stream().anyMatch(box ->
-            (box.top() > 70.0 + EPS || box.bottom() < 0.0 - EPS) ||
-            (box.left() > 70.0 + EPS || box.right() < 0.0 - EPS))
-    );
-    assertFalse(list.isEmpty());
-
-    clearInvocations(gameState, emptyField, nonEmptyField, building);
-
-    presenter.setCameraSpeedX(30.0);
-    presenter.setCameraSpeedY(40.0);
-    presenter.update(7.0);
-
-    verify(gameState, never()).getField(0, 0);
-    verify(gameState, atLeastOnce()).getField(3, 4);
-    verify(emptyField, never()).getBuilding();
-    verify(nonEmptyField, atLeastOnce()).getBuilding();
-    verify(building, atLeastOnce()).getPicture();
-
-    // Check what was drawn
-    verify(view, atLeastOnce()).drawField(captor.capture(), anyString());
-    list = captor.getAllValues();
-    assertFalse(list.stream().anyMatch(box ->
-            (box.top() > 70.0 + EPS || box.bottom() < 0.0 - EPS) ||
-            (box.left() > 70.0 + EPS || box.right() < 0.0 - EPS))
-    );
-    assertFalse(list.isEmpty());
+    verify(gameState).moveCamera(6.0, 9.0);
   }
 
   @Test
   public void testSelection() {
-    presenter.selectField(EPS, EPS);
-    presenter.update(0);
-    assertEquals(new Pair(0, 0), selection);
-    verify(view, atLeastOnce()).drawSelection(any(Box.class));
+    GameState gameState = mock(GameState.class);
+    doReturn(new Pair(3, 5)).when(gameState).getFieldByPoint(4.0, 15.0);
+    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
 
-    clearInvocations(view);
-
-    presenter.selectField(3*70.0 + EPS, 4*70.0 + EPS);
-    presenter.update(0);
-    assertEquals(new Pair(3, 4), selection);
-    verify(view, never()).drawSelection(any(Box.class));
-
-    clearInvocations(view);
-
+    presenter.selectField(4.0, 15.0);
     presenter.unselectField();
-    presenter.update(0);
-    assertNull(selection);
-    verify(view, never()).drawSelection(any(Box.class));
+
+    verify(gameState).selectField(3, 5);
+    verify(gameState).unselectField();
   }
 }

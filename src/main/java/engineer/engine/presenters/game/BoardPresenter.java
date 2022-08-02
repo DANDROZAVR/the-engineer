@@ -1,104 +1,74 @@
 package engineer.engine.presenters.game;
 
+import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.board.Board;
+import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
 import engineer.utils.Pair;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 public class BoardPresenter {
   public interface View {
-    double getHeight();
-    double getWidth();
     void drawField(Box box, String texture);
     void drawSelection(Box box);
   }
 
-  private static final double ZOOM_SPEED = 1.1;
-
-  private double fieldWidth = 70, fieldHeight = 70;
-
   private final GameState gameState;
   private final View view;
-
-  private double cameraX, cameraY;
-  private double cameraSpeedX, cameraSpeedY;
 
   public BoardPresenter(GameState gameState, View view) {
     this.gameState = gameState;
     this.view = view;
   }
 
-  private Box getFieldBox(int i, int j) {
-    return new Box(i * fieldWidth - cameraX, j * fieldHeight - cameraY, fieldWidth, fieldHeight);
-  }
+  public void redrawVisibleFields() {
+    for (int row = 0; row < gameState.getRows(); row++)
+      for (int column = 0; column < gameState.getColumns(); column++)
+        if (gameState.isFieldVisible(row, column)) {
+          Field field = gameState.getField(row, column);
+          Box box = gameState.getFieldBox(row, column);
 
-  private boolean isVisible(Box box) {
-    return (box.right() > 0 && box.left() < view.getWidth())
-        && (box.bottom() > 0 && box.top() < view.getHeight());
-  }
-
-  private void redrawVisibleFields() {
-    for (int i = 0; i < gameState.getRows(); i++)
-      for (int j = 0; j < gameState.getColumns(); j++)
-        if (isVisible(getFieldBox(i, j))) {
-          view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBackground());
-          if (gameState.getField(i, j).getBuilding() != null)
-            view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBuilding().getPicture());
+          view.drawField(box, field.getBackground());
+          if (field.getBuilding() != null)
+            view.drawField(box, field.getBuilding().getPicture());
         }
 
     Pair selectedField = gameState.getSelectedField();
-    if (gameState.getSelectedField() != null) {
-      Box selectionBox = getFieldBox(selectedField.first(),selectedField.second());
-      if (isVisible(selectionBox)) {
-        view.drawSelection(selectionBox);
-      }
+    if (gameState.getSelectedField() != null &&
+            gameState.isFieldVisible(selectedField.first(), selectedField.second())
+    ) {
+      Box box = gameState.getFieldBox(
+              selectedField.first(),
+              selectedField.second()
+      );
+      view.drawSelection(box);
     }
   }
 
-  public void update(double time) {
-    cameraX += cameraSpeedX * time;
-    cameraY += cameraSpeedY * time;
-
-    cameraX = max(cameraX, 0);
-    cameraY = max(cameraY, 0);
-
-    cameraX = min(cameraX, fieldWidth * gameState.getRows() - view.getWidth());
-    cameraY = min(cameraY, fieldHeight * gameState.getColumns() - view.getHeight());
-    redrawVisibleFields();
-  }
-
-  public void setCameraSpeedX(double speedX) {
-    cameraSpeedX = speedX;
-  }
-
-  public void setCameraSpeedY(double speedY) {
-    cameraSpeedY = speedY;
-  }
-
-  // TODO: adjust to mouse
-  @SuppressWarnings("unused")
-  public void zoomIn() {
-    fieldWidth *= ZOOM_SPEED;
-    fieldHeight *= ZOOM_SPEED;
-  }
-
-  // TODO: adjust to mouse
-  @SuppressWarnings("unused")
-  public void zoomOut() {
-    fieldWidth /= ZOOM_SPEED;
-    fieldHeight /= ZOOM_SPEED;
-  }
-
   public void selectField(double x, double y) {
-    int row = (int) ((x + cameraX) / fieldWidth);
-    int col = (int) ((y + cameraY) / fieldHeight);
-    gameState.selectField(row, col);
+    Pair field = gameState.getFieldByPoint(x, y);
+    gameState.selectField(field.first(), field.second());
   }
 
   @SuppressWarnings("unused")
   public void unselectField() {
     gameState.unselectField();
+  }
+
+  public void moveCamera(double dx, double dy) {
+    gameState.moveCamera(dx, dy);
+  }
+
+  private final Board.Observer boardObserver = (row, column) -> redrawVisibleFields();
+  private final Camera.Observer cameraObserver = this::redrawVisibleFields;
+
+  public void start() {
+    gameState.addBoardObserver(boardObserver);
+    gameState.addCameraObserver(cameraObserver);
+  }
+
+  public void close() {
+    gameState.removeBoardObserver(boardObserver);
+    gameState.removeCameraObserver(cameraObserver);
   }
 }
