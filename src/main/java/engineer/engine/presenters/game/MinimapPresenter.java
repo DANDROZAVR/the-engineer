@@ -16,8 +16,8 @@ public class MinimapPresenter {
     this.gameState = gameState;
     this.view = view;
 
-    for (int row=0;row<gameState.getBoardRows();row++) {
-      for (int column=0;column<gameState.getBoardColumns();column++) {
+    for (int row = 0; row<gameState.getRows(); row++) {
+      for (int column = 0; column<gameState.getColumns(); column++) {
         view.drawOnBackground(
                 row,
                 column,

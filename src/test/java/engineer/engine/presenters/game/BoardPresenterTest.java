@@ -36,8 +36,8 @@ class BoardPresenterTest {
     when(nonEmptyField.getBackground()).thenReturn("Non-empty");
     when(nonEmptyField.getBuilding()).thenReturn(building);
 
-    when(gameState.getBoardColumns()).thenReturn(8);
-    when(gameState.getBoardRows()).thenReturn(10);
+    when(gameState.getColumns()).thenReturn(8);
+    when(gameState.getRows()).thenReturn(10);
 
     when(gameState.getField(anyInt(), anyInt())).thenReturn(emptyField);
     when(gameState.getField(3, 4)).thenReturn(nonEmptyField);
@@ -52,8 +52,8 @@ class BoardPresenterTest {
             selection
     ).when(gameState).getSelectedField();
 
-    when(view.getViewWidth()).thenReturn(1 * 70.0);
-    when(view.getViewHeight()).thenReturn(1 * 70.0);
+    when(view.getWidth()).thenReturn(1 * 70.0);
+    when(view.getHeight()).thenReturn(1 * 70.0);
 
     when(emptyField.isFree()).thenReturn(true);
     when(nonEmptyField.isFree()).thenReturn(true);

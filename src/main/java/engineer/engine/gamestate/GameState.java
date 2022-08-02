@@ -25,22 +25,22 @@ public class GameState {
 
     board = boardFactory.produceBoard(40, 50);
 
-    for (int i = 0; i < 40; i++)
-      for (int j = 0; j < 50; j++) {
+    for (int row = 0; row < 40; row++)
+      for (int column = 0; column < 50; column++) {
         Field field = boardFactory.produceField(
                 "tile",
                 boardFactory.produceBuilding(null),
                 true
         );
-        board.setField(i, j, field);
+        board.setField(column, column, field);
       }
   }
 
-  public int getBoardRows() {
+  public int getRows() {
     return board.getRows();
   }
 
-  public int getBoardColumns() {
+  public int getColumns() {
     return board.getColumns();
   }
 

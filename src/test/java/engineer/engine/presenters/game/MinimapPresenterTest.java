@@ -10,8 +10,8 @@ class MinimapPresenterTest {
   @Test
   public void testInitialization() {
     GameState gameState = mock(GameState.class);
-    doReturn(5).when(gameState).getBoardColumns();
-    doReturn(3).when(gameState).getBoardRows();
+    doReturn(5).when(gameState).getColumns();
+    doReturn(3).when(gameState).getRows();
     doAnswer(invocation -> {
             Field field = mock(Field.class);
             doReturn("Field["+invocation.getArgument(0)+","+invocation.getArgument(1)+"]")

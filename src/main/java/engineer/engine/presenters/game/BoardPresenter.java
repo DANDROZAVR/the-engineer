@@ -9,8 +9,8 @@ import static java.lang.Math.min;
 
 public class BoardPresenter {
   public interface View {
-    double getViewHeight();
-    double getViewWidth();
+    double getHeight();
+    double getWidth();
     void drawField(Box box, String texture);
     void drawSelection(Box box);
   }
@@ -35,13 +35,13 @@ public class BoardPresenter {
   }
 
   private boolean isVisible(Box box) {
-    return (box.right() > 0 && box.left() < view.getViewWidth())
-        && (box.bottom() > 0 && box.top() < view.getViewHeight());
+    return (box.right() > 0 && box.left() < view.getWidth())
+        && (box.bottom() > 0 && box.top() < view.getHeight());
   }
 
   private void redrawVisibleFields() {
-    for (int i = 0; i < gameState.getBoardRows(); i++)
-      for (int j = 0; j < gameState.getBoardColumns(); j++)
+    for (int i = 0; i < gameState.getRows(); i++)
+      for (int j = 0; j < gameState.getColumns(); j++)
         if (isVisible(getFieldBox(i, j))) {
           view.drawField(getFieldBox(i, j), gameState.getField(i, j).getBackground());
           if (gameState.getField(i, j).getBuilding() != null)
@@ -64,8 +64,8 @@ public class BoardPresenter {
     cameraX = max(cameraX, 0);
     cameraY = max(cameraY, 0);
 
-    cameraX = min(cameraX, fieldWidth * gameState.getBoardRows() - view.getViewWidth());
-    cameraY = min(cameraY, fieldHeight * gameState.getBoardColumns() - view.getViewHeight());
+    cameraX = min(cameraX, fieldWidth * gameState.getRows() - view.getWidth());
+    cameraY = min(cameraY, fieldHeight * gameState.getColumns() - view.getHeight());
     redrawVisibleFields();
   }
 

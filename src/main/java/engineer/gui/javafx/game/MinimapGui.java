@@ -44,12 +44,12 @@ public class MinimapGui implements MinimapPresenter.View {
     window.getChildren().add(background);
 
     fieldSize = min(
-            background.getWidth() / (double) gameState.getBoardColumns(),
-            background.getHeight() / (double) gameState.getBoardRows()
+            background.getWidth() / (double) gameState.getColumns(),
+            background.getHeight() / (double) gameState.getRows()
     );
 
-    offsetX = (background.getWidth() - gameState.getBoardColumns() * fieldSize) / 2.0;
-    offsetY = (background.getHeight() - gameState.getBoardRows() * fieldSize) / 2.0;
+    offsetX = (background.getWidth() - gameState.getColumns() * fieldSize) / 2.0;
+    offsetY = (background.getHeight() - gameState.getRows() * fieldSize) / 2.0;
 
     new MinimapPresenter(gameState, this);
   }

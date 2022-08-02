@@ -27,12 +27,12 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   }
 
   @Override
-  public double getViewHeight() {
+  public double getHeight() {
     return canvas.getHeight();
   }
 
   @Override
-  public double getViewWidth() {
+  public double getWidth() {
     return canvas.getWidth();
   }
 
@@ -67,11 +67,11 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
 
   @Override
   public void onMouseMove(double x, double y) {
-    double speedX = x - getViewWidth()/2;
-    double speedY = y - getViewHeight()/2;
+    double speedX = x - getWidth()/2;
+    double speedY = y - getHeight()/2;
 
-    if (abs(speedX) < getViewWidth()*3/8) speedX = 0;
-    if (abs(speedY) < getViewHeight()*3/8) speedY = 0;
+    if (abs(speedX) < getWidth()*3/8) speedX = 0;
+    if (abs(speedY) < getHeight()*3/8) speedY = 0;
 
     presenter.setCameraSpeedX(speedX);
     presenter.setCameraSpeedY(speedY);
