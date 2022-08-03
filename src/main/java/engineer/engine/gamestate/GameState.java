@@ -112,4 +112,8 @@ public class GameState {
   public void moveCamera(double dx, double dy) {
     camera.moveCamera(dx, dy);
   }
+
+  public Box getCameraBox() {
+    return camera.getCameraBox();
+  }
 }

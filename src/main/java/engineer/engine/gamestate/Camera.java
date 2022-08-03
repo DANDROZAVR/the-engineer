@@ -72,9 +72,13 @@ public class Camera {
             && (box.bottom() > 0 && box.top() < height);
   }
 
-  @SuppressWarnings("unused")
   public Box getCameraBox() {
-    return new Box(offsetX, offsetY, width, height);
+    return new Box(
+            offsetX / fieldSize,
+            offsetY / fieldSize,
+            width / fieldSize,
+            height / fieldSize
+    );
   }
 
   public void moveCamera(double dx, double dy) {

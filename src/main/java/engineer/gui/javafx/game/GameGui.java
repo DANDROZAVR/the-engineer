@@ -96,6 +96,8 @@ public class GameGui {
 
   public void endGame() {
     boardGui.close();
+    minimapGui.close();
+
     menuController.endGame();
   }
 }
