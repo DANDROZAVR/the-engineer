@@ -42,13 +42,14 @@ public class Camera {
     this.rows = rows;
     this.columns = columns;
 
-    fieldSize = max(viewWidth / columns, viewHeight / rows);
+    // TODO: remove 2.0
+    fieldSize = 2.0 * max(viewWidth / columns, viewHeight / rows);
 
     width = viewWidth;
     height = viewHeight;
 
-    offsetX = (columns * fieldSize - width) / 2;
-    offsetY = (rows * fieldSize - height) / 2;
+    offsetX = (columns * fieldSize - viewWidth) / 2;
+    offsetY = (rows * fieldSize - viewHeight) / 2;
   }
 
   public Box getFieldBox(int row, int column) {
@@ -61,8 +62,8 @@ public class Camera {
   }
 
   public Pair getFieldByPoint(double x, double y) {
-    int row = (int) ((x + offsetX) / fieldSize);
-    int column = (int) ((y + offsetY) / fieldSize);
+    int column = (int) ((x + offsetX) / fieldSize);
+    int row = (int) ((y + offsetY) / fieldSize);
     return new Pair(row, column);
   }
 

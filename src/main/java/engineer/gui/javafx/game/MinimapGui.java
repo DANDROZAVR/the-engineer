@@ -52,7 +52,6 @@ public class MinimapGui implements MinimapPresenter.View {
     cameraRect.setY(box.top() * fieldSize + offsetY);
     cameraRect.setWidth(box.width() * fieldSize);
     cameraRect.setHeight(box.height() * fieldSize);
-    System.out.println(cameraRect.getX()+" "+cameraRect.getY());
   }
 
   public void start() {
