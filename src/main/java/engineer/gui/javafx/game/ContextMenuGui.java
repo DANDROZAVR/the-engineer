@@ -2,7 +2,7 @@ package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.building.Building;
-import engineer.engine.presenters.ContextMenuPresenter;
+import engineer.engine.presenters.game.ContextMenuPresenter;
 import engineer.gui.javafx.TextureManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,6 +32,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
   private VBox window;
   private final int nGridColumns = 3;
+
   public void setup(VBox window, TextureManager textureManager, GameState gameState) {
     this.window = window;
     this.presenter = new ContextMenuPresenter(gameState, this);
@@ -41,6 +42,14 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     rootDynamicNode.getChildren().clear();
     rootDynamicNode.getChildren().add(rootGeneralInfo);
     window.getChildren().add(root);
+  }
+
+  public void start() {
+    presenter.start();
+  }
+
+  public void close() {
+    presenter.close();
   }
 
   public void onShowBuildingsList() {

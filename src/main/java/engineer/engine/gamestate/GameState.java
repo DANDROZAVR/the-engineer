@@ -46,14 +46,20 @@ public class GameState {
 
 
 
-  @SuppressWarnings("unused")
   public void addBoardObserver(Board.Observer observer) {
     board.addObserver(observer);
   }
 
-  @SuppressWarnings("unused")
   public void removeBoardObserver(Board.Observer observer) {
     board.removeObserver(observer);
+  }
+
+  public void addSelectionObserver(SelectionObserver observer) {
+    selectionObservers.add(observer);
+  }
+
+  public void removeSelectionObserver(SelectionObserver observer) {
+    selectionObservers.remove(observer);
   }
 
   public int getRows() {
@@ -75,6 +81,7 @@ public class GameState {
   public void selectField(int x, int y) {
     selectedField = new Pair(x, y);
     selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
+  }
 
   @SuppressWarnings("unused")
   public void unselectField() {

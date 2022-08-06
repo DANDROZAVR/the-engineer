@@ -1,4 +1,4 @@
-package engineer.engine.presenters;
+package engineer.engine.presenters.game;
 
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.building.Building;
@@ -22,9 +22,18 @@ public class ContextMenuPresenter {
   public ContextMenuPresenter(GameState gameState, View view) {
     this.gameState = gameState;
     this.view = view;
-    gameState.addSelectionObserver(this::onFieldSelection);
   }
   private Building chosenBuilding;
+
+  private final GameState.SelectionObserver selectionObserver = this::onFieldSelection;
+
+  public void start() {
+    gameState.addSelectionObserver(selectionObserver);
+  }
+
+  public void close() {
+    gameState.removeSelectionObserver(selectionObserver);
+  }
 
   public void onFieldSelection(Pair fieldXY) {
     Field field = gameState.getField(fieldXY.first(), fieldXY.second());

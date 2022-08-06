@@ -71,13 +71,13 @@ public class GameGui {
             new BoardFactory(new FieldFactory(), new BuildingFactory()),
             new Camera(40, 50, board.getWidth(), board.getHeight())
     );
-    
+
     boardGui = new BoardGui(board, textureManager, gameState);
-    
+
     // TODO: FXML loader
     try {
       FXMLLoader loader = new FXMLLoader();
-      URL path = MenuGui.class.getResource("/fxml/contextMenu.fxml");
+      URL path = GameGui.class.getResource("/fxml/contextMenu.fxml");
       loader.setLocation(path);
       loader.load();
       this.contextMenuGui = loader.getController();
@@ -85,9 +85,9 @@ public class GameGui {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    
+
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
-    
+
     root.getChildren().remove(pauseMenu);
 
     startGame();
@@ -100,6 +100,7 @@ public class GameGui {
 
     boardGui.start();
     minimapGui.start();
+    contextMenuGui.start();
 
     window.show();
   }
@@ -116,6 +117,7 @@ public class GameGui {
   public void endGame() {
     boardGui.close();
     minimapGui.close();
+    contextMenuGui.close();
 
     menuController.endGame();
   }
