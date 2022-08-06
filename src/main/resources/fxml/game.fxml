@@ -7,16 +7,16 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="engineer.gui.javafx.game.GameGui"
            fx:id="root"
-           prefWidth="1080.0"
+           prefWidth="1280.0"
            prefHeight="720.0">
-   <VBox prefWidth="1080.0" prefHeight="720.0">
+   <VBox prefWidth="1280.0" prefHeight="720.0">
 
       <HBox fx:id="toolbar" alignment="CENTER_LEFT" prefHeight="30.0" style="-fx-background-color: red;">
          <Button text="Pause" onAction="#pauseGame"/>
       </HBox>
 
       <HBox style="-fx-background-color: blue;">
-         <Canvas fx:id="board" width="830.0" height="690.0" />
+         <Canvas fx:id="board" width="1080.0" height="690.0" />
 
          <VBox prefWidth="250.0" style="-fx-background-color: green;">
             <StackPane fx:id="minimap" prefHeight="160.0" style="-fx-background-color: blue;"/>
@@ -26,7 +26,7 @@
    </VBox>
 
    <VBox fx:id="pauseMenu"
-         prefWidth="1080.0"
+         prefWidth="1280.0"
          prefHeight="720.0"
          alignment="CENTER"
          spacing="5.0"

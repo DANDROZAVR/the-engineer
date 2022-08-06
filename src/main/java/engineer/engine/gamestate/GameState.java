@@ -2,16 +2,26 @@ package engineer.engine.gamestate;
 
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
+import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
 import engineer.utils.Pair;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameState {
+
+  public interface SelectionObserver {
+    void onFieldSelection(Pair field);
+  }
   private final BoardFactory boardFactory;
   private final Camera camera;
 
   private final Board board;
   private Pair selectedField;
+  private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
   public GameState(BoardFactory boardFactory, Camera camera) {
     this.boardFactory = boardFactory;
@@ -62,9 +72,9 @@ public class GameState {
     return selectedField;
   }
 
-  public void selectField(int row, int column) {
-    selectedField = new Pair(row, column);
-  }
+  public void selectField(int x, int y) {
+    selectedField = new Pair(x, y);
+    selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
 
   @SuppressWarnings("unused")
   public void unselectField() {
@@ -115,5 +125,12 @@ public class GameState {
 
   public Box getCameraBox() {
     return camera.getCameraBox();
+  }
+
+  public List<Building> getAllBuildingsList() {
+    // TEMP. WE SHOULD IMPLEMENT HOUSES TO MOVE FORWARD
+    return Arrays.asList(
+        boardFactory.produceBuilding("house"), null, null, null, null,
+        boardFactory.produceBuilding("house2"));
   }
 }

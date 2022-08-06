@@ -10,7 +10,7 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="engineer.gui.javafx.menu.MenuGui"
            fx:id="root">
-   <ImageView fitHeight="720.0" fitWidth="1080.0" pickOnBounds="true" preserveRatio="true">
+   <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../images/menu/background.png" />
    </ImageView>
    <VBox alignment="CENTER" spacing="5.0">

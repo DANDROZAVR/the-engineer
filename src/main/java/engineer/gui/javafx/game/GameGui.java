@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class GameGui {
@@ -38,6 +39,8 @@ public class GameGui {
     }
   }
 
+
+
   private Stage window;
   private MenuController menuController;
 
@@ -54,6 +57,8 @@ public class GameGui {
 
   private final TextureManager textureManager = new TextureManager();
   private BoardGui boardGui;
+  @SuppressWarnings("FieldCanBeLocal")
+  private ContextMenuGui contextMenuGui;
   private MinimapGui minimapGui;
 
   private void setup(Stage window, MenuController menuController) {
@@ -66,9 +71,23 @@ public class GameGui {
             new BoardFactory(new FieldFactory(), new BuildingFactory()),
             new Camera(40, 50, board.getWidth(), board.getHeight())
     );
+    
     boardGui = new BoardGui(board, textureManager, gameState);
+    
+    // TODO: FXML loader
+    try {
+      FXMLLoader loader = new FXMLLoader();
+      URL path = MenuGui.class.getResource("/fxml/contextMenu.fxml");
+      loader.setLocation(path);
+      loader.load();
+      this.contextMenuGui = loader.getController();
+      contextMenuGui.setup(contextMenu, textureManager, gameState);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
-
+    
     root.getChildren().remove(pauseMenu);
 
     startGame();
