@@ -1,11 +1,11 @@
 package engineer.gui.javafx.game;
 
+import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.gui.javafx.TextureManager;
-import engineer.gui.javafx.menu.MenuGui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,7 +27,7 @@ public class GameGui {
   public static void start(Stage window, MenuController menuController) {
     try {
       FXMLLoader loader = new FXMLLoader();
-      URL path = MenuGui.class.getResource("/fxml/game.fxml");
+      URL path = GameGui.class.getResource("/fxml/game.fxml");
       loader.setLocation(path);
       loader.load();
 
@@ -47,14 +47,14 @@ public class GameGui {
   @SuppressWarnings("unused")
   @FXML private HBox toolbar;
   @FXML private Canvas board;
-  @SuppressWarnings("unused")
-  @FXML private Canvas minimap;
+  @FXML private StackPane minimap;
   @SuppressWarnings("unused")
   @FXML private VBox contextMenu;
   @FXML private VBox pauseMenu;
 
   private final TextureManager textureManager = new TextureManager();
   private BoardGui boardGui;
+  private MinimapGui minimapGui;
 
   private void setup(Stage window, MenuController menuController) {
     this.window = window;
@@ -62,8 +62,12 @@ public class GameGui {
     scene = new Scene(root);
 
     // TODO: temporary solution
-    GameState gameState = new GameState(new BoardFactory(new FieldFactory(), new BuildingFactory()));
+    GameState gameState = new GameState(
+            new BoardFactory(new FieldFactory(), new BuildingFactory()),
+            new Camera(40, 50, board.getWidth(), board.getHeight())
+    );
     boardGui = new BoardGui(board, textureManager, gameState);
+    minimapGui = new MinimapGui(minimap, textureManager, gameState);
 
     root.getChildren().remove(pauseMenu);
 
@@ -76,6 +80,7 @@ public class GameGui {
     window.setScene(scene);
 
     boardGui.start();
+    minimapGui.start();
 
     window.show();
   }
@@ -91,6 +96,8 @@ public class GameGui {
 
   public void endGame() {
     boardGui.close();
+    minimapGui.close();
+
     menuController.endGame();
   }
 }

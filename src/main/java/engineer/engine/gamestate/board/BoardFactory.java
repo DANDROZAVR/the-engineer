@@ -34,8 +34,8 @@ public class BoardFactory {
       observerList.remove(observer);
     }
 
-    private void onFieldChanged(int x, int y) {
-      observerList.forEach(o -> o.onFieldChanged(x, y));
+    private void onFieldChanged(int row, int column) {
+      observerList.forEach(o -> o.onFieldChanged(row, column));
     }
 
     @Override
@@ -49,14 +49,14 @@ public class BoardFactory {
     }
 
     @Override
-    public Field getField(int x, int y) {
-      return fields[x][y];
+    public Field getField(int row, int column) {
+      return fields[row][column];
     }
 
     @Override
-    public void setField(int x, int y, Field field) {
-      fields[x][y] = field;
-      onFieldChanged(x, y);
+    public void setField(int row, int column, Field field) {
+      fields[row][column] = field;
+      onFieldChanged(row, column);
     }
   }
 
