@@ -51,6 +51,7 @@ public class ContextMenuPresenter {
   }
   public void onBuildingChoose(int index){
     Building building = tempListOfAllBuildings.get(index);
+    chosenBuilding = null;
     if (building != null) {
       chosenBuilding = building;
       view.showBuildingsChosenWindow(building.getPicture(), building.getPicture());
