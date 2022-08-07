@@ -1,22 +1,19 @@
 package engineer.engine.gamestate.field;
 
 import engineer.engine.gamestate.building.Building;
-import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.mob.Mob;
-import engineer.engine.gamestate.mob.MobFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class FieldFactoryTest {
   @Test
   public void testProduceField() {
     FieldFactory fieldFactory = new FieldFactory();
-    BuildingFactory buildingFactory = new BuildingFactory();
-    MobFactory mobFactory = new MobFactory();
-    Building building = buildingFactory.produce("building");
-    Mob mob = mobFactory.produce("mob name", 1);
+    Building building = mock(Building.class);
+    Mob mob = mock(Mob.class);
     Field field = fieldFactory.produce("picture", building, mob, true);
 
     assertEquals(field.getBackground(), "picture");
