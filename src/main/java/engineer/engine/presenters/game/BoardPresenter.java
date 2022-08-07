@@ -11,6 +11,7 @@ public class BoardPresenter {
   public interface View {
     void drawField(Box box, String texture);
     void drawSelection(Box box);
+    void enlightField(Box box);
   }
 
   private final GameState gameState;
@@ -29,9 +30,20 @@ public class BoardPresenter {
           Box box = gameState.getFieldBox(row, column);
 
           view.drawField(box, field.getBackground());
+          if (field.getMob() != null)
+            view.drawField(box, field.getMob().getTexture());
           if (field.getBuilding() != null)
             view.drawField(box, field.getBuilding().getPicture());
         }
+
+    if (gameState.getAccessibleFields() != null) {
+      for(Pair i : gameState.getAccessibleFields()){
+        Box selectionBox = gameState.getFieldBox(i.first(),i.second());
+        if (gameState.isFieldVisible(i.first(), i.second())) {
+          view.enlightField(selectionBox);
+        }
+      }
+    }
 
     Pair selectedField = gameState.getSelectedField();
     if (gameState.getSelectedField() != null &&

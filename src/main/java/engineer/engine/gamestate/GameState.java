@@ -4,12 +4,13 @@ import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.mob.Mob;
 import engineer.utils.Box;
 import engineer.utils.Pair;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static java.lang.Math.min;
 
 public class GameState {
 
@@ -21,6 +22,7 @@ public class GameState {
 
   private final Board board;
   private Pair selectedField;
+  private final List<Pair> accessibleFields = new LinkedList<>();
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
   public GameState(BoardFactory boardFactory, Camera camera) {
@@ -33,11 +35,16 @@ public class GameState {
       for (int column = 0; column < 50; column++) {
         Field field = boardFactory.produceField(
                 "tile",
-                boardFactory.produceBuilding(null),
+                null,
+                null,
                 true
         );
         board.setField(row, column, field);
       }
+
+    setMob(3, 5, "wood", 15);
+    setMob(8, 8, "wood", 5);
+    setMob(2, 7, "exit", 1);
   }
 
 
@@ -78,9 +85,49 @@ public class GameState {
     return selectedField;
   }
 
+  public List<Pair> getAccessibleFields() {
+    return accessibleFields;
+  }
+
+  private List<Pair> getNeighbours(Pair field){
+    List<Pair> neighbours = new ArrayList<>();
+    neighbours.add(new Pair(field.first()-1, field.second()));
+    neighbours.add(new Pair(field.first()+1, field.second()));
+    neighbours.add(new Pair(field.first(), field.second()+1));
+    neighbours.add(new Pair(field.first(), field.second()-1));
+    return neighbours;
+  }
+
   public void selectField(int x, int y) {
+    if(accessibleFields.contains(new Pair(x, y))){
+      moveMob(selectedField.first(), selectedField.second(), x, y, 1);
+    }
+    accessibleFields.clear();
+
+    if(getField(x, y).getMob() != null){
+      setAccessibleFieldsFrom(x, y, getField(x, y).getMob().getRange());
+    }
+
     selectedField = new Pair(x, y);
     selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
+  }
+
+  private void setAccessibleFieldsFrom(int x, int y, int range) {
+    accessibleFields.clear();
+    List<Pair> tempList = new LinkedList<>();
+
+    accessibleFields.add(new Pair(x, y));
+    for (int i = 0; i < range; i++) {
+      for (Pair j : accessibleFields) {
+        for (Pair k : getNeighbours(j)) {
+          if (!accessibleFields.contains(k)) {
+            tempList.add(k);
+          }
+        }
+      }
+      accessibleFields.addAll(tempList);
+      tempList.clear();
+    }
   }
 
   @SuppressWarnings("unused")
@@ -94,12 +141,50 @@ public class GameState {
     Field newField = boardFactory.produceField(
             field.getBackground(),
             boardFactory.produceBuilding(building),
+            field.getMob(),
             field.isFree()
     );
 
     board.setField(row, column, newField);
   }
 
+  public void setMob(int row, int column, String type, int number) {
+    Field field = getField(row, column);
+
+    Mob mob = null;
+    if (type != null) {
+      mob = boardFactory.produceMob(type, number);
+    }
+
+    Field newField = boardFactory.produceField(
+            field.getBackground(),
+            field.getBuilding(),
+            mob,
+            field.isFree()
+    );
+
+    board.setField(row, column, newField);
+  }
+
+  public void moveMob(int xFrom, int yFrom, int xTo, int yTo, int number) {
+    if(xFrom == xTo && yFrom == yTo){
+      return;
+    }
+    Field fieldFrom = getField(xFrom, yFrom);
+    Field fieldTo = getField(xTo, yTo);
+    if(fieldTo.getMob() != null && !Objects.equals(fieldTo.getMob().getType(), fieldFrom.getMob().getType())){
+      return;
+    }
+    number = min(number, fieldFrom.getMob().getNumber());
+
+    int fieldToNumber = 0;
+    if (fieldTo.getMob() != null) {
+      fieldToNumber = fieldTo.getMob().getNumber();
+    }
+
+    setMob(xTo, yTo, fieldFrom.getMob().getType(), fieldToNumber + number);
+    setMob(xFrom, yFrom, null, 0);
+  }
 
 
   // Camera functions

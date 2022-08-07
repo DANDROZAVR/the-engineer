@@ -22,13 +22,13 @@ public class BoardTest {
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-    when(fieldFactory.produce(anyString(), any(), anyBoolean())).thenReturn(standardField);
+    when(fieldFactory.produce(anyString(), any(), any(), anyBoolean())).thenReturn(standardField);
     when(buildingFactory.produce(any())).thenReturn(standardBuilding);
   }
 
   @Test
   public void testConstructor() {
-    BoardFactory boardFactory = new BoardFactory(null, null);
+    BoardFactory boardFactory = new BoardFactory(null, null, null);
     Board board = boardFactory.produceBoard(3, 5);
     assertEquals(3, board.getRows());
     assertEquals(5, board.getColumns());
@@ -59,9 +59,9 @@ public class BoardTest {
 
   @Test
   public void testSetFields() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, null, null);
     Board board = boardFactory.produceBoard(3, 5);
-    Field field = fieldFactory.produce("background", null, false);
+    Field field = fieldFactory.produce("background", null, null,false);
 
     board.setField(0, 0, field);
 
@@ -71,7 +71,7 @@ public class BoardTest {
 
   @Test
   public void testObservers() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, null, null);
     Board board = boardFactory.produceBoard(3, 5);
     Board.Observer observer = mock(Board.Observer.class);
 

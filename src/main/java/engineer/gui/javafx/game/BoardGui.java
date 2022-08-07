@@ -46,6 +46,11 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
     gc.drawImage(textureManager.getTexture("tileSelection"), box.left(), box.top(), box.width(), box.height());
   }
 
+  @Override
+  public void enlightField(Box box) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.drawImage(textureManager.getTexture("tileEnlighten"), box.left(), box.top(), box.width(), box.height());
+  }
   private double cameraSpeedX, cameraSpeedY;
 
   private final AnimationTimer timer = new AnimationTimer() {

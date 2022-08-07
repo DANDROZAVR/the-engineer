@@ -1,6 +1,7 @@
 package engineer.engine.gamestate.field;
 
 import engineer.engine.gamestate.building.Building;
+import engineer.engine.gamestate.mob.Mob;
 
 public interface Field {
   boolean isFree();
@@ -8,4 +9,5 @@ public interface Field {
   String getBackground();
 
   Building getBuilding();
+  Mob getMob();
 }

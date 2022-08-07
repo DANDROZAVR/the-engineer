@@ -4,6 +4,8 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
+import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.mob.MobFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 public class BoardFactory {
   private final FieldFactory fieldFactory;
   private final BuildingFactory buildingFactory;
+  private final MobFactory mobFactory;
 
   private static class BoardImpl implements Board {
     private final int rows, columns;
@@ -60,20 +63,25 @@ public class BoardFactory {
     }
   }
 
-  public BoardFactory(FieldFactory fieldFactory, BuildingFactory buildingFactory) {
+  public BoardFactory(FieldFactory fieldFactory, BuildingFactory buildingFactory, MobFactory mobFactory) {
     this.fieldFactory = fieldFactory;
     this.buildingFactory = buildingFactory;
+    this.mobFactory = mobFactory;
   }
 
   public Board produceBoard(int rows, int columns) {
     return new BoardImpl(rows, columns);
   }
 
-  public Field produceField(String background, Building building, boolean free) {
-    return fieldFactory.produce(background, building, free);
+  public Field produceField(String background, Building building, Mob mob, boolean free) {
+    return fieldFactory.produce(background, building, mob, free);
   }
 
   public Building produceBuilding(String picture) {
     return buildingFactory.produce(picture);
   }
+  public Mob produceMob(String picture, int number) {
+    return mobFactory.produce(picture, number);
+  }
+
 }

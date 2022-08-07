@@ -5,6 +5,7 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
+import engineer.engine.gamestate.mob.MobFactory;
 import engineer.gui.javafx.TextureManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -67,8 +68,12 @@ public class GameGui {
     scene = new Scene(root);
 
     // TODO: temporary solution
+    MobFactory mobFactory = new MobFactory();
+    mobFactory.addMobType("wood", "wood", 4);
+    mobFactory.addMobType("exit", "stop", 3);
+
     GameState gameState = new GameState(
-            new BoardFactory(new FieldFactory(), new BuildingFactory()),
+            new BoardFactory(new FieldFactory(), new BuildingFactory(), mobFactory),
             new Camera(40, 50, board.getWidth(), board.getHeight())
     );
 
