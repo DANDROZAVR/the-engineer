@@ -5,6 +5,8 @@ import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.turns.Player;
+import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Box;
 import engineer.utils.Pair;
 
@@ -25,6 +27,8 @@ public class GameState {
   private final List<Pair> accessibleFields = new LinkedList<>();
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
+  private final TurnSystem turnSystem;
+
   public GameState(BoardFactory boardFactory, Camera camera) {
     this.boardFactory = boardFactory;
     this.camera = camera;
@@ -41,6 +45,12 @@ public class GameState {
         );
         board.setField(row, column, field);
       }
+
+    // TODO: temporary solution
+    List<Player> players = new LinkedList<>();
+    players.add(new Player());
+    players.add(new Player());
+    turnSystem = new TurnSystem(players);
 
     setMob(3, 5, "wood", 15);
     setMob(8, 8, "wood", 5);
