@@ -11,7 +11,7 @@ import static java.lang.Math.min;
 
 public class Camera {
   public interface Observer {
-    void onCameraMove();
+    void onCameraUpdate();
   }
 
   List<Observer> observerList = new LinkedList<>();
@@ -29,21 +29,22 @@ public class Camera {
   private final int rows, columns;
 
   private double offsetX, offsetY;
-  @SuppressWarnings("FieldMayBeFinal")
-  private double width, height;
-  @SuppressWarnings("FieldMayBeFinal")
-  private double fieldSize;
+  private final double width, height;
 
-  private void onCameraMove() {
-    observerList.forEach(Observer::onCameraMove);
+  private double fieldSize;
+  @SuppressWarnings("FieldCanBeLocal")
+  private final double minFieldSize;
+
+  private void onCameraUpdate() {
+    observerList.forEach(Observer::onCameraUpdate);
   }
 
   public Camera(int rows, int columns, double viewWidth, double viewHeight) {
     this.rows = rows;
     this.columns = columns;
 
-    // TODO: remove 2.0
-    fieldSize = 2.0 * max(viewWidth / columns, viewHeight / rows);
+    fieldSize = max(viewWidth / columns, viewHeight / rows);
+    minFieldSize = fieldSize;
 
     width = viewWidth;
     height = viewHeight;
@@ -52,10 +53,15 @@ public class Camera {
     offsetY = (rows * fieldSize - viewHeight) / 2;
   }
 
+  public void zoom(double scale) {
+    fieldSize = max(minFieldSize, fieldSize * scale);
+    onCameraUpdate();
+  }
+
   public Box getFieldBox(int row, int column) {
     return new Box(
             column*fieldSize - offsetX,
-            row*fieldSize- offsetY,
+            row*fieldSize - offsetY,
             fieldSize,
             fieldSize
     );
@@ -85,6 +91,6 @@ public class Camera {
   public void moveCamera(double dx, double dy) {
     offsetX = max(0.0, min(columns*fieldSize - width, offsetX + dx));
     offsetY = max(0.0, min(rows*fieldSize - height, offsetY + dy));
-    onCameraMove();
+    onCameraUpdate();
   }
 }

@@ -47,7 +47,7 @@ class MinimapPresenterTest {
     verify(gameState).addCameraObserver(observerCaptor.capture());
 
     Camera.Observer observer = observerCaptor.getValue();
-    observer.onCameraMove();
+    observer.onCameraUpdate();
     verify(view).drawCameraBox(cameraBox);
 
     presenter.close();

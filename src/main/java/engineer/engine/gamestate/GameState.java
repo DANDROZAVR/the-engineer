@@ -27,6 +27,7 @@ public class GameState {
   private final List<Pair> accessibleFields = new LinkedList<>();
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
+  @SuppressWarnings({"FieldCanBeLocal", "unused"})
   private final TurnSystem turnSystem;
 
   public GameState(BoardFactory boardFactory, Camera camera) {
@@ -197,6 +198,7 @@ public class GameState {
   }
 
 
+
   // Camera functions
 
 
@@ -223,6 +225,10 @@ public class GameState {
 
   public void moveCamera(double dx, double dy) {
     camera.moveCamera(dx, dy);
+  }
+
+  public void zoomCamera(double delta) {
+    camera.zoom(delta);
   }
 
   public Box getCameraBox() {

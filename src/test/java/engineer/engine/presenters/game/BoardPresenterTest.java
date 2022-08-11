@@ -34,13 +34,15 @@ class BoardPresenterTest {
   }
 
   @Test
-  public void testCameraMove() {
+  public void testCameraInteractions() {
     GameState gameState = mock(GameState.class);
     BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
 
     presenter.moveCamera(6.0, 9.0);
+    presenter.zoomCamera(8.7);
 
     verify(gameState).moveCamera(6.0, 9.0);
+    verify(gameState).zoomCamera(8.7);
   }
 
   @Test
@@ -122,7 +124,7 @@ class BoardPresenterTest {
 
     verify(view).drawField(visibleBox, "visibleFieldBackground");
     verify(view).drawField(visibleBox, "Building");
-    verify(view).enlightField(visibleBox);
+    verify(view).enlightenField(visibleBox);
     verifyNoMoreInteractions(view);
   }
 }

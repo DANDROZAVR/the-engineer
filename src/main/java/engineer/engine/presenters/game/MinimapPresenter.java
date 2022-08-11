@@ -22,7 +22,7 @@ public class MinimapPresenter {
 
   public final Camera.Observer cameraObserver = new Camera.Observer() {
     @Override
-    public void onCameraMove() {
+    public void onCameraUpdate() {
       view.drawCameraBox(gameState.getCameraBox());
     }
   };

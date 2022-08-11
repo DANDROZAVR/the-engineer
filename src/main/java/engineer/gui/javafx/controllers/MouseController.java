@@ -24,8 +24,6 @@ public class MouseController implements EventHandler<MouseEvent> {
     default void onMouseEnter() {}
     default void onMouseExit() {}
     default void onMouseMove(double x, double y) {}
-
-    @SuppressWarnings("unused")
     default void onMouseScroll(double delta) {}
   }
 

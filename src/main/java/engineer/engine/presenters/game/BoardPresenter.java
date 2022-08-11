@@ -11,7 +11,7 @@ public class BoardPresenter {
   public interface View {
     void drawField(Box box, String texture);
     void drawSelection(Box box);
-    void enlightField(Box box);
+    void enlightenField(Box box);
   }
 
   private final GameState gameState;
@@ -40,7 +40,7 @@ public class BoardPresenter {
       for(Pair i : gameState.getAccessibleFields()){
         Box selectionBox = gameState.getFieldBox(i.first(),i.second());
         if (gameState.isFieldVisible(i.first(), i.second())) {
-          view.enlightField(selectionBox);
+          view.enlightenField(selectionBox);
         }
       }
     }
@@ -69,6 +69,10 @@ public class BoardPresenter {
 
   public void moveCamera(double dx, double dy) {
     gameState.moveCamera(dx, dy);
+  }
+
+  public void zoomCamera(double delta) {
+    gameState.zoomCamera(delta);
   }
 
   private final Board.Observer boardObserver = (row, column) -> redrawVisibleFields();

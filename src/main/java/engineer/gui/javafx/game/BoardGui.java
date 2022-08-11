@@ -6,10 +6,10 @@ import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.controllers.MouseController;
 import engineer.utils.Box;
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-
-import static java.lang.Math.abs;
+import javafx.scene.input.KeyEvent;
 
 public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   private final Canvas canvas;
@@ -26,14 +26,6 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
     mouseController = new MouseController(canvas);
   }
 
-  private double getWidth() {
-    return canvas.getWidth();
-  }
-
-  private double getHeight() {
-    return canvas.getHeight();
-  }
-
   @Override
   public void drawField(Box box, String texture) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -47,11 +39,14 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   }
 
   @Override
-  public void enlightField(Box box) {
+  public void enlightenField(Box box) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.drawImage(textureManager.getTexture("tileEnlighten"), box.left(), box.top(), box.width(), box.height());
   }
-  private double cameraSpeedX, cameraSpeedY;
+
+  private static final double CAMERA_SPEED_SCALE = 1000.0;
+  private double cameraUp, cameraDown;
+  private double cameraLeft, cameraRight;
 
   private final AnimationTimer timer = new AnimationTimer() {
     private static final long NANOS_IN_SEC = 1_000_000_000;
@@ -62,27 +57,39 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
       if (last != -1) {
         double delta = (double) (now - last) / NANOS_IN_SEC;
         presenter.moveCamera(
-                cameraSpeedX * delta,
-                cameraSpeedY * delta
+                (cameraRight - cameraLeft) * delta * CAMERA_SPEED_SCALE,
+                (cameraDown - cameraUp) * delta * CAMERA_SPEED_SCALE
         );
       }
       last = now;
     }
   };
 
-  @Override
-  public void onMouseExit() {
-    cameraSpeedX = 0.0;
-    cameraSpeedY = 0.0;
-  }
+  private final EventHandler<KeyEvent> onKeyPressed = event -> {
+    switch (event.getCode()) {
+      case UP, W -> cameraUp = 1.0;
+      case DOWN, S -> cameraDown = 1.0;
+      case LEFT, A -> cameraLeft = 1.0;
+      case RIGHT, D -> cameraRight = 1.0;
+    }
+
+    event.consume();
+  };
+
+  private final EventHandler<KeyEvent> onKeyReleased = event -> {
+    switch (event.getCode()) {
+      case UP, W -> cameraUp = 0.0;
+      case DOWN, S -> cameraDown = 0.0;
+      case LEFT, A -> cameraLeft = 0.0;
+      case RIGHT, D -> cameraRight = 0.0;
+    }
+
+    event.consume();
+  };
 
   @Override
-  public void onMouseMove(double x, double y) {
-    cameraSpeedX = x - getWidth()/2;
-    cameraSpeedY = y - getHeight()/2;
-
-    if (abs(cameraSpeedX) < getWidth()*3/8) cameraSpeedX = 0.0;
-    if (abs(cameraSpeedY) < getHeight()*3/8) cameraSpeedY = 0.0;
+  public void onMouseScroll(double delta) {
+    presenter.zoomCamera(1.0+delta / 1000.0);
   }
 
   @Override
@@ -90,15 +97,23 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
     presenter.selectField(x, y);
   }
 
+
+
   public void start() {
     timer.start();
     presenter.start();
     mouseController.addObserver(this);
+
+    canvas.getScene().addEventHandler(KeyEvent.KEY_PRESSED, onKeyPressed);
+    canvas.getScene().addEventHandler(KeyEvent.KEY_RELEASED, onKeyReleased);
   }
 
   public void close() {
     timer.stop();
     presenter.close();
     mouseController.removeObserver(this);
+
+    canvas.getScene().removeEventHandler(KeyEvent.KEY_PRESSED, onKeyPressed);
+    canvas.getScene().removeEventHandler(KeyEvent.KEY_RELEASED, onKeyReleased);
   }
 }
