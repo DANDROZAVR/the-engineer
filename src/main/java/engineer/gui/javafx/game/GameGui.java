@@ -6,18 +6,15 @@ import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.MobFactory;
+import engineer.gui.javafx.GuiLoader;
 import engineer.gui.javafx.TextureManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
 
 public class GameGui {
   public interface MenuController {
@@ -27,17 +24,8 @@ public class GameGui {
   public static final String TITLE = "The Engineer";
 
   public static void start(Stage window, MenuController menuController) {
-    try {
-      FXMLLoader loader = new FXMLLoader();
-      URL path = GameGui.class.getResource("/fxml/game.fxml");
-      loader.setLocation(path);
-      loader.load();
-
-      GameGui gameGui = loader.getController();
-      gameGui.setup(window, menuController);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    GameGui gameGui = GuiLoader.loadGui("/fxml/game.fxml");
+    gameGui.setup(window, menuController);
   }
 
 
@@ -79,17 +67,8 @@ public class GameGui {
 
     boardGui = new BoardGui(board, textureManager, gameState);
 
-    // TODO: FXML loader
-    try {
-      FXMLLoader loader = new FXMLLoader();
-      URL path = GameGui.class.getResource("/fxml/contextMenu.fxml");
-      loader.setLocation(path);
-      loader.load();
-      this.contextMenuGui = loader.getController();
-      contextMenuGui.setup(contextMenu, textureManager, gameState);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    this.contextMenuGui = GuiLoader.loadGui("/fxml/contextMenu.fxml");
+    contextMenuGui.setup(contextMenu, textureManager, gameState);
 
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
 

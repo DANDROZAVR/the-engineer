@@ -10,4 +10,5 @@ module the.engineer.main {
       javafx.fxml;
 
   exports engineer;
+  opens engineer.gui.javafx to javafx.fxml;
 }

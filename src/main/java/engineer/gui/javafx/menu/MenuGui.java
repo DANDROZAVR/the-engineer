@@ -1,29 +1,18 @@
 package engineer.gui.javafx.menu;
 
 import engineer.gui.javafx.game.GameGui;
+import engineer.gui.javafx.GuiLoader;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.net.URL;
 
 public class MenuGui {
   private static final String TITLE = "The Engineer";
 
   public static void start(Stage window) {
-    try {
-      FXMLLoader loader = new FXMLLoader();
-      URL path = MenuGui.class.getResource("/fxml/menu.fxml");
-      loader.setLocation(path);
-      loader.load();
-
-      MenuGui menuGui = loader.getController();
-      menuGui.setup(window);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    MenuGui menuGui = GuiLoader.loadGui("/fxml/menu.fxml");
+    menuGui.setup(window);
   }
 
   private Stage window;
