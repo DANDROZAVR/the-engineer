@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="engineer.gui.javafx.game.PauseGui"
+      alignment="CENTER"
+      spacing="5.0"
+      style="-fx-background-color: rgba(0, 0, 0, 0.7)"
+      fx:id="root">
+
+    <Button prefHeight="50.0" prefWidth="200.0" text="Resume" onAction="#resumeGame"
+            style="-fx-font-size: 1.5em;"/>
+    <Button prefHeight="50.0" prefWidth="200.0" text="Back to Menu" onAction="#endGame"
+            style="-fx-font-size: 1.5em;" />
+</VBox>

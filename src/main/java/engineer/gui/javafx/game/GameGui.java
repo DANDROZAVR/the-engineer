@@ -40,15 +40,13 @@ public class GameGui {
   @FXML private HBox toolbar;
   @FXML private Canvas board;
   @FXML private StackPane minimap;
-  @SuppressWarnings("unused")
   @FXML private VBox contextMenu;
-  @FXML private VBox pauseMenu;
 
   private final TextureManager textureManager = new TextureManager();
   private BoardGui boardGui;
-  @SuppressWarnings("FieldCanBeLocal")
-  private ContextMenuGui contextMenuGui;
   private MinimapGui minimapGui;
+  private ContextMenuGui contextMenuGui;
+  private PauseGui pauseGui;
 
   private void setup(Stage window, MenuController menuController) {
     this.window = window;
@@ -66,13 +64,13 @@ public class GameGui {
     );
 
     boardGui = new BoardGui(board, textureManager, gameState);
-
-    this.contextMenuGui = GuiLoader.loadGui("/fxml/contextMenu.fxml");
-    contextMenuGui.setup(contextMenu, textureManager, gameState);
-
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
 
-    root.getChildren().remove(pauseMenu);
+    contextMenuGui = GuiLoader.loadGui("/fxml/contextMenu.fxml");
+    contextMenuGui.setup(contextMenu, textureManager, gameState);
+
+    pauseGui = GuiLoader.loadGui("/fxml/pause.fxml");
+    pauseGui.setup(root, this::endGame);
 
     startGame();
   }
@@ -89,13 +87,8 @@ public class GameGui {
     window.show();
   }
 
-  // TODO: implement PauseGui instead
   public void pauseGame() {
-    root.getChildren().add(pauseMenu);
-  }
-
-  public void resumeGame() {
-    root.getChildren().remove(pauseMenu);
+    pauseGui.pauseGame();
   }
 
   public void endGame() {

@@ -24,15 +24,4 @@
          </VBox>
       </HBox>
    </VBox>
-
-   <VBox fx:id="pauseMenu"
-         prefWidth="1280.0"
-         prefHeight="720.0"
-         alignment="CENTER"
-         spacing="5.0"
-         style="-fx-background-color: gray;" >
-
-      <Button text="Resume" onAction="#resumeGame" />
-      <Button text="Back to Menu" onAction="#endGame" />
-   </VBox>
 </StackPane>
