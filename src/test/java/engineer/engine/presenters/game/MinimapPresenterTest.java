@@ -4,6 +4,7 @@ import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
+import engineer.utils.Coords;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -17,17 +18,18 @@ class MinimapPresenterTest {
     doReturn(3).when(gameState).getRows();
     doAnswer(invocation -> {
             Field field = mock(Field.class);
-            doReturn("Field["+invocation.getArgument(0)+","+invocation.getArgument(1)+"]")
+            Coords coords = invocation.getArgument(0);
+            doReturn("Field["+coords.row()+","+coords.column()+"]")
                     .when(field).getBackground();
             return field;
-    }).when(gameState).getField(anyInt(), anyInt());
+    }).when(gameState).getField(any());
 
     MinimapPresenter.View view = mock(MinimapPresenter.View.class);
 
     new MinimapPresenter(gameState, view).start();
     for (int column=0;column<5;column++) {
       for (int row=0;row<3;row++) {
-        verify(view).drawOnBackground(row, column, "Field["+row+","+column+"]");
+        verify(view).drawOnBackground(new Coords(row, column), "Field["+row+","+column+"]");
       }
     }
   }

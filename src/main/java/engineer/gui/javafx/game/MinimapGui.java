@@ -4,6 +4,7 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.presenters.game.MinimapPresenter;
 import engineer.gui.javafx.TextureManager;
 import engineer.utils.Box;
+import engineer.utils.Coords;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
@@ -35,12 +36,12 @@ public class MinimapGui implements MinimapPresenter.View {
   }
 
   @Override
-  public void drawOnBackground(int row, int column, String texture) {
+  public void drawOnBackground(Coords coords, String texture) {
     GraphicsContext gc = background.getGraphicsContext2D();
     gc.drawImage(
             textureManager.getTexture(texture),
-            column*fieldSize + offsetX,
-            row*fieldSize + offsetY,
+            coords.column()*fieldSize + offsetX,
+            coords.row()*fieldSize + offsetY,
             fieldSize,
             fieldSize
     );

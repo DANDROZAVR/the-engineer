@@ -8,7 +8,7 @@ import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Box;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 
 import java.util.*;
 
@@ -17,14 +17,14 @@ import static java.lang.Math.min;
 public class GameState {
 
   public interface SelectionObserver {
-    void onFieldSelection(Pair field);
+    void onFieldSelection(Coords field);
   }
   private final BoardFactory boardFactory;
   private final Camera camera;
 
   private final Board board;
-  private Pair selectedField;
-  private final List<Pair> accessibleFields = new LinkedList<>();
+  private Coords selectedField;
+  private final List<Coords> accessibleFields = new LinkedList<>();
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
   @SuppressWarnings({"FieldCanBeLocal", "unused"})
@@ -44,7 +44,7 @@ public class GameState {
                 null,
                 true
         );
-        board.setField(row, column, field);
+        board.setField(new Coords(row, column), field);
       }
 
     // TODO: temporary solution
@@ -53,9 +53,9 @@ public class GameState {
     players.add(new Player());
     turnSystem = new TurnSystem(players);
 
-    setMob(3, 5, "wood", 15);
-    setMob(8, 8, "wood", 5);
-    setMob(2, 7, "exit", 1);
+    setMob(new Coords(3, 5), "wood", 15);
+    setMob(new Coords(8, 8), "wood", 5);
+    setMob(new Coords(2, 7), "exit", 1);
   }
 
 
@@ -88,49 +88,49 @@ public class GameState {
     return board.getColumns();
   }
 
-  public Field getField(int row, int column) {
-    return board.getField(row, column);
+  public Field getField(Coords coords) {
+    return board.getField(coords);
   }
 
-  public Pair getSelectedField() {
+  public Coords getSelectedField() {
     return selectedField;
   }
 
-  public List<Pair> getAccessibleFields() {
+  public List<Coords> getAccessibleFields() {
     return accessibleFields;
   }
 
-  private List<Pair> getNeighbours(Pair field){
-    List<Pair> neighbours = new ArrayList<>();
-    neighbours.add(new Pair(field.first()-1, field.second()));
-    neighbours.add(new Pair(field.first()+1, field.second()));
-    neighbours.add(new Pair(field.first(), field.second()+1));
-    neighbours.add(new Pair(field.first(), field.second()-1));
+  private List<Coords> getNeighbours(Coords field) {
+    List<Coords> neighbours = new ArrayList<>();
+    neighbours.add(new Coords(field.row()-1, field.column()));
+    neighbours.add(new Coords(field.row()+1, field.column()));
+    neighbours.add(new Coords(field.row(), field.column()+1));
+    neighbours.add(new Coords(field.row(), field.column()-1));
     return neighbours;
   }
 
-  public void selectField(int x, int y) {
-    if(accessibleFields.contains(new Pair(x, y))){
-      moveMob(selectedField.first(), selectedField.second(), x, y, 1);
+  public void selectField(Coords coords) {
+    if(accessibleFields.contains(coords)){
+      moveMob(selectedField, coords, 1);
     }
     accessibleFields.clear();
 
-    if(getField(x, y).getMob() != null){
-      setAccessibleFieldsFrom(x, y, getField(x, y).getMob().getRange());
+    if(getField(coords).getMob() != null){
+      setAccessibleFieldsFrom(coords, getField(coords).getMob().getRange());
     }
 
-    selectedField = new Pair(x, y);
+    selectedField = coords;
     selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
   }
 
-  private void setAccessibleFieldsFrom(int x, int y, int range) {
+  private void setAccessibleFieldsFrom(Coords coords, int range) {
     accessibleFields.clear();
-    List<Pair> tempList = new LinkedList<>();
+    List<Coords> tempList = new LinkedList<>();
 
-    accessibleFields.add(new Pair(x, y));
+    accessibleFields.add(coords);
     for (int i = 0; i < range; i++) {
-      for (Pair j : accessibleFields) {
-        for (Pair k : getNeighbours(j)) {
+      for (Coords j : accessibleFields) {
+        for (Coords k : getNeighbours(j)) {
           if (!accessibleFields.contains(k)) {
             tempList.add(k);
           }
@@ -147,8 +147,8 @@ public class GameState {
   }
 
   @SuppressWarnings("unused")
-  public void build(int row, int column, String building) {
-    Field field = getField(row, column);
+  public void build(Coords coords, String building) {
+    Field field = getField(coords);
     Field newField = boardFactory.produceField(
             field.getBackground(),
             boardFactory.produceBuilding(building),
@@ -156,11 +156,11 @@ public class GameState {
             field.isFree()
     );
 
-    board.setField(row, column, newField);
+    board.setField(coords, newField);
   }
 
-  public void setMob(int row, int column, String type, int number) {
-    Field field = getField(row, column);
+  public void setMob(Coords coords, String type, int number) {
+    Field field = getField(coords);
 
     Mob mob = null;
     if (type != null) {
@@ -174,15 +174,15 @@ public class GameState {
             field.isFree()
     );
 
-    board.setField(row, column, newField);
+    board.setField(coords, newField);
   }
 
-  public void moveMob(int xFrom, int yFrom, int xTo, int yTo, int number) {
-    if(xFrom == xTo && yFrom == yTo){
+  public void moveMob(Coords from, Coords to, int number) {
+    if(from.equals(to)){
       return;
     }
-    Field fieldFrom = getField(xFrom, yFrom);
-    Field fieldTo = getField(xTo, yTo);
+    Field fieldFrom = getField(from);
+    Field fieldTo = getField(to);
     if(fieldTo.getMob() != null && !Objects.equals(fieldTo.getMob().getType(), fieldFrom.getMob().getType())){
       return;
     }
@@ -193,8 +193,8 @@ public class GameState {
       fieldToNumber = fieldTo.getMob().getNumber();
     }
 
-    setMob(xTo, yTo, fieldFrom.getMob().getType(), fieldToNumber + number);
-    setMob(xFrom, yFrom, null, 0);
+    setMob(to, fieldFrom.getMob().getType(), fieldToNumber + number);
+    setMob(from, null, 0);
   }
 
 
@@ -211,16 +211,16 @@ public class GameState {
     camera.removeObserver(observer);
   }
 
-  public Box getFieldBox(int row, int column) {
-    return camera.getFieldBox(row, column);
+  public Box getFieldBox(Coords coords) {
+    return camera.getFieldBox(coords);
   }
 
-  public Pair getFieldByPoint(double x, double y) {
+  public Coords getFieldByPoint(double x, double y) {
     return camera.getFieldByPoint(x, y);
   }
 
-  public boolean isFieldVisible(int row, int column) {
-    return camera.isFieldVisible(row, column);
+  public boolean isFieldVisible(Coords coords) {
+    return camera.isFieldVisible(coords);
   }
 
   public void moveCamera(double dx, double dy) {

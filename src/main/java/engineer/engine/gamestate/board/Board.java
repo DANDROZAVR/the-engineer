@@ -1,10 +1,11 @@
 package engineer.engine.gamestate.board;
 
 import engineer.engine.gamestate.field.Field;
+import engineer.utils.Coords;
 
 public interface Board {
   interface Observer {
-    void onFieldChanged(int row, int column);
+    void onFieldChanged(Coords coords);
   }
 
   void addObserver(Observer observer);
@@ -13,6 +14,6 @@ public interface Board {
   int getRows();
   int getColumns();
 
-  Field getField(int row, int column);
-  void setField(int x, int y, Field field);
+  Field getField(Coords coords);
+  void setField(Coords coords, Field field);
 }

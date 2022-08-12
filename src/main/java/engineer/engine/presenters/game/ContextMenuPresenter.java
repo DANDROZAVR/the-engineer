@@ -3,7 +3,7 @@ package engineer.engine.presenters.game;
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 
 import java.util.List;
 
@@ -35,8 +35,8 @@ public class ContextMenuPresenter {
     gameState.removeSelectionObserver(selectionObserver);
   }
 
-  public void onFieldSelection(Pair fieldXY) {
-    Field field = gameState.getField(fieldXY.first(), fieldXY.second());
+  public void onFieldSelection(Coords coords) {
+    Field field = gameState.getField(coords);
     if (field.getBuilding() == null) {
       // we should somehow understand that field is covered with some resources
       onShowBuildingsList();
@@ -62,9 +62,9 @@ public class ContextMenuPresenter {
     view.showBuildingsListWindow(tempListOfAllBuildings);
   }
   public void onBuild() {
-    Pair selectedField = gameState.getSelectedField();
+    Coords selectedField = gameState.getSelectedField();
     if (chosenBuilding != null && selectedField != null) {
-      gameState.build(selectedField.first(), selectedField.second(), chosenBuilding.getPicture());
+      gameState.build(selectedField, chosenBuilding.getPicture());
       view.showBuildingInfoWindow(chosenBuilding.getPicture(), chosenBuilding.getPicture());
     }
   }
