@@ -3,7 +3,7 @@ package engineer.engine.presenters.game;
 import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
-import engineer.utils.Coords;
+import engineer.utils.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,8 +27,8 @@ class ContextMenuPresenterTest {
     doReturn(buildingsList).when(gameState).getAllBuildingsList();
     doReturn(null).when(emptyField).getBuilding();
     doReturn(building).when(nonEmptyField).getBuilding();
-    doReturn(emptyField).when(gameState).getField(new Coords(1, 0));
-    doReturn(nonEmptyField).when(gameState).getField(new Coords(0, 1));
+    doReturn(emptyField).when(gameState).getField(1, 0);
+    doReturn(nonEmptyField).when(gameState).getField(0, 1);
     doReturn("smth").when(building).getPicture();
   }
   @Test
@@ -42,11 +42,11 @@ class ContextMenuPresenterTest {
 
     GameState.SelectionObserver observer = observerCaptor.getValue();
 
-    observer.onFieldSelection(new Coords(0, 1));
+    observer.onFieldSelection(new Pair(0, 1));
     verify(callbackView, atLeastOnce()).showBuildingInfoWindow("smth", "smth");
     verify(callbackView, never()).showBuildingsListWindow(any());
 
-    observer.onFieldSelection(new Coords(1, 0));
+    observer.onFieldSelection(new Pair(1, 0));
     verify(callbackView, atLeastOnce()).showBuildingsListWindow(buildingsList);
     presenter.close();
     verify(gameState).removeSelectionObserver(observer);
@@ -91,20 +91,20 @@ class ContextMenuPresenterTest {
 
     contextMenuPresenter.onBuildingChoose(1);
     contextMenuPresenter.onBuild();
-    verify(gameState, never()).build(any(), any());
+    verify(gameState, never()).build(anyInt(), anyInt(), any());
 
     contextMenuPresenter.onBuildingChoose(0);
     contextMenuPresenter.onBuild();
-    verify(gameState, never()).build(any(), any());
+    verify(gameState, never()).build(anyInt(), anyInt(), any());
 
-    observer.onFieldSelection(new Coords(1, 0));
-    doReturn(new Coords(1, 0)).when(gameState).getSelectedField();
+    observer.onFieldSelection(new Pair(1, 0));
+    doReturn(new Pair(1, 0)).when(gameState).getSelectedField();
 
     contextMenuPresenter.onBuild();
-    verify(gameState, never()).build(any(), any());
+    verify(gameState, never()).build(anyInt(), anyInt(), any());
 
     contextMenuPresenter.onBuildingChoose(1);
     contextMenuPresenter.onBuild();
-    verify(gameState).build(new Coords(1, 0), building.getPicture());
+    verify(gameState).build(1, 0, building.getPicture());
   }
 }

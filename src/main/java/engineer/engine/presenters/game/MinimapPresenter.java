@@ -3,11 +3,10 @@ package engineer.engine.presenters.game;
 import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
 import engineer.utils.Box;
-import engineer.utils.Coords;
 
 public class MinimapPresenter {
   public interface View {
-    void drawOnBackground(Coords coords, String texture);
+    void drawOnBackground(int row, int column, String texture);
     void drawCameraBox(Box box);
   }
 
@@ -31,10 +30,10 @@ public class MinimapPresenter {
   public void start() {
     for (int row = 0; row<gameState.getRows(); row++) {
       for (int column = 0; column<gameState.getColumns(); column++) {
-        Coords coords = new Coords(row, column);
         view.drawOnBackground(
-                coords,
-                gameState.getField(coords).getBackground()
+                row,
+                column,
+                gameState.getField(row, column).getBackground()
         );
       }
     }

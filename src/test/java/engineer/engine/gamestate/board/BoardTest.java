@@ -4,7 +4,6 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
-import engineer.utils.Coords;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -34,12 +33,29 @@ public class BoardTest {
     assertEquals(3, board.getRows());
     assertEquals(5, board.getColumns());
 
-    for (int row = 0; row < 3; row++) {
-      for (int column = 0; column < 5; column++) {
-        assertNull(board.getField(new Coords(row, column)));
-      }
-    }
+    for (int row = 0; row < 3; row++)
+      for (int column = 0; column < 5; column++) assertNull(board.getField(row, column));
   }
+
+  /*@Test
+  public void testGetField() {
+    FieldFactory fieldFactory = new FieldFactory();
+    BuildingFactory buildingFactory = new BuildingFactory();
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
+    Board board = boardFactory.produceBoard(4, 5);
+
+    for (int row = 0; row < 4; row++)
+      for (int column = 0; column < 5; column++) {
+        int finalRow = row;
+        int finalColumn = column;
+        assertDoesNotThrow(() -> board.getField(finalRow, finalColumn));
+      }
+
+    assertThrows(IndexOutOfBoardException.class, () -> board.getField(-1, 3));
+    assertThrows(IndexOutOfBoardException.class, () -> board.getField(4, 3));
+    assertThrows(IndexOutOfBoardException.class, () -> board.getField(2, -2));
+    assertThrows(IndexOutOfBoardException.class, () -> board.getField(1, 6));
+  }*/
 
   @Test
   public void testSetFields() {
@@ -47,9 +63,9 @@ public class BoardTest {
     Board board = boardFactory.produceBoard(3, 5);
     Field field = fieldFactory.produce("background", null, null,false);
 
-    board.setField(new Coords(0, 0), field);
+    board.setField(0, 0, field);
 
-    assertEquals(field, board.getField(new Coords(0, 0)));
+    assertEquals(field, board.getField(0, 0));
     assertEquals(field, standardField);
   }
 
@@ -60,11 +76,11 @@ public class BoardTest {
     Board.Observer observer = mock(Board.Observer.class);
 
     board.addObserver(observer);
-    board.setField(new Coords(1, 2), standardField);
+    board.setField(1, 2, standardField);
     board.removeObserver(observer);
-    board.setField(new Coords(1, 2), standardField);
+    board.setField(1, 2, standardField);
 
-    verify(observer).onFieldChanged(new Coords(1, 2));
+    verify(observer).onFieldChanged(1, 2);
     verifyNoMoreInteractions(observer);
   }
 }

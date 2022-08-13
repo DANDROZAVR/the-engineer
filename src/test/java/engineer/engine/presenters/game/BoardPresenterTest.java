@@ -7,7 +7,7 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
 import engineer.utils.Box;
-import engineer.utils.Coords;
+import engineer.utils.Pair;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -48,13 +48,13 @@ class BoardPresenterTest {
   @Test
   public void testSelection() {
     GameState gameState = mock(GameState.class);
-    doReturn(new Coords(3, 5)).when(gameState).getFieldByPoint(4.0, 15.0);
+    doReturn(new Pair(3, 5)).when(gameState).getFieldByPoint(4.0, 15.0);
     BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
 
     presenter.selectField(4.0, 15.0);
     presenter.unselectField();
 
-    verify(gameState).selectField(new Coords(3, 5));
+    verify(gameState).selectField(3, 5);
     verify(gameState).unselectField();
   }
 
@@ -76,15 +76,15 @@ class BoardPresenterTest {
     when(gameState.getRows()).thenReturn(5);
     when(gameState.getColumns()).thenReturn(8);
 
-    when(gameState.isFieldVisible(any())).thenReturn(false);
+    when(gameState.isFieldVisible(anyInt(), anyInt())).thenReturn(false);
 
-    when(gameState.isFieldVisible(new Coords(3, 4))).thenReturn(true);
-    when(gameState.getField(new Coords(3, 4))).thenReturn(visibleField);
-    when(gameState.getFieldBox(new Coords(3, 4))).thenReturn(visibleBox);
+    when(gameState.isFieldVisible(3, 4)).thenReturn(true);
+    when(gameState.getField(3, 4)).thenReturn(visibleField);
+    when(gameState.getFieldBox(3, 4)).thenReturn(visibleBox);
     when(visibleField.getBackground()).thenReturn("visibleFieldBackground");
 
-    when(gameState.getField(new Coords(5, 1))).thenReturn(notVisibleField);
-    when(gameState.getFieldBox(new Coords(5, 1))).thenReturn(notVisibleBox);
+    when(gameState.getField(5, 1)).thenReturn(notVisibleField);
+    when(gameState.getFieldBox(5, 1)).thenReturn(notVisibleBox);
 
     // Nothing is selected, no mob and no building
 
@@ -97,10 +97,10 @@ class BoardPresenterTest {
 
     // Visible field is selected, visible mob, not-visible accessible field and not-visible building
 
-    when(gameState.getSelectedField()).thenReturn(new Coords(3, 4));
+    when(gameState.getSelectedField()).thenReturn(new Pair(3, 4));
     when(visibleField.getMob()).thenReturn(mob);
     when(notVisibleField.getBuilding()).thenReturn(building);
-    when(gameState.getAccessibleFields()).thenReturn(List.of(new Coords(5, 1)));
+    when(gameState.getAccessibleFields()).thenReturn(List.of(new Pair(5, 1)));
 
     presenter.redrawVisibleFields();
 
@@ -115,10 +115,10 @@ class BoardPresenterTest {
 
     // Not-visible field is selected, not-visible mob, visible accessible field and visible building
 
-    when(gameState.getSelectedField()).thenReturn(new Coords(5, 1));
+    when(gameState.getSelectedField()).thenReturn(new Pair(5, 1));
     when(visibleField.getBuilding()).thenReturn(building);
     when(notVisibleField.getMob()).thenReturn(mob);
-    when(gameState.getAccessibleFields()).thenReturn(List.of(new Coords(3, 4)));
+    when(gameState.getAccessibleFields()).thenReturn(List.of(new Pair(3, 4)));
 
     presenter.redrawVisibleFields();
 

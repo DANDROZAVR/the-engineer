@@ -1,7 +1,7 @@
 package engineer.engine.gamestate;
 
 import engineer.utils.Box;
-import engineer.utils.Coords;
+import engineer.utils.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -58,23 +58,23 @@ public class Camera {
     onCameraUpdate();
   }
 
-  public Box getFieldBox(Coords coords) {
+  public Box getFieldBox(int row, int column) {
     return new Box(
-            coords.column()*fieldSize - offsetX,
-            coords.row()*fieldSize - offsetY,
+            column*fieldSize - offsetX,
+            row*fieldSize - offsetY,
             fieldSize,
             fieldSize
     );
   }
 
-  public Coords getFieldByPoint(double x, double y) {
+  public Pair getFieldByPoint(double x, double y) {
     int column = (int) ((x + offsetX) / fieldSize);
     int row = (int) ((y + offsetY) / fieldSize);
-    return new Coords(row, column);
+    return new Pair(row, column);
   }
 
-  public boolean isFieldVisible(Coords coords) {
-    Box box = getFieldBox(coords);
+  public boolean isFieldVisible(int row, int column) {
+    Box box = getFieldBox(row, column);
     return (box.right() > 0 && box.left() < width)
             && (box.bottom() > 0 && box.top() < height);
   }
