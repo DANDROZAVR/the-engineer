@@ -15,6 +15,9 @@ class FieldTest {
     BuildingFactory buildingFactory = new BuildingFactory();
     MobFactory mobFactory = new MobFactory();
     Field field = fieldFactory.produce(null, null, null, false);
+
+    mobFactory.addMobType("mob name", "texture", 1);
+
     assertNull(field.getBackground());
     assertNull(field.getBuilding());
     assertNull(field.getMob());

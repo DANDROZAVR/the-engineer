@@ -55,11 +55,11 @@ public class GameGui {
 
     // TODO: temporary solution
     MobFactory mobFactory = new MobFactory();
-    mobFactory.addMobType("wood", "wood", 4);
+    mobFactory.addMobType("wood", "wood", 5);
     mobFactory.addMobType("exit", "stop", 3);
-
     GameState gameState = new GameState(
-            new BoardFactory(new FieldFactory(), new BuildingFactory(), mobFactory),
+            new BoardFactory(new FieldFactory(), new BuildingFactory()),
+            mobFactory,
             new Camera(40, 50, board.getWidth(), board.getHeight())
     );
 

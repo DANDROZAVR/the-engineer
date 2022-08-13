@@ -9,7 +9,8 @@ public class Player {
   private final List<Mob> mobs = new LinkedList<>();
 
   public void onTurnStart() {
-    // TODO: Reset mobs
+    for (Mob mob : mobs)
+      mob.reset();
   }
 
   public void addMob(Mob mob) {
@@ -18,5 +19,9 @@ public class Player {
 
   public void removeMob(Mob mob) {
     mobs.remove(mob);
+  }
+
+  public boolean isMobOwner(Mob mob) {
+    return mobs.contains(mob);
   }
 }

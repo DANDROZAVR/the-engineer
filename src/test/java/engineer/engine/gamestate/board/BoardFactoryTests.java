@@ -32,7 +32,7 @@ public class BoardFactoryTests {
 
   @Test
   public void testFieldsProduction() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory, mobFactory);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
     Field field = boardFactory.produceField("background", null, null,false);
 
     assertEquals(standardField, field);
@@ -41,19 +41,10 @@ public class BoardFactoryTests {
 
   @Test
   public void testBuildingProduction() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory, mobFactory);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
     Building building = boardFactory.produceBuilding("building");
 
     assertEquals(standardBuilding, building);
     verify(buildingFactory, atLeastOnce()).produce("building");
-  }
-
-  @Test
-  public void testMobProduction() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory, mobFactory);
-    Mob mob = boardFactory.produceMob("mob", 1);
-
-    assertEquals(standardMob, mob);
-    verify(mobFactory, atLeastOnce()).produce("mob", 1);
   }
 }

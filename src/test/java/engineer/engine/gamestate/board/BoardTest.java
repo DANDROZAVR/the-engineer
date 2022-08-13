@@ -28,7 +28,7 @@ public class BoardTest {
 
   @Test
   public void testConstructor() {
-    BoardFactory boardFactory = new BoardFactory(null, null, null);
+    BoardFactory boardFactory = new BoardFactory(null, null);
     Board board = boardFactory.produceBoard(3, 5);
     assertEquals(3, board.getRows());
     assertEquals(5, board.getColumns());
@@ -59,7 +59,7 @@ public class BoardTest {
 
   @Test
   public void testSetFields() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null, null);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
     Board board = boardFactory.produceBoard(3, 5);
     Field field = fieldFactory.produce("background", null, null,false);
 
@@ -71,7 +71,7 @@ public class BoardTest {
 
   @Test
   public void testObservers() {
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null, null);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
     Board board = boardFactory.produceBoard(3, 5);
     Board.Observer observer = mock(Board.Observer.class);
 

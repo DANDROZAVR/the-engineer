@@ -46,9 +46,7 @@ public class BoardPresenter {
     }
 
     Pair selectedField = gameState.getSelectedField();
-    if (gameState.getSelectedField() != null &&
-            gameState.isFieldVisible(selectedField.first(), selectedField.second())
-    ) {
+    if (gameState.getSelectedField() != null && gameState.isFieldVisible(selectedField.first(), selectedField.second())) {
       Box box = gameState.getFieldBox(
               selectedField.first(),
               selectedField.second()

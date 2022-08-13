@@ -5,14 +5,14 @@ import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.mob.MobFactory;
+import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Box;
 import engineer.utils.Pair;
 
 import java.util.*;
-
-import static java.lang.Math.min;
 
 public class GameState {
 
@@ -24,34 +24,39 @@ public class GameState {
 
   private final Board board;
   private Pair selectedField;
-  private final List<Pair> accessibleFields = new LinkedList<>();
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
-  @SuppressWarnings({"FieldCanBeLocal", "unused"})
+  private final MobsController mobsController;
+
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
+
   private final TurnSystem turnSystem;
 
-  public GameState(BoardFactory boardFactory, Camera camera) {
+  public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera) {
     this.boardFactory = boardFactory;
     this.camera = camera;
 
     board = boardFactory.produceBoard(40, 50);
+    mobsController = new MobsController(this::setMob, mobFactory);
 
-    for (int row = 0; row < 40; row++)
+    for (int row = 0; row < 40; row++) {
       for (int column = 0; column < 50; column++) {
         Field field = boardFactory.produceField(
-                "tile",
-                null,
-                null,
-                true
+            "tile",
+            null,
+            null,
+            true
         );
         board.setField(row, column, field);
       }
+    }
 
     // TODO: temporary solution
     List<Player> players = new LinkedList<>();
     players.add(new Player());
     players.add(new Player());
-    turnSystem = new TurnSystem(players);
+    turnSystem = new TurnSystem(players, mobsController);
+    turnSystem.nextTurn();
 
     setMob(3, 5, "wood", 15);
     setMob(8, 8, "wood", 5);
@@ -96,49 +101,20 @@ public class GameState {
     return selectedField;
   }
 
-  public List<Pair> getAccessibleFields() {
-    return accessibleFields;
-  }
-
-  private List<Pair> getNeighbours(Pair field){
-    List<Pair> neighbours = new ArrayList<>();
-    neighbours.add(new Pair(field.first()-1, field.second()));
-    neighbours.add(new Pair(field.first()+1, field.second()));
-    neighbours.add(new Pair(field.first(), field.second()+1));
-    neighbours.add(new Pair(field.first(), field.second()-1));
-    return neighbours;
-  }
-
-  public void selectField(int x, int y) {
-    if(accessibleFields.contains(new Pair(x, y))){
-      moveMob(selectedField.first(), selectedField.second(), x, y, 1);
+  public void selectField(int row, int column) {
+    if (row == 0 && column == 0) {
+      turnSystem.nextTurn(); // EXTREMELY TEMP
     }
-    accessibleFields.clear();
-
-    if(getField(x, y).getMob() != null){
-      setAccessibleFieldsFrom(x, y, getField(x, y).getMob().getRange());
-    }
-
-    selectedField = new Pair(x, y);
+    Field lastSelectedField = (selectedField == null ? null : getField(selectedField.first(), selectedField.second()));
+    Field actualSelectedField = getField(row, column);
+    if (actualSelectedField.getMob() == null || turnSystem.getCurrentPlayer().isMobOwner(actualSelectedField.getMob()))
+      mobsController.onFieldSelection(new Pair(row, column), selectedField, actualSelectedField, lastSelectedField);
+    selectedField = new Pair(row, column);
     selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
   }
 
-  private void setAccessibleFieldsFrom(int x, int y, int range) {
-    accessibleFields.clear();
-    List<Pair> tempList = new LinkedList<>();
-
-    accessibleFields.add(new Pair(x, y));
-    for (int i = 0; i < range; i++) {
-      for (Pair j : accessibleFields) {
-        for (Pair k : getNeighbours(j)) {
-          if (!accessibleFields.contains(k)) {
-            tempList.add(k);
-          }
-        }
-      }
-      accessibleFields.addAll(tempList);
-      tempList.clear();
-    }
+  public List<Pair> getAccessibleFields() {
+    return mobsController.getAccessibleFields();
   }
 
   @SuppressWarnings("unused")
@@ -159,48 +135,31 @@ public class GameState {
     board.setField(row, column, newField);
   }
 
-  public void setMob(int row, int column, String type, int number) {
-    Field field = getField(row, column);
-
+  private void setMob(int row, int column, String type, int mobsAmount) {
     Mob mob = null;
-    if (type != null) {
-      mob = boardFactory.produceMob(type, number);
+    if (type != null)
+      mob = mobsController.produceMob(type, mobsAmount);
+    setMob(row, column, mob);
+  }
+
+  public void setMob(int row, int column, Mob mob) {
+    Field oldField = getField(row, column);
+    if (mob != null) {
+      turnSystem.getCurrentPlayer().addMob(mob);
+    } else {
+        turnSystem.getCurrentPlayer().removeMob(oldField.getMob());
     }
-
     Field newField = boardFactory.produceField(
-            field.getBackground(),
-            field.getBuilding(),
-            mob,
-            field.isFree()
+        oldField.getBackground(),
+        oldField.getBuilding(),
+        mob,
+        oldField.isFree()
     );
-
     board.setField(row, column, newField);
   }
 
-  public void moveMob(int xFrom, int yFrom, int xTo, int yTo, int number) {
-    if(xFrom == xTo && yFrom == yTo){
-      return;
-    }
-    Field fieldFrom = getField(xFrom, yFrom);
-    Field fieldTo = getField(xTo, yTo);
-    if(fieldTo.getMob() != null && !Objects.equals(fieldTo.getMob().getType(), fieldFrom.getMob().getType())){
-      return;
-    }
-    number = min(number, fieldFrom.getMob().getNumber());
-
-    int fieldToNumber = 0;
-    if (fieldTo.getMob() != null) {
-      fieldToNumber = fieldTo.getMob().getNumber();
-    }
-
-    setMob(xTo, yTo, fieldFrom.getMob().getType(), fieldToNumber + number);
-    setMob(xFrom, yFrom, null, 0);
-  }
-
-
 
   // Camera functions
-
 
 
   public void addCameraObserver(Camera.Observer observer) {
