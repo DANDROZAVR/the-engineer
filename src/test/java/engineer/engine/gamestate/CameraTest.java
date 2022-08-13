@@ -1,7 +1,7 @@
 package engineer.engine.gamestate;
 
 import engineer.utils.Box;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,19 +46,19 @@ class CameraTest {
 
     camera.moveCamera(-1e9, -1e9);
 
-    box = camera.getFieldBox(0, 0);
+    box = camera.getFieldBox(new Coords(0, 0));
     assertEquals(0, box.left(), 0.001);
     assertEquals(0, box.top(), 0.001);
-    assertTrue(camera.isFieldVisible(0, 0));
+    assertTrue(camera.isFieldVisible(new Coords(0, 0)));
 
     double fieldSize = box.width();
 
     camera.moveCamera(1e9, 1e9);
-    box = camera.getFieldBox(0, 0);
+    box = camera.getFieldBox(new Coords(0, 0));
 
     assertEquals(-20*fieldSize + 300, box.left(), 0.001);
     assertEquals(-10*fieldSize + 400, box.top(), 0.001);
-    assertFalse(camera.isFieldVisible(0, 0));
+    assertFalse(camera.isFieldVisible(new Coords(0, 0)));
   }
 
   @Test
@@ -66,9 +66,9 @@ class CameraTest {
     Camera camera = new Camera(10, 10, 10, 10);
     camera.zoom(1e-9);
 
-    assertEquals(new Pair(0, 0), camera.getFieldByPoint(0.001, 0.001));
-    assertEquals(new Pair(5, 3), camera.getFieldByPoint(3.5, 5.001));
-    assertEquals(new Pair(9, 8), camera.getFieldByPoint(8.999, 9.1));
-    assertEquals(new Pair(4, 4), camera.getFieldByPoint(4.21, 4.95));
+    assertEquals(new Coords(0, 0), camera.getFieldByPoint(0.001, 0.001));
+    assertEquals(new Coords(5, 3), camera.getFieldByPoint(3.5, 5.001));
+    assertEquals(new Coords(9, 8), camera.getFieldByPoint(8.999, 9.1));
+    assertEquals(new Coords(4, 4), camera.getFieldByPoint(4.21, 4.95));
   }
 }

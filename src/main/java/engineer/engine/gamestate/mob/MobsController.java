@@ -1,16 +1,16 @@
 package engineer.engine.gamestate.mob;
 
 import engineer.engine.gamestate.field.Field;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 
 import java.util.*;
 
 
 public class MobsController {
   public interface GameStateCallback {
-    void setMob(int row, int column, Mob mob);
+    void setMob(Coords coords, Mob mob);
   }
-  private final List<Pair> accessibleFields = new LinkedList<>();
+  private final List<Coords> accessibleFields = new LinkedList<>();
   private final MobFactory mobFactory;
 
   private final GameStateCallback callback;
@@ -18,23 +18,23 @@ public class MobsController {
     this.callback = callback;
     this.mobFactory = mobFactory;
   }
-  private List<Pair> getNeighbours(Pair field){
-    List<Pair> neighbours = new ArrayList<>();
-    neighbours.add(new Pair(field.first()-1, field.second()));
-    neighbours.add(new Pair(field.first()+1, field.second()));
-    neighbours.add(new Pair(field.first(), field.second()+1));
-    neighbours.add(new Pair(field.first(), field.second()-1));
+  private List<Coords> getNeighbours(Coords field){
+    List<Coords> neighbours = new ArrayList<>();
+    neighbours.add(new Coords(field.row()-1, field.column()));
+    neighbours.add(new Coords(field.row()+1, field.column()));
+    neighbours.add(new Coords(field.row(), field.column()+1));
+    neighbours.add(new Coords(field.row(), field.column()-1));
     return neighbours;
   }
 
-  private void setAccessibleFieldsFrom(Pair field, int range) {
+  private void setAccessibleFieldsFrom(Coords field, int range) {
     accessibleFields.clear();
-    List<Pair> tempList = new LinkedList<>();
+    List<Coords> tempList = new LinkedList<>();
 
-    accessibleFields.add(new Pair(field.first(), field.second()));
+    accessibleFields.add(new Coords(field.row(), field.column()));
     for (int i = 0; i < range; i++) {
-      for (Pair j : accessibleFields) {
-        for (Pair k : getNeighbours(j)) {
+      for (Coords j : accessibleFields) {
+        for (Coords k : getNeighbours(j)) {
           if (!accessibleFields.contains(k)) {
             tempList.add(k);
           }
@@ -45,7 +45,7 @@ public class MobsController {
     }
   }
 
-  public void onFieldSelection(Pair selectedFieldXY, Pair lastSelectedFieldXY, Field selectedField, Field lastSelectedField) {
+  public void onFieldSelection(Coords selectedFieldXY, Coords lastSelectedFieldXY, Field selectedField, Field lastSelectedField) {
     if (accessibleFields.contains(selectedFieldXY)) {
       if (!selectedFieldXY.equals(lastSelectedFieldXY))
         moveMob(lastSelectedFieldXY, selectedFieldXY, lastSelectedField, selectedField, 1);
@@ -56,10 +56,10 @@ public class MobsController {
     }
   }
 
-  private void moveMob(Pair lastSelectedFieldXY, Pair selectedFieldXY, Field fieldFrom, Field fieldTo, int ignoredMobsFromAmounts) {
+  private void moveMob(Coords lastSelectedFieldXY, Coords selectedFieldXY, Field fieldFrom, Field fieldTo, int ignoredMobsFromAmounts) {
     if (fieldTo.getMob() != null && !Objects.equals(fieldTo.getMob().getType(), fieldFrom.getMob().getType())) return;
-    int distSteps = Math.abs(selectedFieldXY.first() - lastSelectedFieldXY.first()) +
-                    Math.abs(selectedFieldXY.second() - lastSelectedFieldXY.second());
+    int distSteps = Math.abs(selectedFieldXY.row() - lastSelectedFieldXY.row()) +
+                    Math.abs(selectedFieldXY.column() - lastSelectedFieldXY.column());
     if (distSteps > fieldFrom.getMob().getRemainingSteps()) return;
 
     Mob fromMob = fieldFrom.getMob();
@@ -71,18 +71,18 @@ public class MobsController {
       Mob mob = produceMob(fromMob.getType(), newMobsAmount);
       int deductionSteps = Math.max(mob.getRemainingSteps() - fromMob.getRemainingSteps(), mob.getRemainingSteps() - toMob.getRemainingSteps());
       mob.reduceRemainingSteps(deductionSteps);
-      callback.setMob(selectedFieldXY.first(), selectedFieldXY.second(), mob);
+      callback.setMob(selectedFieldXY, mob);
     } else {
-      callback.setMob(selectedFieldXY.first(), selectedFieldXY.second(), fromMob);
+      callback.setMob(selectedFieldXY, fromMob);
     }
-    callback.setMob(lastSelectedFieldXY.first(), lastSelectedFieldXY.second(), null);
+    callback.setMob(lastSelectedFieldXY, null);
   }
 
   public Mob produceMob(String type, int mobsAmount) {
     return mobFactory.produce(type, mobsAmount);
   }
 
-  public List<Pair> getAccessibleFields() {
+  public List<Coords> getAccessibleFields() {
     return accessibleFields;
   }
 

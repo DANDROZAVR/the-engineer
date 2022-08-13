@@ -5,7 +5,7 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 
 public class BoardPresenter {
   public interface View {
@@ -23,11 +23,13 @@ public class BoardPresenter {
   }
 
   public void redrawVisibleFields() {
-    for (int row = 0; row < gameState.getRows(); row++)
-      for (int column = 0; column < gameState.getColumns(); column++)
-        if (gameState.isFieldVisible(row, column)) {
-          Field field = gameState.getField(row, column);
-          Box box = gameState.getFieldBox(row, column);
+    for (int row = 0; row < gameState.getRows(); row++) {
+      for (int column = 0; column < gameState.getColumns(); column++) {
+        Coords coords = new Coords(row, column);
+
+        if (gameState.isFieldVisible(coords)) {
+          Field field = gameState.getField(coords);
+          Box box = gameState.getFieldBox(coords);
 
           view.drawField(box, field.getBackground());
           if (field.getMob() != null)
@@ -35,29 +37,28 @@ public class BoardPresenter {
           if (field.getBuilding() != null)
             view.drawField(box, field.getBuilding().getPicture());
         }
+      }
+    }
 
     if (gameState.getAccessibleFields() != null) {
-      for(Pair i : gameState.getAccessibleFields()){
-        Box selectionBox = gameState.getFieldBox(i.first(),i.second());
-        if (gameState.isFieldVisible(i.first(), i.second())) {
+      for(Coords i : gameState.getAccessibleFields()){
+        Box selectionBox = gameState.getFieldBox(i);
+        if (gameState.isFieldVisible(i)) {
           view.enlightenField(selectionBox);
         }
       }
     }
 
-    Pair selectedField = gameState.getSelectedField();
-    if (gameState.getSelectedField() != null && gameState.isFieldVisible(selectedField.first(), selectedField.second())) {
-      Box box = gameState.getFieldBox(
-              selectedField.first(),
-              selectedField.second()
-      );
+    Coords selectedField = gameState.getSelectedField();
+    if (gameState.getSelectedField() != null && gameState.isFieldVisible(selectedField)) {
+      Box box = gameState.getFieldBox(selectedField);
       view.drawSelection(box);
     }
   }
 
   public void selectField(double x, double y) {
-    Pair field = gameState.getFieldByPoint(x, y);
-    gameState.selectField(field.first(), field.second());
+    Coords field = gameState.getFieldByPoint(x, y);
+    gameState.selectField(field);
   }
 
   @SuppressWarnings("unused")
@@ -73,7 +74,7 @@ public class BoardPresenter {
     gameState.zoomCamera(delta);
   }
 
-  private final Board.Observer boardObserver = (row, column) -> redrawVisibleFields();
+  private final Board.Observer boardObserver = (coords) -> redrawVisibleFields();
   private final Camera.Observer cameraObserver = this::redrawVisibleFields;
 
   public void start() {

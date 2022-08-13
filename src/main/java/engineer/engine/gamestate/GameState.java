@@ -10,26 +10,25 @@ import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Box;
-import engineer.utils.Pair;
+import engineer.utils.Coords;
 
 import java.util.*;
 
 public class GameState {
 
   public interface SelectionObserver {
-    void onFieldSelection(Pair field);
+    void onFieldSelection(Coords field);
   }
   private final BoardFactory boardFactory;
   private final Camera camera;
 
   private final Board board;
-  private Pair selectedField;
+  private Coords selectedField;
   private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
   private final MobsController mobsController;
 
   @SuppressWarnings({"unused", "FieldCanBeLocal"})
-
   private final TurnSystem turnSystem;
 
   public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera) {
@@ -47,7 +46,7 @@ public class GameState {
             null,
             true
         );
-        board.setField(row, column, field);
+        board.setField(new Coords(row, column), field);
       }
     }
 
@@ -58,9 +57,9 @@ public class GameState {
     turnSystem = new TurnSystem(players, mobsController);
     turnSystem.nextTurn();
 
-    setMob(3, 5, "wood", 15);
-    setMob(8, 8, "wood", 5);
-    setMob(2, 7, "exit", 1);
+    setMob(new Coords(3, 5), "wood", 15);
+    setMob(new Coords(8, 8), "wood", 5);
+    setMob(new Coords(2, 7), "exit", 1);
   }
 
 
@@ -93,27 +92,27 @@ public class GameState {
     return board.getColumns();
   }
 
-  public Field getField(int row, int column) {
-    return board.getField(row, column);
+  public Field getField(Coords coords) {
+    return board.getField(coords);
   }
 
-  public Pair getSelectedField() {
+  public Coords getSelectedField() {
     return selectedField;
   }
 
-  public void selectField(int row, int column) {
-    if (row == 0 && column == 0) {
+  public void selectField(Coords coords) {
+    if (coords.equals(new Coords(0, 0))) {
       turnSystem.nextTurn(); // EXTREMELY TEMP
     }
-    Field lastSelectedField = (selectedField == null ? null : getField(selectedField.first(), selectedField.second()));
-    Field actualSelectedField = getField(row, column);
+    Field lastSelectedField = (selectedField == null ? null : getField(selectedField));
+    Field actualSelectedField = getField(coords);
     if (actualSelectedField.getMob() == null || turnSystem.getCurrentPlayer().isMobOwner(actualSelectedField.getMob()))
-      mobsController.onFieldSelection(new Pair(row, column), selectedField, actualSelectedField, lastSelectedField);
-    selectedField = new Pair(row, column);
+      mobsController.onFieldSelection(coords, selectedField, actualSelectedField, lastSelectedField);
+    selectedField = coords;
     selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
   }
 
-  public List<Pair> getAccessibleFields() {
+  public List<Coords> getAccessibleFields() {
     return mobsController.getAccessibleFields();
   }
 
@@ -123,8 +122,8 @@ public class GameState {
   }
 
   @SuppressWarnings("unused")
-  public void build(int row, int column, String building) {
-    Field field = getField(row, column);
+  public void build(Coords coords, String building) {
+    Field field = getField(coords);
     Field newField = boardFactory.produceField(
             field.getBackground(),
             boardFactory.produceBuilding(building),
@@ -132,18 +131,18 @@ public class GameState {
             field.isFree()
     );
 
-    board.setField(row, column, newField);
+    board.setField(coords, newField);
   }
 
-  private void setMob(int row, int column, String type, int mobsAmount) {
+  public void setMob(Coords coords, String type, int mobsAmount) {
     Mob mob = null;
     if (type != null)
       mob = mobsController.produceMob(type, mobsAmount);
-    setMob(row, column, mob);
+    setMob(coords, mob);
   }
 
-  public void setMob(int row, int column, Mob mob) {
-    Field oldField = getField(row, column);
+  public void setMob(Coords coords, Mob mob) {
+    Field oldField = getField(coords);
     if (mob != null) {
       turnSystem.getCurrentPlayer().addMob(mob);
     } else {
@@ -155,7 +154,8 @@ public class GameState {
         mob,
         oldField.isFree()
     );
-    board.setField(row, column, newField);
+
+    board.setField(coords, newField);
   }
 
 
@@ -170,16 +170,16 @@ public class GameState {
     camera.removeObserver(observer);
   }
 
-  public Box getFieldBox(int row, int column) {
-    return camera.getFieldBox(row, column);
+  public Box getFieldBox(Coords coords) {
+    return camera.getFieldBox(coords);
   }
 
-  public Pair getFieldByPoint(double x, double y) {
+  public Coords getFieldByPoint(double x, double y) {
     return camera.getFieldByPoint(x, y);
   }
 
-  public boolean isFieldVisible(int row, int column) {
-    return camera.isFieldVisible(row, column);
+  public boolean isFieldVisible(Coords coords) {
+    return camera.isFieldVisible(coords);
   }
 
   public void moveCamera(double dx, double dy) {
