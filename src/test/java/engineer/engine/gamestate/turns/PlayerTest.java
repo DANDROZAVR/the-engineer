@@ -28,7 +28,7 @@ class PlayerTest {
 
   @Test
   void basicMobs() {
-    Player player = new Player();
+    Player player = new Player("name");
     player.addMob(mob);
 
     assertTrue(player.isMobOwner(mob));
@@ -42,6 +42,12 @@ class PlayerTest {
 
     player.onTurnStart();
     verifyNoMoreInteractions(mob);
+  }
+
+  @Test
+  void testGetName() {
+    Player player = new Player("name");
+    assertEquals("name", player.getNickname());
   }
 
 }

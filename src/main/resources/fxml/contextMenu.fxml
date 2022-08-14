@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
@@ -19,9 +18,16 @@
       <Button mnemonicParsing="false" onAction="#onShowGeneralInfo" text="General Info" />
       <Button mnemonicParsing="false" onAction="#onShowBuildingsList" text=" All Buildings" />
    </HBox>
-   <StackPane fx:id="rootDynamicNode" prefHeight="150.0" prefWidth="200.0">
-      <AnchorPane fx:id="rootGeneralInfo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="200.0">
-         <Label layoutX="24.0" layoutY="73.0" text="Your add could be here" />
+   <VBox fx:id="rootDynamicNode" prefHeight="150.0" prefWidth="200.0">
+      <AnchorPane fx:id="rootGeneralInfo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                  minWidth="-Infinity" prefHeight="506.0" prefWidth="200.0">
+         <Label layoutX="24.0" layoutY="73.0" text="Your add could be here"/>
+         <Button layoutX="46.0" layoutY="424.0" mnemonicParsing="false" onAction="#onTurnEnd" text="End your turn"/>
+         <Label fx:id="nameCurrentPlayer" text="Person" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="12.0">
+            <font>
+               <Font name="System Bold Italic" size="13.0"/>
+            </font>
+         </Label>
       </AnchorPane>
       <AnchorPane fx:id="rootBuildingInfo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="200.0">
          <ImageView fx:id="imageBuildingInfo" fitHeight="88.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -87,5 +93,5 @@
             <Button mnemonicParsing="false" onAction="#onBuildingChoose" prefHeight="66.6" prefWidth="66.6" textOverrun="LEADING_ELLIPSIS" GridPane.columnIndex="2" />
          </GridPane>
       </AnchorPane>
-   </StackPane>
+   </VBox>
 </VBox>

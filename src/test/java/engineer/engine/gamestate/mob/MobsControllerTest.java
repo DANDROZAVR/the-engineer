@@ -38,7 +38,7 @@ class MobsControllerTest {
   }
 
   @Test
-  public void TestOnFieldSelection() {
+  public void testOnFieldSelection() {
     MobsController mobsController = new MobsController(callback, mobFactory);
     ArgumentCaptor<Integer> argumentCaptor = ArgumentCaptor.forClass(Integer.class);
     doReturn(mob).when(mobFactory).produce(eq("troop"), argumentCaptor.capture());
@@ -56,14 +56,14 @@ class MobsControllerTest {
   }
 
   @Test
-  public void TestProduceMob() {
+  public void testProduceMob() {
     MobsController mobsController = new MobsController(callback, mobFactory);
     mobsController.produceMob("str", 1);
     verify(mobFactory).produce(eq("str"), eq(1));
   }
 
   @Test
-  public void TestGetAccessibleFields() {
+  public void testGetAccessibleFields() {
     MobsController mobsController = new MobsController(callback, mobFactory);
 
     mobsController.onFieldSelection(new Coords(0, 0), null, fieldWithoutMob, null);
@@ -76,7 +76,7 @@ class MobsControllerTest {
   }
 
   @Test
-  public void TestOnTurnStart() {
+  public void testOnTurnStart() {
     MobsController mobsController = new MobsController(callback, mobFactory);
     mobsController.onFieldSelection(new Coords(0, 0), null, fieldWithMob, null);
     mobsController.onTurnStart();

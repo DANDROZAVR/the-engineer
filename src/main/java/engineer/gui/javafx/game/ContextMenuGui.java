@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @FXML private VBox root;
   @FXML private AnchorPane rootBuildingTable, rootNewBuilding, rootBuildingInfo, rootGeneralInfo;
   @FXML private GridPane gridBuildingsTable;
-  @FXML private Label nameNewBuilding, nameBuildingInfo;
+  @FXML private Label nameNewBuilding, nameBuildingInfo, nameCurrentPlayer;
   @FXML private ImageView imageNewBuilding, imageBuildingInfo;
-  @FXML private StackPane rootDynamicNode;
+  @FXML private VBox rootDynamicNode;
 
   private TextureManager textureManager;
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
@@ -41,7 +40,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     this.gameState = gameState;
 
     rootDynamicNode.getChildren().clear();
-    rootDynamicNode.getChildren().add(rootGeneralInfo);
+    onShowGeneralInfo();
     window.getChildren().add(root);
   }
 
@@ -73,10 +72,16 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     }
   }
 
+  public void onTurnEnd() {
+    gameState.getTurnSystem().nextTurn();
+    presenter.onShowGeneralInfo();
+  }
+
   @Override
-  public void showGeneralInfoWindow() {
+  public void showGeneralInfoWindow(String playerName) {
     rootDynamicNode.getChildren().clear();
     rootDynamicNode.getChildren().add(rootGeneralInfo);
+    nameCurrentPlayer.setText(playerName);
   }
 
   @Override

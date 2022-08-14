@@ -4,6 +4,8 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.turns.Player;
+import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,10 @@ class ContextMenuPresenterTest {
   @Mock private Board board;
   @Mock private ContextMenuPresenter.View callbackView;
 
+  @Mock private TurnSystem turnSystem;
+
+  @Mock private Player player;
+
   @BeforeEach
   public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
@@ -40,6 +46,8 @@ class ContextMenuPresenterTest {
     doReturn(emptyField).when(board).getField(new Coords(1, 0));
     doReturn(nonEmptyField).when(board).getField(new Coords(0, 1));
     doReturn("smth").when(building).getPicture();
+    doReturn(turnSystem).when(gameState).getTurnSystem();
+    doReturn(player).when(turnSystem).getCurrentPlayer();
   }
 
   @AfterEach
@@ -74,7 +82,7 @@ class ContextMenuPresenterTest {
     // change when some GameState functionality with buildings will be added
     ContextMenuPresenter contextMenuPresenter = new ContextMenuPresenter(gameState, callbackView);
     contextMenuPresenter.onShowGeneralInfo();
-    verify(callbackView).showGeneralInfoWindow();
+    verify(callbackView).showGeneralInfoWindow(any());
     verifyNoMoreInteractions(callbackView);
   }
 

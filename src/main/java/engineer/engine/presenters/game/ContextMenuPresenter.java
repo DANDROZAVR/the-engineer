@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContextMenuPresenter {
   public interface View {
-    void showGeneralInfoWindow();
+    void showGeneralInfoWindow(String playerName);
     void showBuildingsChosenWindow(String picture, String name);
     void showBuildingInfoWindow(String picture, String name);
     void showBuildingsListWindow(List<Building> buildings);
@@ -55,8 +55,8 @@ public class ContextMenuPresenter {
   }
 
   public void onShowGeneralInfo() {
-    // gamestate.getAllYourSecrets()
-    view.showGeneralInfoWindow();
+    String nickname = gameState.getTurnSystem().getCurrentPlayer().getNickname();
+    view.showGeneralInfoWindow(nickname);
   }
 
   public void onBuildingChoose(int index){

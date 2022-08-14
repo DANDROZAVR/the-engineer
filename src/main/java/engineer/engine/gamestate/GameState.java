@@ -27,17 +27,6 @@ public class GameState {
 
   // TODO: temporary
   @SuppressWarnings("FieldCanBeLocal")
-  private final Board.Observer turnSystemObserver = new Board.Observer() {
-    @Override
-    public void onSelectionChanged(Coords coords) {
-      if (new Coords(0, 0).equals(coords)) {
-        turnSystem.nextTurn();
-      }
-    }
-  };
-
-  // TODO: temporary
-  @SuppressWarnings("FieldCanBeLocal")
   private final Board.Observer mobsControllerObserver = new Board.Observer() {
     private Coords oldCoords;
 
@@ -75,12 +64,11 @@ public class GameState {
 
     // TODO: temporary solution
     List<Player> players = new LinkedList<>();
-    players.add(new Player());
-    players.add(new Player());
+    players.add(new Player("Winner"));
+    players.add(new Player("Loser"));
     turnSystem = new TurnSystem(players, mobsController);
     turnSystem.nextTurn();
     // TODO: remove observer
-    board.addObserver(turnSystemObserver);
     board.addObserver(mobsControllerObserver);
 
     setMob(new Coords(3, 5), "wood", 15);
@@ -134,6 +122,10 @@ public class GameState {
 
   public Camera getCamera() {
     return camera;
+  }
+
+  public TurnSystem getTurnSystem() {
+    return turnSystem;
   }
 
   public List<Building> getAllBuildingsList() {
