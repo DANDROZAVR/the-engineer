@@ -1,9 +1,11 @@
 package engineer.engine.gamestate.turns;
 
 import engineer.engine.gamestate.mob.MobsController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,20 +14,25 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class TurnSystemTest {
+  AutoCloseable closeable;
 
-  List<Player> players = new LinkedList<>();
-  @Mock Player player1;
-  @Mock Player player2;
-  @Mock MobsController mobsController;
+  private List<Player> players;
+  @Mock private Player player1;
+  @Mock private Player player2;
+  @Mock private MobsController mobsController;
 
   @BeforeEach
-  public void setup() {
-    player1 = mock(Player.class);
-    player2 = mock(Player.class);
-    mobsController = mock(MobsController.class);
+  public void setUp() {
+    closeable = MockitoAnnotations.openMocks(this);
 
+    players = new LinkedList<>();
     players.add(player1);
     players.add(player2);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeable.close();
   }
 
   @Test

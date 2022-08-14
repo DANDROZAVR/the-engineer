@@ -1,6 +1,7 @@
 package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.board.Board;
 import engineer.engine.presenters.game.MinimapPresenter;
 import engineer.gui.javafx.TextureManager;
 import engineer.utils.Box;
@@ -17,7 +18,7 @@ import static java.lang.Math.min;
 public class MinimapGui implements MinimapPresenter.View {
   private final StackPane window;
   private final TextureManager textureManager;
-  private final GameState gameState;
+  private final Board board;
   private final Rectangle cameraRect = new Rectangle();
 
   private Canvas background;
@@ -30,7 +31,7 @@ public class MinimapGui implements MinimapPresenter.View {
   public MinimapGui(StackPane window, TextureManager textureManager, GameState gameState) {
     this.window = window;
     this.textureManager = textureManager;
-    this.gameState = gameState;
+    board = gameState.getBoard();
 
     presenter = new MinimapPresenter(gameState, this);
   }
@@ -68,12 +69,12 @@ public class MinimapGui implements MinimapPresenter.View {
     window.getChildren().add(pane);
 
     fieldSize = min(
-            background.getWidth() / (double) gameState.getColumns(),
-            background.getHeight() / (double) gameState.getRows()
+            background.getWidth() / (double) board.getColumns(),
+            background.getHeight() / (double) board.getRows()
     );
 
-    offsetX = (background.getWidth() - gameState.getColumns() * fieldSize) / 2.0;
-    offsetY = (background.getHeight() - gameState.getRows() * fieldSize) / 2.0;
+    offsetX = (background.getWidth() - board.getColumns() * fieldSize) / 2.0;
+    offsetY = (background.getHeight() - board.getRows() * fieldSize) / 2.0;
 
     presenter.start();
   }

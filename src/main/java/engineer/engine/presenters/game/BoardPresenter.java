@@ -15,21 +15,25 @@ public class BoardPresenter {
   }
 
   private final GameState gameState;
+  private final Board board;
+  private final Camera camera;
   private final View view;
 
   public BoardPresenter(GameState gameState, View view) {
     this.gameState = gameState;
+    board = gameState.getBoard();
+    camera = gameState.getCamera();
     this.view = view;
   }
 
   public void redrawVisibleFields() {
-    for (int row = 0; row < gameState.getRows(); row++) {
-      for (int column = 0; column < gameState.getColumns(); column++) {
+    for (int row = 0; row < board.getRows(); row++) {
+      for (int column = 0; column < board.getColumns(); column++) {
         Coords coords = new Coords(row, column);
 
-        if (gameState.isFieldVisible(coords)) {
-          Field field = gameState.getField(coords);
-          Box box = gameState.getFieldBox(coords);
+        if (camera.isFieldVisible(coords)) {
+          Field field = board.getField(coords);
+          Box box = camera.getFieldBox(coords);
 
           view.drawField(box, field.getBackground());
           if (field.getMob() != null)
@@ -42,48 +46,54 @@ public class BoardPresenter {
 
     if (gameState.getAccessibleFields() != null) {
       for(Coords i : gameState.getAccessibleFields()){
-        Box selectionBox = gameState.getFieldBox(i);
-        if (gameState.isFieldVisible(i)) {
+        Box selectionBox = camera.getFieldBox(i);
+        if (camera.isFieldVisible(i)) {
           view.enlightenField(selectionBox);
         }
       }
     }
 
-    Coords selectedField = gameState.getSelectedField();
-    if (gameState.getSelectedField() != null && gameState.isFieldVisible(selectedField)) {
-      Box box = gameState.getFieldBox(selectedField);
+    Coords selectedField = board.getSelectedCoords();
+    if (board.getSelectedCoords() != null && camera.isFieldVisible(selectedField)) {
+      Box box = camera.getFieldBox(selectedField);
       view.drawSelection(box);
     }
   }
 
   public void selectField(double x, double y) {
-    Coords field = gameState.getFieldByPoint(x, y);
-    gameState.selectField(field);
+    Coords field = camera.getFieldByPoint(x, y);
+    board.selectField(field);
   }
 
   @SuppressWarnings("unused")
   public void unselectField() {
-    gameState.unselectField();
+    board.selectField(null);
   }
 
   public void moveCamera(double dx, double dy) {
-    gameState.moveCamera(dx, dy);
+    camera.moveCamera(dx, dy);
   }
 
   public void zoomCamera(double delta) {
-    gameState.zoomCamera(delta);
+    camera.zoom(delta);
   }
 
-  private final Board.Observer boardObserver = (coords) -> redrawVisibleFields();
+  private final Board.Observer boardObserver = new Board.Observer() {
+    @Override
+    public void onFieldChanged(Coords coords) {
+      redrawVisibleFields();
+    }
+  };
+
   private final Camera.Observer cameraObserver = this::redrawVisibleFields;
 
   public void start() {
-    gameState.addBoardObserver(boardObserver);
-    gameState.addCameraObserver(cameraObserver);
+    board.addObserver(boardObserver);
+    camera.addObserver(cameraObserver);
   }
 
   public void close() {
-    gameState.removeBoardObserver(boardObserver);
-    gameState.removeCameraObserver(cameraObserver);
+    board.removeObserver(boardObserver);
+    camera.removeObserver(cameraObserver);
   }
 }

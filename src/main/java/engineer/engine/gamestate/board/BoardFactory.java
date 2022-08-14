@@ -4,7 +4,7 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
-import engineer.engine.gamestate.mob.Mob;;
+import engineer.engine.gamestate.mob.Mob;
 import engineer.utils.Coords;
 
 import java.util.LinkedList;
@@ -17,6 +17,8 @@ public class BoardFactory {
   private static class BoardImpl implements Board {
     private final int rows, columns;
     private final Field[][] fields;
+
+    private Coords selectedField;
 
     private final List<Observer> observerList = new LinkedList<>();
 
@@ -40,6 +42,10 @@ public class BoardFactory {
       observerList.forEach(o -> o.onFieldChanged(coords));
     }
 
+    private void onSelectionChanged() {
+      observerList.forEach(o -> o.onSelectionChanged(selectedField));
+    }
+
     @Override
     public int getRows() {
       return rows;
@@ -59,6 +65,17 @@ public class BoardFactory {
     public void setField(Coords coords, Field field) {
       fields[coords.row()][coords.column()] = field;
       onFieldChanged(coords);
+    }
+
+    @Override
+    public void selectField(Coords coords) {
+      selectedField = coords;
+      onSelectionChanged();
+    }
+
+    @Override
+    public Coords getSelectedCoords() {
+      return selectedField;
     }
   }
 

@@ -1,12 +1,16 @@
 package engineer.engine.presenters.game;
 
 import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.utils.Coords;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,44 +18,57 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 class ContextMenuPresenterTest {
-  Field emptyField = mock(Field.class);
-  Field nonEmptyField = mock(Field.class);
-  Building building = mock(Building.class);
-  GameState gameState;
-  ContextMenuPresenter.View callbackView;
-  List<Building> buildingsList = Arrays.asList(null, building);
+  private AutoCloseable closeable;
+
+  private List<Building> buildingsList;
+  @Mock private Field emptyField;
+  @Mock private Field nonEmptyField;
+  @Mock private Building building;
+  @Mock private GameState gameState;
+  @Mock private Board board;
+  @Mock private ContextMenuPresenter.View callbackView;
+
   @BeforeEach
-  public void setup() {
-    gameState = mock(GameState.class);
-    callbackView = mock(ContextMenuPresenter.View.class);
+  public void setUp() {
+    closeable = MockitoAnnotations.openMocks(this);
+
+    buildingsList = Arrays.asList(null, building);
     doReturn(buildingsList).when(gameState).getAllBuildingsList();
     doReturn(null).when(emptyField).getBuilding();
     doReturn(building).when(nonEmptyField).getBuilding();
-    doReturn(emptyField).when(gameState).getField(new Coords(1, 0));
-    doReturn(nonEmptyField).when(gameState).getField(new Coords(0, 1));
+    doReturn(board).when(gameState).getBoard();
+    doReturn(emptyField).when(board).getField(new Coords(1, 0));
+    doReturn(nonEmptyField).when(board).getField(new Coords(0, 1));
     doReturn("smth").when(building).getPicture();
   }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeable.close();
+  }
+
   @Test
   public void testObserver() {
     ContextMenuPresenter presenter = new ContextMenuPresenter(gameState, callbackView);
-    ArgumentCaptor<GameState.SelectionObserver> observerCaptor = ArgumentCaptor.forClass(GameState.SelectionObserver.class);
+    ArgumentCaptor<Board.Observer> observerCaptor = ArgumentCaptor.forClass(Board.Observer.class);
 
-    verify(gameState, never()).addSelectionObserver(observerCaptor.capture());
+    verify(board, never()).addObserver(observerCaptor.capture());
     presenter.start();
-    verify(gameState).addSelectionObserver(observerCaptor.capture());
+    verify(board).addObserver(observerCaptor.capture());
 
-    GameState.SelectionObserver observer = observerCaptor.getValue();
+    Board.Observer observer = observerCaptor.getValue();
 
-    observer.onFieldSelection(new Coords(0, 1));
+    observer.onSelectionChanged(new Coords(0, 1));
     verify(callbackView, atLeastOnce()).showBuildingInfoWindow("smth", "smth");
     verify(callbackView, never()).showBuildingsListWindow(any());
 
-    observer.onFieldSelection(new Coords(1, 0));
+    observer.onSelectionChanged(new Coords(1, 0));
     verify(callbackView, atLeastOnce()).showBuildingsListWindow(buildingsList);
     presenter.close();
-    verify(gameState).removeSelectionObserver(observer);
+    verify(board).removeObserver(observer);
     verifyNoMoreInteractions(callbackView);
   }
+
   @Test
   public void onGeneralInfoTest() {
     // change when some GameState functionality with buildings will be added
@@ -60,6 +77,7 @@ class ContextMenuPresenterTest {
     verify(callbackView).showGeneralInfoWindow();
     verifyNoMoreInteractions(callbackView);
   }
+
   @Test
   public void onShowBuildingsListTest() {
     ContextMenuPresenter contextMenuPresenter = new ContextMenuPresenter(gameState, callbackView);
@@ -85,9 +103,9 @@ class ContextMenuPresenterTest {
     contextMenuPresenter.onShowBuildingsList();
     contextMenuPresenter.start();
 
-    ArgumentCaptor<GameState.SelectionObserver> observerCaptor = ArgumentCaptor.forClass(GameState.SelectionObserver.class);
-    verify(gameState).addSelectionObserver(observerCaptor.capture());
-    GameState.SelectionObserver observer = observerCaptor.getValue();
+    ArgumentCaptor<Board.Observer> observerCaptor = ArgumentCaptor.forClass(Board.Observer.class);
+    verify(board).addObserver(observerCaptor.capture());
+    Board.Observer observer = observerCaptor.getValue();
 
     contextMenuPresenter.onBuildingChoose(1);
     contextMenuPresenter.onBuild();
@@ -97,8 +115,8 @@ class ContextMenuPresenterTest {
     contextMenuPresenter.onBuild();
     verify(gameState, never()).build(any(), any());
 
-    observer.onFieldSelection(new Coords(1, 0));
-    doReturn(new Coords(1, 0)).when(gameState).getSelectedField();
+    observer.onSelectionChanged(new Coords(1, 0));
+    doReturn(new Coords(1, 0)).when(board).getSelectedCoords();
 
     contextMenuPresenter.onBuild();
     verify(gameState, never()).build(any(), any());

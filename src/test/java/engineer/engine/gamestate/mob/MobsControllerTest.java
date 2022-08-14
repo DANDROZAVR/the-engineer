@@ -14,15 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 class MobsControllerTest {
-  @Mock MobsController.GameStateCallback callback;
-  @Mock MobFactory mobFactory;
-  @Mock Field fieldWithMob;
-  @Mock Field fieldWithoutMob;
-  @Mock Mob mob;
   private AutoCloseable closeable;
 
+  @Mock private MobsController.GameStateCallback callback;
+  @Mock private MobFactory mobFactory;
+  @Mock private Field fieldWithMob;
+  @Mock private Field fieldWithoutMob;
+  @Mock private Mob mob;
+
   @BeforeEach
-  public void setup() {
+  public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
     doReturn("troop").when(mob).getType();
     doReturn(mob).when(fieldWithMob).getMob();
@@ -32,10 +33,8 @@ class MobsControllerTest {
   }
 
   @AfterEach
-  public void afterTesting() {
-    try {
-      closeable.close();
-    } catch (Exception ignored) {}
+  public void tearDown() throws Exception {
+    closeable.close();
   }
 
   @Test

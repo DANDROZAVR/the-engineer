@@ -9,27 +9,50 @@ import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
-import engineer.utils.Box;
 import engineer.utils.Coords;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameState {
-
-  public interface SelectionObserver {
-    void onFieldSelection(Coords field);
-  }
   private final BoardFactory boardFactory;
   private final Camera camera;
 
   private final Board board;
-  private Coords selectedField;
-  private final List<SelectionObserver> selectionObservers = new LinkedList<>();
 
   private final MobsController mobsController;
 
-  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final TurnSystem turnSystem;
+
+  // TODO: temporary
+  @SuppressWarnings("FieldCanBeLocal")
+  private final Board.Observer turnSystemObserver = new Board.Observer() {
+    @Override
+    public void onSelectionChanged(Coords coords) {
+      if (new Coords(0, 0).equals(coords)) {
+        turnSystem.nextTurn();
+      }
+    }
+  };
+
+  // TODO: temporary
+  @SuppressWarnings("FieldCanBeLocal")
+  private final Board.Observer mobsControllerObserver = new Board.Observer() {
+    private Coords oldCoords;
+
+    @Override
+    public void onSelectionChanged(Coords newCoords) {
+      Field lastSelectedField = (oldCoords == null ? null : board.getField(oldCoords));
+      Field actualSelectedField = board.getField(newCoords);
+
+      if (actualSelectedField.getMob() == null || turnSystem.getCurrentPlayer().isMobOwner(actualSelectedField.getMob())) {
+        mobsController.onFieldSelection(newCoords, oldCoords, actualSelectedField, lastSelectedField);
+      }
+
+      oldCoords = newCoords;
+    }
+  };
 
   public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera) {
     this.boardFactory = boardFactory;
@@ -56,74 +79,17 @@ public class GameState {
     players.add(new Player());
     turnSystem = new TurnSystem(players, mobsController);
     turnSystem.nextTurn();
+    // TODO: remove observer
+    board.addObserver(turnSystemObserver);
+    board.addObserver(mobsControllerObserver);
 
     setMob(new Coords(3, 5), "wood", 15);
     setMob(new Coords(8, 8), "wood", 5);
     setMob(new Coords(2, 7), "exit", 1);
   }
 
-
-
-  // Board functions
-
-
-
-  public void addBoardObserver(Board.Observer observer) {
-    board.addObserver(observer);
-  }
-
-  public void removeBoardObserver(Board.Observer observer) {
-    board.removeObserver(observer);
-  }
-
-  public void addSelectionObserver(SelectionObserver observer) {
-    selectionObservers.add(observer);
-  }
-
-  public void removeSelectionObserver(SelectionObserver observer) {
-    selectionObservers.remove(observer);
-  }
-
-  public int getRows() {
-    return board.getRows();
-  }
-
-  public int getColumns() {
-    return board.getColumns();
-  }
-
-  public Field getField(Coords coords) {
-    return board.getField(coords);
-  }
-
-  public Coords getSelectedField() {
-    return selectedField;
-  }
-
-  public void selectField(Coords coords) {
-    if (coords.equals(new Coords(0, 0))) {
-      turnSystem.nextTurn(); // EXTREMELY TEMP
-    }
-    Field lastSelectedField = (selectedField == null ? null : getField(selectedField));
-    Field actualSelectedField = getField(coords);
-    if (actualSelectedField.getMob() == null || turnSystem.getCurrentPlayer().isMobOwner(actualSelectedField.getMob()))
-      mobsController.onFieldSelection(coords, selectedField, actualSelectedField, lastSelectedField);
-    selectedField = coords;
-    selectionObservers.forEach(o -> o.onFieldSelection(selectedField));
-  }
-
-  public List<Coords> getAccessibleFields() {
-    return mobsController.getAccessibleFields();
-  }
-
-  @SuppressWarnings("unused")
-  public void unselectField() {
-    selectedField = null;
-  }
-
-  @SuppressWarnings("unused")
   public void build(Coords coords, String building) {
-    Field field = getField(coords);
+    Field field = board.getField(coords);
     Field newField = boardFactory.produceField(
             field.getBackground(),
             boardFactory.produceBuilding(building),
@@ -142,7 +108,7 @@ public class GameState {
   }
 
   public void setMob(Coords coords, Mob mob) {
-    Field oldField = getField(coords);
+    Field oldField = board.getField(coords);
     if (mob != null) {
       turnSystem.getCurrentPlayer().addMob(mob);
     } else {
@@ -158,44 +124,20 @@ public class GameState {
     board.setField(coords, newField);
   }
 
-
-  // Camera functions
-
-
-  public void addCameraObserver(Camera.Observer observer) {
-    camera.addObserver(observer);
+  public List<Coords> getAccessibleFields() {
+    return mobsController.getAccessibleFields();
   }
 
-  public void removeCameraObserver(Camera.Observer observer) {
-    camera.removeObserver(observer);
+  public Board getBoard() {
+    return board;
   }
 
-  public Box getFieldBox(Coords coords) {
-    return camera.getFieldBox(coords);
-  }
-
-  public Coords getFieldByPoint(double x, double y) {
-    return camera.getFieldByPoint(x, y);
-  }
-
-  public boolean isFieldVisible(Coords coords) {
-    return camera.isFieldVisible(coords);
-  }
-
-  public void moveCamera(double dx, double dy) {
-    camera.moveCamera(dx, dy);
-  }
-
-  public void zoomCamera(double delta) {
-    camera.zoom(delta);
-  }
-
-  public Box getCameraBox() {
-    return camera.getCameraBox();
+  public Camera getCamera() {
+    return camera;
   }
 
   public List<Building> getAllBuildingsList() {
-    // TEMP. WE SHOULD IMPLEMENT HOUSES TO MOVE FORWARD
+    // TODO: TEMP. WE SHOULD IMPLEMENT HOUSES TO MOVE FORWARD
     return Arrays.asList(
         boardFactory.produceBuilding("house"), null, null, null, null,
         boardFactory.produceBuilding("house2"));

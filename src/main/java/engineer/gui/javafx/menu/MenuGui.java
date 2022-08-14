@@ -1,7 +1,7 @@
 package engineer.gui.javafx.menu;
 
-import engineer.gui.javafx.game.GameGui;
 import engineer.gui.javafx.GuiLoader;
+import engineer.gui.javafx.game.GameGui;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

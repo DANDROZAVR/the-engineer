@@ -6,6 +6,7 @@ import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.mob.MobFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class BoardFactoryTests {
+  private AutoCloseable closeable;
+
   @Mock private FieldFactory fieldFactory;
   @Mock private BuildingFactory buildingFactory;
   @Mock private MobFactory mobFactory;
@@ -24,10 +27,15 @@ public class BoardFactoryTests {
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.openMocks(this);
+    closeable = MockitoAnnotations.openMocks(this);
     when(fieldFactory.produce(anyString(), any(), any(), anyBoolean())).thenReturn(standardField);
     when(buildingFactory.produce(any())).thenReturn(standardBuilding);
     when(mobFactory.produce(any(), anyInt())).thenReturn(standardMob);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeable.close();
   }
 
   @Test

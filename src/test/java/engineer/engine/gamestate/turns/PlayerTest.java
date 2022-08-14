@@ -11,23 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PlayerTest {
-
-  @Mock Mob mob;
-  @Mock Mob mob2;
   private AutoCloseable closeable;
 
+  @Mock private Mob mob;
+  @Mock private Mob mob2;
+
   @BeforeEach
-  public void setup() {
+  public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
-    @SuppressWarnings("unused")
-    AutoCloseable closeable = MockitoAnnotations.openMocks(this);
   }
 
   @AfterEach
-  public void afterTesting() {
-    try {
-      closeable.close();
-    } catch (Exception ignored) {}
+  public void tearDown() throws Exception {
+    closeable.close();
   }
 
   @Test

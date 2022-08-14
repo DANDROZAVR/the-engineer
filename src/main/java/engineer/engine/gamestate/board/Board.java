@@ -5,7 +5,8 @@ import engineer.utils.Coords;
 
 public interface Board {
   interface Observer {
-    void onFieldChanged(Coords coords);
+    default void onSelectionChanged(Coords coords) {}
+    default void onFieldChanged(Coords coords) {}
   }
 
   void addObserver(Observer observer);
@@ -16,4 +17,7 @@ public interface Board {
 
   Field getField(Coords coords);
   void setField(Coords coords, Field field);
+
+  void selectField(Coords coords);
+  Coords getSelectedCoords();
 }
