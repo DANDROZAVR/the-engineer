@@ -1,95 +1,112 @@
 package engineer.engine.gamestate.mob;
 
+import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.turns.Player;
+import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Collection;
 
+import static java.lang.Math.max;
 
-public class MobsController {
-  public interface GameStateCallback {
-    void setMob(Coords coords, Mob mob);
-  }
-  private final List<Coords> accessibleFields = new LinkedList<>();
+public class MobsController implements Board.Observer{
   private final MobFactory mobFactory;
+  private final TurnSystem turnSystem;
 
-  private final GameStateCallback callback;
-  public MobsController(GameStateCallback callback, MobFactory mobFactory) {
-    this.callback = callback;
+  private Coords lastSelectedCoords;
+  private final Board board;
+
+  public MobsController(Board board, TurnSystem turnSystem, MobFactory mobFactory) {
+    this.board = board;
+    this.turnSystem = turnSystem;
     this.mobFactory = mobFactory;
-  }
-  private List<Coords> getNeighbours(Coords field){
-    List<Coords> neighbours = new ArrayList<>();
-    neighbours.add(new Coords(field.row()-1, field.column()));
-    neighbours.add(new Coords(field.row()+1, field.column()));
-    neighbours.add(new Coords(field.row(), field.column()+1));
-    neighbours.add(new Coords(field.row(), field.column()-1));
-    return neighbours;
+
+    // TODO: remove observer
+    board.addObserver(this);
   }
 
-  private void setAccessibleFieldsFrom(Coords field, int range) {
-    accessibleFields.clear();
-    List<Coords> tempList = new LinkedList<>();
+  @Override
+  public void onSelectionChanged(Coords coords) {
+    boolean isReachable = board.getMarkedFields().contains(coords);
+    board.unmarkAllFields();
 
-    accessibleFields.add(new Coords(field.row(), field.column()));
-    for (int i = 0; i < range; i++) {
-      for (Coords j : accessibleFields) {
-        for (Coords k : getNeighbours(j)) {
-          if (!accessibleFields.contains(k)) {
-            tempList.add(k);
-          }
-        }
+    Player player = turnSystem.getCurrentPlayer();
+    Field field = board.getField(coords);
+    Mob mob = field.getMob();
+
+    if (isReachable && lastSelectedCoords != null) {
+      moveMob(lastSelectedCoords, coords);
+    } else if (mob != null && player.isMobOwner(mob)) {
+      Collection<Coords> collection = board.getNearestFields(coords, mob.getRemainingSteps());
+      board.markFields(collection);
+    }
+
+    lastSelectedCoords = coords;
+  }
+
+  private void moveMob(Coords from, Coords to) {
+    if (from.equals(to)) {
+      return;
+    }
+
+    Field fieldFrom = board.getField(from);
+    Field fieldTo = board.getField(to);
+
+    Player player = turnSystem.getCurrentPlayer();
+
+    Mob mob = fieldFrom.getMob();
+    int stepsUsed = board.findPath(from, to).size() - 1;
+    if (mob == null || !player.isMobOwner(mob)) {
+      throw new RuntimeException("Forbidden mob move");
+    }
+
+    if (fieldTo.getMob() != null) {
+      Mob mobTo = fieldTo.getMob();
+      if (!mob.getType().equals(mobTo.getType()) || !player.isMobOwner(mobTo)) {
+        throw new RuntimeException("Forbidden mob move");
       }
-      accessibleFields.addAll(tempList);
-      tempList.clear();
-    }
-  }
 
-  public void onFieldSelection(Coords selectedFieldXY, Coords lastSelectedFieldXY, Field selectedField, Field lastSelectedField) {
-    if (accessibleFields.contains(selectedFieldXY)) {
-      if (!selectedFieldXY.equals(lastSelectedFieldXY))
-        moveMob(lastSelectedFieldXY, selectedFieldXY, lastSelectedField, selectedField, 1);
+      stepsUsed = max(stepsUsed, mob.getRemainingSteps() - mobTo.getRemainingSteps());
+      mob.addMobs(mobTo.getMobsAmount());
+      player.removeMob(mobTo);
     }
-    accessibleFields.clear();
-    if (selectedField.getMob() != null) {
-      setAccessibleFieldsFrom(selectedFieldXY, selectedField.getMob().getRemainingSteps());
-    }
-  }
 
-  private void moveMob(Coords lastSelectedFieldXY, Coords selectedFieldXY, Field fieldFrom, Field fieldTo, int ignoredMobsFromAmounts) {
-    if (fieldTo.getMob() != null && !Objects.equals(fieldTo.getMob().getType(), fieldFrom.getMob().getType())) return;
-    int distSteps = Math.abs(selectedFieldXY.row() - lastSelectedFieldXY.row()) +
-                    Math.abs(selectedFieldXY.column() - lastSelectedFieldXY.column());
-    if (distSteps > fieldFrom.getMob().getRemainingSteps()) return;
+    mob.reduceRemainingSteps(stepsUsed);
 
-    Mob fromMob = fieldFrom.getMob();
-    Mob toMob = fieldTo.getMob();
-    fromMob.reduceRemainingSteps(distSteps);
-
-    if (toMob != null && Objects.equals(fromMob.getType(), toMob.getType())) {
-      int newMobsAmount = fromMob.getMobsAmount() + toMob.getMobsAmount(); // use mobsFromAmount
-      Mob mob = produceMob(fromMob.getType(), newMobsAmount);
-      int deductionSteps = Math.max(mob.getRemainingSteps() - fromMob.getRemainingSteps(), mob.getRemainingSteps() - toMob.getRemainingSteps());
-      mob.reduceRemainingSteps(deductionSteps);
-      callback.setMob(selectedFieldXY, mob);
-    } else {
-      callback.setMob(selectedFieldXY, fromMob);
-    }
-    callback.setMob(lastSelectedFieldXY, null);
+    board.setField(from, board.produceField(
+            fieldFrom.getBackground(),
+            fieldFrom.getBuilding(),
+            null,
+            fieldFrom.isFree()
+    ));
+    board.setField(to, board.produceField(
+            fieldTo.getBackground(),
+            fieldTo.getBuilding(),
+            mob,
+            fieldTo.isFree()
+    ));
   }
 
   public Mob produceMob(String type, int mobsAmount) {
     return mobFactory.produce(type, mobsAmount);
   }
 
-  public List<Coords> getAccessibleFields() {
-    return accessibleFields;
-  }
+  public void setMob(Coords coords, Mob mob) {
+    Field oldField = board.getField(coords);
+    if (mob != null) {
+      turnSystem.getCurrentPlayer().addMob(mob);
+    } else {
+      turnSystem.getCurrentPlayer().removeMob(oldField.getMob());
+    }
 
-  public void onTurnStart() {
-    accessibleFields.clear();
+    Field newField = board.produceField(
+            oldField.getBackground(),
+            oldField.getBuilding(),
+            mob,
+            oldField.isFree()
+    );
+
+    board.setField(coords, newField);
   }
 }

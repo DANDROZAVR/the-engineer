@@ -39,7 +39,7 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   }
 
   @Override
-  public void enlightenField(Box box) {
+  public void markField(Box box) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.drawImage(textureManager.getTexture("tileEnlighten"), box.left(), box.top(), box.width(), box.height());
   }

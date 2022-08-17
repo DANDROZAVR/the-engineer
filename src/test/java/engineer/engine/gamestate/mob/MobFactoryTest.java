@@ -21,4 +21,14 @@ class MobFactoryTest {
         mob.reduceRemainingSteps(1);
         assertEquals(4, mob.getRemainingSteps());
     }
+
+    @Test
+    public void testAddMobs() {
+        MobFactory mobFactory = new MobFactory();
+        mobFactory.addMobType("mobType1", "texture1", 5);
+        Mob mob = mobFactory.produce( "mobType1", 4);
+
+        mob.addMobs(-2);
+        assertEquals(2, mob.getMobsAmount());
+    }
 }

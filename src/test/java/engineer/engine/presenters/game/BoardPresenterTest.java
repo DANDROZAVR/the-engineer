@@ -71,10 +71,12 @@ class BoardPresenterTest {
   @Test
   public void testRedrawVisibleFields() {
     GameState gameState = mock(GameState.class);
+
     Camera camera = mock(Camera.class);
     Board board = mock(Board.class);
     when(gameState.getCamera()).thenReturn(camera);
     when(gameState.getBoard()).thenReturn(board);
+
     BoardPresenter.View view = mock(BoardPresenter.View.class);
     BoardPresenter presenter = new BoardPresenter(gameState, view);
 
@@ -114,7 +116,7 @@ class BoardPresenterTest {
     when(board.getSelectedCoords()).thenReturn(new Coords(3, 4));
     when(visibleField.getMob()).thenReturn(mob);
     when(notVisibleField.getBuilding()).thenReturn(building);
-    when(gameState.getAccessibleFields()).thenReturn(List.of(new Coords(5, 1)));
+    when(board.getMarkedFields()).thenReturn(List.of(new Coords(5, 1)));
 
     presenter.redrawVisibleFields();
 
@@ -132,13 +134,13 @@ class BoardPresenterTest {
     when(board.getSelectedCoords()).thenReturn(new Coords(5, 1));
     when(visibleField.getBuilding()).thenReturn(building);
     when(notVisibleField.getMob()).thenReturn(mob);
-    when(gameState.getAccessibleFields()).thenReturn(List.of(new Coords(3, 4)));
+    when(board.getMarkedFields()).thenReturn(List.of(new Coords(3, 4)));
 
     presenter.redrawVisibleFields();
 
     verify(view).drawField(visibleBox, "visibleFieldBackground");
     verify(view).drawField(visibleBox, "Building");
-    verify(view).enlightenField(visibleBox);
+    verify(view).markField(visibleBox);
     verifyNoMoreInteractions(view);
   }
 

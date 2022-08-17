@@ -14,7 +14,7 @@ public class MobFactory {
 
     private class MobImpl implements Mob {
         private final String type;
-        private final int number;
+        private int number;
         private int remainingSteps;
 
         public MobImpl(String type, int mobsAmount) {
@@ -31,6 +31,11 @@ public class MobFactory {
         @Override
         public String getTexture() {
             return descriptionMap.get(type).texture();
+        }
+
+        @Override
+        public void addMobs(int value) {
+            number += value;
         }
 
         @Override
@@ -58,5 +63,4 @@ public class MobFactory {
     public Mob produce(String type, int number) {
         return new MobImpl(type, number);
     }
-
 }

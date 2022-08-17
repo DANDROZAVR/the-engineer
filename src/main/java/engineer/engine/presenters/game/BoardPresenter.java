@@ -11,16 +11,14 @@ public class BoardPresenter {
   public interface View {
     void drawField(Box box, String texture);
     void drawSelection(Box box);
-    void enlightenField(Box box);
+    void markField(Box box);
   }
 
-  private final GameState gameState;
   private final Board board;
   private final Camera camera;
   private final View view;
 
   public BoardPresenter(GameState gameState, View view) {
-    this.gameState = gameState;
     board = gameState.getBoard();
     camera = gameState.getCamera();
     this.view = view;
@@ -44,12 +42,10 @@ public class BoardPresenter {
       }
     }
 
-    if (gameState.getAccessibleFields() != null) {
-      for(Coords i : gameState.getAccessibleFields()){
-        Box selectionBox = camera.getFieldBox(i);
-        if (camera.isFieldVisible(i)) {
-          view.enlightenField(selectionBox);
-        }
+    for(Coords i : board.getMarkedFields()){
+      Box selectionBox = camera.getFieldBox(i);
+      if (camera.isFieldVisible(i)) {
+        view.markField(selectionBox);
       }
     }
 
