@@ -4,6 +4,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TurnSystem {
+  public interface Observer {
+    default void onTurnChange() {}
+  }
+  private final List<TurnSystem.Observer> observerList = new LinkedList<>();
+
+  public void addObserver(TurnSystem.Observer observer) {
+    observerList.add(observer);
+  }
+
+  public void removeObserver(TurnSystem.Observer observer) {
+    observerList.remove(observer);
+  }
   private final List<Player> players;
   private int currentPlayer = -1;
 
@@ -13,7 +25,7 @@ public class TurnSystem {
 
   public void nextTurn() {
     currentPlayer = (currentPlayer + 1) % players.size();
-    players.get(currentPlayer).onTurnStart();
+    observerList.forEach(Observer::onTurnChange);
   }
 
   public Player getCurrentPlayer() {

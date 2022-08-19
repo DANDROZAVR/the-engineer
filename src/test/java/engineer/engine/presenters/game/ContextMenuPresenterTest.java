@@ -4,6 +4,8 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.mob.FightSystem;
+import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
@@ -33,6 +35,8 @@ class ContextMenuPresenterTest {
   @Mock private TurnSystem turnSystem;
 
   @Mock private Player player;
+  @Mock private MobsController mobsController;
+  @Mock private FightSystem fightSystem;
 
   @BeforeEach
   public void setUp() {
@@ -48,6 +52,8 @@ class ContextMenuPresenterTest {
     doReturn("smth").when(building).getPicture();
     doReturn(turnSystem).when(gameState).getTurnSystem();
     doReturn(player).when(turnSystem).getCurrentPlayer();
+    doReturn(mobsController).when(gameState).getMobsController();
+    doReturn(fightSystem).when(mobsController).getFight();
   }
 
   @AfterEach

@@ -1,5 +1,6 @@
 package engineer.engine.gamestate.turns;
 
+import engineer.engine.gamestate.board.Board;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ class TurnSystemTest {
   private List<Player> players;
   @Mock private Player player1;
   @Mock private Player player2;
+  @Mock private Board board;
 
   @BeforeEach
   public void setUp() {
@@ -32,17 +34,10 @@ class TurnSystemTest {
   @Test
   void nextTurn() {
     TurnSystem turnSystem = new TurnSystem(players);
+    TurnSystem.Observer observer = mock(TurnSystem.Observer.class);
+    turnSystem.addObserver(observer);
     turnSystem.nextTurn();
-    verify(player1).onTurnStart();
-    verify(player2, never()).onTurnStart();
-
-    turnSystem.nextTurn();
-    verify(player2).onTurnStart();
-    verifyNoMoreInteractions(player1);
-
-    turnSystem.nextTurn();
-    verify(player1, times(2)).onTurnStart();
-    verifyNoMoreInteractions(player2);
+    verify(observer).onTurnChange();
   }
 
   @Test

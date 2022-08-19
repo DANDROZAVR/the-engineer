@@ -17,7 +17,6 @@ public class BoardFactory {
   private class BoardImpl implements Board {
     private final int rows, columns;
     private final Field[][] fields;
-
     private final Collection<Coords> markedFields = new HashSet<>();
     private Coords selectedField;
 
@@ -37,7 +36,7 @@ public class BoardFactory {
 
     @Override
     public void addObserver(Observer observer) {
-      observerList.add(observer);
+      observerList.add(0, observer);
     }
 
     @Override
@@ -47,6 +46,14 @@ public class BoardFactory {
 
     private void onFieldChanged(Coords coords) {
       observerList.forEach(o -> o.onFieldChanged(coords));
+    }
+
+    private void onMobRemoved(Mob mob) {
+      observerList.forEach(o -> o.onMobRemoved(mob));
+    }
+
+    private void onMobAdded(Mob mob) {
+      observerList.forEach(o -> o.onMobAdded(mob));
     }
 
     private void onSelectionChanged() {
@@ -70,8 +77,16 @@ public class BoardFactory {
 
     @Override
     public void setField(Coords coords, Field field) {
+      if(fields[coords.row()][coords.column()].getMob() != null){
+        onMobRemoved(fields[coords.row()][coords.column()].getMob());
+      }
+
       fields[coords.row()][coords.column()] = field;
       onFieldChanged(coords);
+
+      if(fields[coords.row()][coords.column()].getMob() != null){
+        onMobAdded(fields[coords.row()][coords.column()].getMob());
+      }
     }
 
     @Override

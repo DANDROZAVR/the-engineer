@@ -5,6 +5,7 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.FieldFactory;
+import engineer.engine.gamestate.mob.FightSystem;
 import engineer.engine.gamestate.mob.MobFactory;
 import engineer.gui.javafx.GuiLoader;
 import engineer.gui.javafx.TextureManager;
@@ -15,6 +16,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.Random;
 
 public class GameGui {
   public interface MenuController {
@@ -55,12 +58,13 @@ public class GameGui {
 
     // TODO: temporary solution
     MobFactory mobFactory = new MobFactory();
-    mobFactory.addMobType("wood", "wood", 5);
-    mobFactory.addMobType("exit", "stop", 3);
+    mobFactory.addMobType("wood", "wood", 5, 3, 1);
+    mobFactory.addMobType("exit", "stop", 3, 6, 3);
     GameState gameState = new GameState(
             new BoardFactory(new FieldFactory(), new BuildingFactory()),
             mobFactory,
-            new Camera(40, 50, board.getWidth(), board.getHeight())
+            new Camera(40, 50, board.getWidth(), board.getHeight()),
+            new FightSystem(new Random())
     );
 
     boardGui = new BoardGui(board, textureManager, gameState);

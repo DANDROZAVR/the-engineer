@@ -73,6 +73,8 @@ public class BoardTest {
     Board board = boardFactory.produceBoard(3, 5);
     Board.Observer observer = Mockito.spy(new Board.Observer() {});
     Field field = mock(Field.class);
+    Mob mob = mock(Mob.class);
+    doReturn(mob).when(field).getMob();
 
     board.addObserver(observer);
     board.setField(new Coords(1, 2), field);
@@ -82,8 +84,14 @@ public class BoardTest {
     board.selectField(null);
 
     verify(observer).onFieldChanged(new Coords(1, 2));
+    verify(observer).onMobAdded(mob);
     verify(observer).onSelectionChanged(new Coords(0, 3));
     verifyNoMoreInteractions(observer);
+
+    board.addObserver(observer);
+    board.setField(new Coords(1, 2), field);
+
+    verify(observer).onMobRemoved(mob);
   }
 
   @Test

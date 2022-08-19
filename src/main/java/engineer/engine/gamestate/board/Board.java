@@ -12,6 +12,8 @@ public interface Board {
   interface Observer {
     default void onSelectionChanged(Coords coords) {}
     default void onFieldChanged(Coords coords) {}
+    default void onMobRemoved(Mob mob) {}
+    default void onMobAdded(Mob mob) {}
   }
 
   void addObserver(Observer observer);

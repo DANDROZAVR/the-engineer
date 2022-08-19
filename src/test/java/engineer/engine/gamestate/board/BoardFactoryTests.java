@@ -30,7 +30,7 @@ public class BoardFactoryTests {
     closeable = MockitoAnnotations.openMocks(this);
     when(fieldFactory.produce(anyString(), any(), any(), anyBoolean())).thenReturn(standardField);
     when(buildingFactory.produce(any())).thenReturn(standardBuilding);
-    when(mobFactory.produce(any(), anyInt())).thenReturn(standardMob);
+    when(mobFactory.produce(any(), anyInt(), any())).thenReturn(standardMob);
   }
 
   @AfterEach

@@ -16,7 +16,7 @@ class FieldTest {
     MobFactory mobFactory = new MobFactory();
     Field field = fieldFactory.produce(null, null, null, false);
 
-    mobFactory.addMobType("mob name", "texture", 1);
+    mobFactory.addMobType("mob name", "texture", 1, 1, 1);
 
     assertNull(field.getBackground());
     assertNull(field.getBuilding());
@@ -24,7 +24,7 @@ class FieldTest {
     assertFalse(field.isFree());
 
     Building building = buildingFactory.produce("building name");
-    Mob mob = mobFactory.produce("mob name", 1);
+    Mob mob = mobFactory.produce("mob name", 1, null);
     field = fieldFactory.produce("Background name", building, mob, true);
 
     assertEquals("Background name", field.getBackground());

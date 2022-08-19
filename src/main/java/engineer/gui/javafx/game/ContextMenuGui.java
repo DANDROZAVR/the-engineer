@@ -4,11 +4,14 @@ import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.presenters.game.ContextMenuPresenter;
 import engineer.gui.javafx.TextureManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +27,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @FXML private Label nameNewBuilding, nameBuildingInfo, nameCurrentPlayer;
   @FXML private ImageView imageNewBuilding, imageBuildingInfo;
   @FXML private VBox rootDynamicNode;
+  @FXML private ListView<String> showFight;
 
   private TextureManager textureManager;
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
@@ -32,6 +36,8 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
   private VBox window;
   private final int nGridColumns = 3;
+
+  private final ObservableList<String> fightInfo = FXCollections.observableArrayList();
 
   public void setup(VBox window, TextureManager textureManager, GameState gameState) {
     this.window = window;
@@ -111,6 +117,19 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
       }
     }
     rootDynamicNode.getChildren().add(rootBuildingTable);
+  }
+
+  @Override
+  public void startFight() {
+    fightInfo.clear();
+  }
+
+  @Override
+  public void showFight(List<String> newItems) {
+    fightInfo.addAll(newItems);
+    rootDynamicNode.getChildren().clear();
+    showFight.setItems(fightInfo);
+    rootDynamicNode.getChildren().add(showFight);
   }
 
   private String getCssButtonConfigurationForPicture(String picture) {

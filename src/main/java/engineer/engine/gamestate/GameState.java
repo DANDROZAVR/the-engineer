@@ -4,6 +4,7 @@ import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.mob.FightSystem;
 import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
@@ -23,7 +24,7 @@ public class GameState {
   private final MobsController mobsController;
   private final TurnSystem turnSystem;
 
-  public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera) {
+  public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera, FightSystem fightSystem) {
     this.boardFactory = boardFactory;
     this.camera = camera;
 
@@ -48,10 +49,10 @@ public class GameState {
     turnSystem = new TurnSystem(players);
     turnSystem.nextTurn();
 
-    mobsController = new MobsController(board, turnSystem, mobFactory);
-    mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15));
-    mobsController.setMob(new Coords(8, 8), mobsController.produceMob("wood", 5));
-    mobsController.setMob(new Coords(2, 7), mobsController.produceMob("exit", 1));
+    mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+    mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15, players.get(0)));
+    mobsController.setMob(new Coords(8, 8), mobsController.produceMob("wood", 5, players.get(1)));
+    mobsController.setMob(new Coords(2, 7), mobsController.produceMob("exit", 1, players.get(1)));
   }
 
   public void build(Coords coords, String building) {
@@ -76,6 +77,9 @@ public class GameState {
 
   public TurnSystem getTurnSystem() {
     return turnSystem;
+  }
+  public MobsController getMobsController() {
+    return mobsController;
   }
 
   public List<Building> getAllBuildingsList() {
