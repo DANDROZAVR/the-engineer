@@ -233,7 +233,7 @@ public class BoardFactory {
     return fieldFactory.produce(background, building, mob, free);
   }
 
-  public Building produceBuilding(String picture) {
-    return buildingFactory.produce(picture);
+  public Building produceBuilding(String type) {
+    return buildingFactory.produce(type);
   }
 }

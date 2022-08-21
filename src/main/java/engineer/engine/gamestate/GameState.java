@@ -9,16 +9,22 @@ import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
+import engineer.engine.gamestate.resource.ResourceFactory;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 import engineer.utils.JsonLoader;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class GameState {
   private final BoardFactory boardFactory;
+  @SuppressWarnings("FieldCanBeLocal")
+  private final BuildingFactory buildingFactory;
+  @SuppressWarnings("FieldCanBeLocal")
+  private final ResourceFactory resourceFactory = new ResourceFactory();
   private final Camera camera;
 
   private final Board board;
@@ -27,7 +33,16 @@ public class GameState {
   private final TurnSystem turnSystem;
 
   public GameState(double boardViewWidth, double boardViewHeight) {
-    boardFactory = new BoardFactory(new FieldFactory(), new BuildingFactory());
+    // TODO: temporary solution
+    resourceFactory.addResType("wood", "wood");
+    resourceFactory.addResType("stone", "stone");
+
+    // TODO: temporary solution
+    buildingFactory = new BuildingFactory();
+    buildingFactory.addMobType("Armorer House", "house", Collections.singletonList(resourceFactory.produce("wood").addResAmount(2)));
+    buildingFactory.addMobType("Mayor's house", "house2", Arrays.asList(resourceFactory.produce("wood").addResAmount(15), resourceFactory.produce("stone").addResAmount(24)));
+
+    boardFactory = new BoardFactory(new FieldFactory(), buildingFactory);
 
     // TODO: temporary solution
     board = boardFactory.produceBoard(new JsonLoader().loadJson("/board/sample.json"));
@@ -50,13 +65,16 @@ public class GameState {
     mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15));
     mobsController.setMob(new Coords(8, 8), mobsController.produceMob("wood", 5));
     mobsController.setMob(new Coords(2, 7), mobsController.produceMob("exit", 1));
+
+    turnSystem.getCurrentPlayer().addResource(resourceFactory.produce("wood"));
+    turnSystem.getCurrentPlayer().getResources().get(0).addResAmount(100);
   }
 
-  public void build(Coords coords, String building) {
+  public void build(Coords coords, String type) {
     Field field = board.getField(coords);
     Field newField = boardFactory.produceField(
             field.getBackground(),
-            boardFactory.produceBuilding(building),
+            boardFactory.produceBuilding(type),
             field.getMob(),
             field.isFree()
     );
@@ -78,8 +96,9 @@ public class GameState {
 
   public List<Building> getAllBuildingsList() {
     // TODO: TEMP. WE SHOULD IMPLEMENT HOUSES TO MOVE FORWARD
+    Building smallHouseSchema = boardFactory.produceBuilding("Armorer House");
+    Building bigHouseSchema = boardFactory.produceBuilding("Mayor's house");
     return Arrays.asList(
-        boardFactory.produceBuilding("house"), null, null, null, null,
-        boardFactory.produceBuilding("house2"));
+        smallHouseSchema, null, null, null, null, bigHouseSchema);
   }
 }

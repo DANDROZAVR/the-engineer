@@ -23,7 +23,7 @@ class FieldTest {
     assertNull(field.getMob());
     assertFalse(field.isFree());
 
-    Building building = buildingFactory.produce("building name");
+    Building building = buildingFactory.produce("type");
     Mob mob = mobFactory.produce("mob name", 1);
     field = fieldFactory.produce("Background name", building, mob, true);
 
