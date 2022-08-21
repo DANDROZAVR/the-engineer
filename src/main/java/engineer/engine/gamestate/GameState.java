@@ -3,12 +3,15 @@ package engineer.engine.gamestate;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
+import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
+import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
+import engineer.utils.JsonLoader;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,23 +26,11 @@ public class GameState {
   private final MobsController mobsController;
   private final TurnSystem turnSystem;
 
-  public GameState(BoardFactory boardFactory, MobFactory mobFactory, Camera camera) {
-    this.boardFactory = boardFactory;
-    this.camera = camera;
+  public GameState(double boardViewWidth, double boardViewHeight) {
+    boardFactory = new BoardFactory(new FieldFactory(), new BuildingFactory());
 
-    board = boardFactory.produceBoard(40, 50);
-
-    for (int row = 0; row < 40; row++) {
-      for (int column = 0; column < 50; column++) {
-        Field field = boardFactory.produceField(
-            "tile",
-            null,
-            null,
-            true
-        );
-        board.setField(new Coords(row, column), field);
-      }
-    }
+    // TODO: temporary solution
+    board = boardFactory.produceBoard(new JsonLoader().loadJson("/board/sample.json"));
 
     // TODO: temporary solution
     List<Player> players = new LinkedList<>();
@@ -47,6 +38,13 @@ public class GameState {
     players.add(new Player("Loser"));
     turnSystem = new TurnSystem(players);
     turnSystem.nextTurn();
+
+    camera = new Camera(board.getRows(), board.getColumns(), boardViewWidth, boardViewHeight);
+
+    // TODO: temporary solution
+    MobFactory mobFactory = new MobFactory();
+    mobFactory.addMobType("wood", "wood", 5);
+    mobFactory.addMobType("exit", "stop", 3);
 
     mobsController = new MobsController(board, turnSystem, mobFactory);
     mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15));

@@ -1,0 +1,2448 @@
+{
+  "name": "Sample board",
+  "players": 2,
+  "rows": 20,
+  "columns": 30,
+  "board": [
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      },
+      {
+        "background": "tile",
+        "free": true
+      }
+    ]
+  ]
+}

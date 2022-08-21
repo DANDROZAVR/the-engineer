@@ -1,0 +1,44 @@
+{
+  "name": "Mock board",
+  "players": 2,
+  "rows": 2,
+  "columns": 4,
+  "board": [
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ]
+  ]
+}

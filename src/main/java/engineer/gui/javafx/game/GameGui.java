@@ -1,11 +1,6 @@
 package engineer.gui.javafx.game;
 
-import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.GameState;
-import engineer.engine.gamestate.board.BoardFactory;
-import engineer.engine.gamestate.building.BuildingFactory;
-import engineer.engine.gamestate.field.FieldFactory;
-import engineer.engine.gamestate.mob.MobFactory;
 import engineer.gui.javafx.GuiLoader;
 import engineer.gui.javafx.TextureManager;
 import javafx.fxml.FXML;
@@ -53,15 +48,7 @@ public class GameGui {
     this.menuController = menuController;
     scene = new Scene(root);
 
-    // TODO: temporary solution
-    MobFactory mobFactory = new MobFactory();
-    mobFactory.addMobType("wood", "wood", 5);
-    mobFactory.addMobType("exit", "stop", 3);
-    GameState gameState = new GameState(
-            new BoardFactory(new FieldFactory(), new BuildingFactory()),
-            mobFactory,
-            new Camera(40, 50, board.getWidth(), board.getHeight())
-    );
+    GameState gameState = new GameState(board.getWidth(), board.getHeight());
 
     boardGui = new BoardGui(board, textureManager, gameState);
     minimapGui = new MinimapGui(minimap, textureManager, gameState);
