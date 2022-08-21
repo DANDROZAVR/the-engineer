@@ -38,6 +38,9 @@ class TurnSystemTest {
     turnSystem.addObserver(observer);
     turnSystem.nextTurn();
     verify(observer).onTurnChange();
+    turnSystem.removeObserver(observer);
+    turnSystem.nextTurn();
+    verifyNoMoreInteractions(observer);
   }
 
   @Test

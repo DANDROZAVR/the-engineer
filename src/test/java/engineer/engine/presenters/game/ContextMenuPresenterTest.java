@@ -5,6 +5,7 @@ import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.FightSystem;
+import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
@@ -37,6 +38,8 @@ class ContextMenuPresenterTest {
   @Mock private Player player;
   @Mock private MobsController mobsController;
   @Mock private FightSystem fightSystem;
+  @Mock private Mob mob1;
+  @Mock private Mob mob2;
 
   @BeforeEach
   public void setUp() {
@@ -53,7 +56,7 @@ class ContextMenuPresenterTest {
     doReturn(turnSystem).when(gameState).getTurnSystem();
     doReturn(player).when(turnSystem).getCurrentPlayer();
     doReturn(mobsController).when(gameState).getMobsController();
-    doReturn(fightSystem).when(mobsController).getFight();
+    doReturn(fightSystem).when(mobsController).getFightSystem();
   }
 
   @AfterEach
@@ -80,6 +83,28 @@ class ContextMenuPresenterTest {
     verify(callbackView, atLeastOnce()).showBuildingsListWindow(buildingsList);
     presenter.close();
     verify(board).removeObserver(observer);
+    verifyNoMoreInteractions(callbackView);
+  }
+
+  @Test
+  public void testFightObserver() {
+    ContextMenuPresenter presenter = new ContextMenuPresenter(gameState, callbackView);
+    ArgumentCaptor<FightSystem.Observer> observerCaptor = ArgumentCaptor.forClass(FightSystem.Observer.class);
+
+    verify(fightSystem, never()).addObserver(observerCaptor.capture());
+    presenter.start();
+    verify(fightSystem).addObserver(observerCaptor.capture());
+
+    FightSystem.Observer observer = observerCaptor.getValue();
+
+    observer.onFightStart(mob1, mob2);
+    verify(callbackView, atLeastOnce()).startFight();
+    verify(callbackView, atLeastOnce()).showFight(any());
+
+    observer.onFightTurn(1, 1);
+    verify(callbackView, atLeastOnce()).showFight(any());
+    presenter.close();
+    verify(fightSystem).removeObserver(observer);
     verifyNoMoreInteractions(callbackView);
   }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TurnSystem {
   public interface Observer {
-    default void onTurnChange() {}
+    void onTurnChange();
   }
   private final List<TurnSystem.Observer> observerList = new LinkedList<>();
 

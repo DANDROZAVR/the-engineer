@@ -77,7 +77,7 @@ public class MobsController implements Board.Observer, TurnSystem.Observer{
       Mob mobTo = fieldTo.getMob();
 
       if(!player.equals(mobTo.getOwner())){
-        makeFight(from, to, fieldFrom, fieldTo, mob, mobTo);
+        makeFight(from, to, mob, mobTo);
         return;
 
       }
@@ -106,42 +106,24 @@ public class MobsController implements Board.Observer, TurnSystem.Observer{
     ));
   }
 
-  private void makeFight(Coords from, Coords to, Field fieldFrom, Field fieldTo, Mob mob, Mob mobTo) {
-    board.setField(from, board.produceField(
-          fieldFrom.getBackground(),
-          fieldFrom.getBuilding(),
-          null,
-          fieldFrom.isFree()
-  ));
+  void makeFight(Coords from, Coords to, Mob mob, Mob mobTo) {
+    setMob(from, null);
     Pair<Integer, Integer> result = fightSystem.makeFight(mob, mobTo);
-
     mob.addMobs(result.getKey() - mob.getMobsAmount());
     mobTo.addMobs(result.getValue() - mobTo.getMobsAmount());
     if(result.getKey() > result.getValue()){
-      if(mob.getMobsAmount() <= 0)
-        mob = null;
-      board.setField(to, board.produceField(
-              fieldTo.getBackground(),
-              fieldTo.getBuilding(),
-              mob,
-              fieldTo.isFree()
-      ));
+      setMob(to, mob);
     }
     else{
       if(mobTo.getMobsAmount() <= 0)
         mobTo = null;
-      board.setField(to, board.produceField(
-              fieldTo.getBackground(),
-              fieldTo.getBuilding(),
-              mobTo,
-              fieldTo.isFree()
-      ));
+      setMob(to, mobTo);
     }
   }
 
   public Mob produceMob(String type, int mobsAmount, Player owner) {
     Mob newMob = mobFactory.produce(type, mobsAmount, owner);
-    mobList.add(newMob);
+    addMob(newMob);
     return newMob;
   }
 
@@ -158,7 +140,11 @@ public class MobsController implements Board.Observer, TurnSystem.Observer{
     board.setField(coords, newField);
   }
 
-  public FightSystem getFight() {
+  void addMob(Mob mob){
+    mobList.add(mob);
+  }
+
+  public FightSystem getFightSystem() {
     return fightSystem;
   }
 }

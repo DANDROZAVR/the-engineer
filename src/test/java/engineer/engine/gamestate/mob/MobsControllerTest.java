@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MobsControllerTest {
@@ -47,8 +47,6 @@ class MobsControllerTest {
 
     doReturn(mob).when(fieldWithMob).getMob();
     doReturn(null).when(fieldWithoutMob).getMob();
-
-    doReturn(new Pair<>(1, 0)).when(fightSystem).makeFight(any(), any());
   }
 
   @AfterEach
@@ -215,13 +213,14 @@ class MobsControllerTest {
   }
 
   @Test
-  public void testExceptionOnNotTargetMobOwner() {
+  public void testFightOnTargetNotOwnedMob() {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     Field targetField = mock(Field.class);
     Mob otherMob = mock(Mob.class);
 
     when(otherMob.getType()).thenReturn("troop");
     when(targetField.getMob()).thenReturn(otherMob);
+    doReturn(new Pair<>(1, 0)).when(fightSystem).makeFight(any(), any());
 
     when(mob.getOwner()).thenReturn(player);
     when(otherMob.getOwner()).thenReturn(null);
@@ -233,6 +232,50 @@ class MobsControllerTest {
     mobsController.onSelectionChanged(new Coords(0, 0));
     mobsController.onSelectionChanged(new Coords(2, 1));
     verify(fightSystem).makeFight(mob, otherMob);
+  }
+
+  @Test
+  public void testFightAllDie() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+
+    Field targetField = mock(Field.class);
+    Field fieldWithNullMob = mock(Field.class);
+    Field fieldWithMob = mock(Field.class);
+    Mob otherMob = mock(Mob.class);
+    Coords from = new Coords(0, 0);
+    Coords to = new Coords(0, 1);
+
+    when(board.getField(from)).thenReturn(fieldWithMob);
+    when(board.getField(to)).thenReturn(targetField);
+    when(board.produceField(any(), any(), eq(null), anyBoolean())).thenReturn(fieldWithNullMob);
+    when(board.produceField(any(), any(), notNull(), anyBoolean())).thenReturn(fieldWithMob);
+    doReturn(new Pair<>(0, 0)).when(fightSystem).makeFight(any(), any());
+
+    mobsController.makeFight(from, to, mob, otherMob);
+    verify(board).setField(eq(from), eq(fieldWithNullMob));
+    verify(board).setField(eq(to), eq(fieldWithNullMob));
+  }
+
+  @Test
+  public void testFightWhenNotAllDie() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+
+    Field targetField = mock(Field.class);
+    Field fieldWithNullMob = mock(Field.class);
+    Field fieldWithMob = mock(Field.class);
+    Mob otherMob = mock(Mob.class);
+    Coords from = new Coords(0, 0);
+    Coords to = new Coords(0, 1);
+
+    when(board.getField(from)).thenReturn(fieldWithMob);
+    when(board.getField(to)).thenReturn(targetField);
+    when(board.produceField(any(), any(), eq(null), anyBoolean())).thenReturn(fieldWithNullMob);
+    when(board.produceField(any(), any(), notNull(), anyBoolean())).thenReturn(fieldWithMob);
+    doReturn(new Pair<>(2, 0)).when(fightSystem).makeFight(any(), any());
+
+    mobsController.makeFight(from, to, mob, otherMob);
+    verify(board).setField(eq(from), eq(fieldWithNullMob));
+    verify(board).setField(eq(to), eq(fieldWithMob));
   }
 
   @Test
@@ -309,5 +352,20 @@ class MobsControllerTest {
     mobsController.setMob(new Coords(1, 2), null);
 
     verify(board).setField(new Coords(1, 2), fieldWithoutMob);
+  }
+
+  @Test
+  void onTurnChange() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+    mobsController.addMob(mob);
+    mobsController.onTurnChange();
+
+    verify(mob).reset();
+  }
+
+  @Test
+  void getFightSystem() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+    assertEquals(mobsController.getFightSystem(), fightSystem);
   }
 }

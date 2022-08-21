@@ -47,6 +47,8 @@ class FightSystemTest {
 
         assertEquals(result.getKey(), 23);
         assertEquals(result.getValue(), 0);
+
+        fightSystem.removeObserver(observer);
     }
 
     @BeforeEach

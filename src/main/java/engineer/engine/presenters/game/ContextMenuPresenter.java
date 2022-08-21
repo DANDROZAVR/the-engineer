@@ -61,13 +61,13 @@ public class ContextMenuPresenter {
   };
 
   public void start() {
-    gameState.getMobsController().getFight().addObserver(fightObserver);
+    gameState.getMobsController().getFightSystem().addObserver(fightObserver);
     board.addObserver(boardObserver);
   }
 
   public void close() {
     board.removeObserver(boardObserver);
-    gameState.getMobsController().getFight().removeObserver(fightObserver);
+    gameState.getMobsController().getFightSystem().removeObserver(fightObserver);
   }
 
   public void onFieldSelection(Coords coords) {
