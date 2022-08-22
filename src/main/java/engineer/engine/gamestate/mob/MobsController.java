@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.lang.Math.max;
 
-public class MobsController implements Board.Observer, TurnSystem.Observer{
+public class MobsController implements TurnSystem.Observer{
   private final MobFactory mobFactory;
   private final TurnSystem turnSystem;
   private final FightSystem fightSystem;
@@ -28,15 +28,12 @@ public class MobsController implements Board.Observer, TurnSystem.Observer{
     this.fightSystem = fightSystem;
 
     turnSystem.addObserver(this);
-    // TODO: remove observer
-    board.addObserver(this);
   }
   @Override
   public void onTurnChange(){
     mobList.forEach(Mob::reset);
   }
 
-  @Override
   public void onSelectionChanged(Coords coords) {
     boolean isReachable = board.getMarkedFields().contains(coords);
     board.unmarkAllFields();

@@ -36,7 +36,7 @@ public class BoardFactory {
 
     @Override
     public void addObserver(Observer observer) {
-      observerList.add(0, observer);
+      observerList.add(observer);
     }
 
     @Override

@@ -38,6 +38,7 @@ public class ContextMenuPresenter {
     @Override
     public void onSelectionChanged(Coords coords) {
       onFieldSelection(coords);
+      gameState.getMobsController().onSelectionChanged(coords);
     }
   };
 
