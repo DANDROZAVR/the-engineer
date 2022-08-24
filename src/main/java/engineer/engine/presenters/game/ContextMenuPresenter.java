@@ -75,9 +75,6 @@ public class ContextMenuPresenter {
 
   public void onFieldSelection(Coords coords) {
     Field field = board.getField(coords);
-    if(field.getMob() != null){
-      return;
-    }
     if (field.getBuilding() == null) {
       // we should somehow understand that field is covered with some resources
       onShowBuildingsList();

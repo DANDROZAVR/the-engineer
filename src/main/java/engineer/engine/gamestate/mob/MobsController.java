@@ -74,9 +74,9 @@ public class MobsController implements TurnSystem.Observer{
       Mob mobTo = fieldTo.getMob();
 
       if(!player.equals(mobTo.getOwner())){
+        mob.reduceRemainingSteps(stepsUsed);
         makeFight(from, to, mob, mobTo);
         return;
-
       }
 
       if (!mob.getType().equals(mobTo.getType())) {

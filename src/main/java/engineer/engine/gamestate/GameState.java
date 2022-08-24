@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class GameState {
   private final BoardFactory boardFactory;
@@ -32,6 +33,7 @@ public class GameState {
   @SuppressWarnings("FieldCanBeLocal")
   private final MobsController mobsController;
   private final TurnSystem turnSystem;
+  private final FightSystem fightSystem;
   
   public GameState(double boardViewWidth, double boardViewHeight) {
     // TODO: temporary solution
@@ -47,7 +49,8 @@ public class GameState {
 
     // TODO: temporary solution
     board = boardFactory.produceBoard(new JsonLoader().loadJson("/board/sample.json"));
-
+    fightSystem = new FightSystem(new Random());
+    
     // TODO: temporary solution
     List<Player> players = new LinkedList<>();
     players.add(new Player("Winner"));
@@ -59,8 +62,8 @@ public class GameState {
 
     // TODO: temporary solution
     MobFactory mobFactory = new MobFactory();
-    mobFactory.addMobType("wood", "wood", 5);
-    mobFactory.addMobType("exit", "stop", 3);
+    mobFactory.addMobType("wood", "wood", 5, 6, 3);
+    mobFactory.addMobType("exit", "stop", 3, 2, 6);
     
     mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15, players.get(0)));

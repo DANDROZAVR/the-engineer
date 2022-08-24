@@ -155,6 +155,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
       resImage.setImage(null);
       resAmount.setText("");
     }
+  }
 
   private String getCssButtonConfigurationForPicture(String picture) {
     return "-fx-background-image: url('" + textureManager.getTexturePath() + picture + ".png'); -fx-background-size: 66.6px 66.6px; -fx-background-color: transparent;";
