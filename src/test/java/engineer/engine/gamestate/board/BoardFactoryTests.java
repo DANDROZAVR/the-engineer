@@ -50,9 +50,9 @@ public class BoardFactoryTests {
   @Test
   public void testBuildingProduction() {
     BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
-    Building building = boardFactory.produceBuilding("building");
+    Building building = boardFactory.produceBuilding("type");
 
     assertEquals(standardBuilding, building);
-    verify(buildingFactory, atLeastOnce()).produce("building");
+    verify(buildingFactory, atLeastOnce()).produce("type");
   }
 }

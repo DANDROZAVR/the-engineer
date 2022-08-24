@@ -37,7 +37,7 @@ public class BoardPresenter {
           if (field.getMob() != null)
             view.drawField(box, field.getMob().getTexture());
           if (field.getBuilding() != null)
-            view.drawField(box, field.getBuilding().getPicture());
+            view.drawField(box, field.getBuilding().getTexture());
         }
       }
     }

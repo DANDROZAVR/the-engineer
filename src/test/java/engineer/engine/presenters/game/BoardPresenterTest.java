@@ -86,8 +86,8 @@ class BoardPresenterTest {
     Building building = mock(Building.class);
     Mob mob = mock(Mob.class);
 
-    when(building.getPicture()).thenReturn("Building");
     when(mob.getTexture()).thenReturn("Mob");
+    when(building.getTexture()).thenReturn("Building");
 
     when(board.getRows()).thenReturn(5);
     when(board.getColumns()).thenReturn(8);

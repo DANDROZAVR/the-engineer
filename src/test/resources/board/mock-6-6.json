@@ -1,0 +1,164 @@
+{
+  "name": "Mock board",
+  "players": 2,
+  "rows": 6,
+  "columns": 6,
+  "board": [
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ]
+  ]
+}

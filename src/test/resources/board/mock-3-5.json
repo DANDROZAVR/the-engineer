@@ -1,0 +1,74 @@
+{
+  "name": "Mock board",
+  "players": 2,
+  "rows": 3,
+  "columns": 5,
+  "board": [
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ],
+    [
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      },
+      {
+        "background": "",
+        "free": true
+      }
+    ]
+  ]
+}

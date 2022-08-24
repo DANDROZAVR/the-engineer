@@ -6,6 +6,8 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.FightSystem;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.resource.Resource;
+import engineer.engine.gamestate.turns.Player;
 import engineer.utils.Coords;
 
 import java.util.ArrayList;
@@ -13,9 +15,9 @@ import java.util.List;
 
 public class ContextMenuPresenter {
   public interface View {
-    void showGeneralInfoWindow(String playerName);
-    void showBuildingsChosenWindow(String picture, String name);
-    void showBuildingInfoWindow(String picture, String name);
+    void showGeneralInfoWindow(String playerName, List<Resource> resources);
+    void showBuildingsChosenWindow(String picture, String type, List<Resource> input);
+    void showBuildingInfoWindow(String picture, String type);
     void showBuildingsListWindow(List<Building> buildings);
     void startFight();
 
@@ -80,13 +82,15 @@ public class ContextMenuPresenter {
       // we should somehow understand that field is covered with some resources
       onShowBuildingsList();
     } else {
-      view.showBuildingInfoWindow(field.getBuilding().getPicture(), field.getBuilding().getPicture());
+      view.showBuildingInfoWindow(field.getBuilding().getTexture(), field.getBuilding().getType());
     }
   }
 
   public void onShowGeneralInfo() {
-    String nickname = gameState.getTurnSystem().getCurrentPlayer().getNickname();
-    view.showGeneralInfoWindow(nickname);
+    Player player = gameState.getTurnSystem().getCurrentPlayer();
+    String nickname = player.getNickname();
+    List<Resource> resources = player.getResources();
+    view.showGeneralInfoWindow(nickname, resources);
   }
 
   public void onBuildingChoose(int index){
@@ -94,7 +98,7 @@ public class ContextMenuPresenter {
     chosenBuilding = null;
     if (building != null) {
       chosenBuilding = building;
-      view.showBuildingsChosenWindow(building.getPicture(), building.getPicture());
+      view.showBuildingsChosenWindow(building.getTexture(), building.getType(), building.getResToBuild());
     }
   }
 
@@ -103,11 +107,17 @@ public class ContextMenuPresenter {
     view.showBuildingsListWindow(tempListOfAllBuildings);
   }
 
+  @SuppressWarnings("StatementWithEmptyBody")
   public void onBuild() {
     Coords selectedField = board.getSelectedCoords();
     if (chosenBuilding != null && selectedField != null) {
-      gameState.build(selectedField, chosenBuilding.getPicture());
-      view.showBuildingInfoWindow(chosenBuilding.getPicture(), chosenBuilding.getPicture());
+      Player player = gameState.getTurnSystem().getCurrentPlayer();
+      if (player.retrieveResourcesFromSchema(chosenBuilding.getResToBuild())) {
+        gameState.build(selectedField, chosenBuilding.getType());
+        view.showBuildingInfoWindow(chosenBuilding.getTexture(), chosenBuilding.getType());
+      } else {
+        // TODO: show pop-up about insufficient resources
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ module the.engineer.main {
   requires javafx.controls;
   requires javafx.graphics;
   requires javafx.fxml;
+  requires com.google.gson;
 
   opens engineer.gui.javafx.menu to
       javafx.fxml;
@@ -11,4 +12,5 @@ module the.engineer.main {
 
   exports engineer;
   opens engineer.gui.javafx to javafx.fxml;
+  opens engineer.utils to javafx.fxml;
 }

@@ -1,5 +1,6 @@
 package engineer.engine.gamestate.board;
 
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
@@ -215,15 +216,39 @@ public class BoardFactory {
     this.buildingFactory = buildingFactory;
   }
 
-  public Board produceBoard(int rows, int columns) {
-    return new BoardImpl(rows, columns);
+  public Board produceBoard(JsonObject json) {
+    int rows = json.get("rows").getAsInt();
+    int columns = json.get("columns").getAsInt();
+
+    Board board = new BoardImpl(rows, columns);
+
+    for (int row = 0; row < board.getRows(); row++) {
+      for (int column = 0; column < board.getColumns(); column++) {
+        JsonObject fieldJson = json.get("board")
+                .getAsJsonArray()
+                .get(row)
+                .getAsJsonArray()
+                .get(column)
+                .getAsJsonObject();
+
+        Field field = produceField(
+                fieldJson.get("background").getAsString(),
+                null,
+                null,
+                fieldJson.get("free").getAsBoolean()
+        );
+        board.setField(new Coords(row, column), field);
+      }
+    }
+
+    return board;
   }
 
   public Field produceField(String background, Building building, Mob mob, boolean free) {
     return fieldFactory.produce(background, building, mob, free);
   }
 
-  public Building produceBuilding(String picture) {
-    return buildingFactory.produce(picture);
+  public Building produceBuilding(String type) {
+    return buildingFactory.produce(type);
   }
 }
