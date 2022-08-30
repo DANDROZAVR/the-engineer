@@ -6,6 +6,7 @@ import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.mob.MobFactory;
+import engineer.utils.Coords;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,17 @@ public class BoardFactoryTests {
   @Mock private Field standardField;
   @Mock private Building standardBuilding;
   @Mock private Mob standardMob;
+  @Mock private Board board;
 
   @BeforeEach
   public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
+
     when(fieldFactory.produce(anyString(), any(), any(), anyBoolean())).thenReturn(standardField);
-    when(buildingFactory.produce(any())).thenReturn(standardBuilding);
+    when(buildingFactory.produce(any(), any())).thenReturn(standardBuilding);
     when(mobFactory.produce(any(), anyInt(), any())).thenReturn(standardMob);
+    when(board.getField(any())).thenReturn(standardField);
+    when(fieldFactory.produce(any(), any(), any(), anyBoolean())).thenReturn(standardField);
   }
 
   @AfterEach
@@ -50,9 +55,31 @@ public class BoardFactoryTests {
   @Test
   public void testBuildingProduction() {
     BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
-    Building building = boardFactory.produceBuilding("type");
+    Building building = boardFactory.produceBuilding("type", null);
 
     assertEquals(standardBuilding, building);
-    verify(buildingFactory, atLeastOnce()).produce("type");
+    verify(buildingFactory, atLeastOnce()).produce("type", null);
+  }
+
+  @Test
+  public void testBuildBuilding() {
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
+    Coords coords = new Coords(3, 5);
+
+    boardFactory.build(board, coords, "buildingType", null);
+
+    verify(buildingFactory).produce("buildingType", null);
+    verify(board).setField(coords, standardField);
+  }
+
+  @Test
+  public void testDestroyBuilding() {
+    BoardFactory boardFactory = new BoardFactory(fieldFactory, buildingFactory);
+    Coords coords = new Coords(3, 5);
+
+    boardFactory.destroyBuilding(board, coords);
+
+    verify(fieldFactory).produce(any(), isNull(), any(), anyBoolean());
+    verify(board).setField(coords, standardField);
   }
 }

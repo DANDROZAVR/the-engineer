@@ -6,7 +6,9 @@ import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.turns.Player;
 import engineer.utils.Coords;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -18,7 +20,8 @@ public class BoardFactory {
   private class BoardImpl implements Board {
     private final int rows, columns;
     private final Field[][] fields;
-    private final Collection<Coords> markedFields = new HashSet<>();
+    private final Collection<Coords> markedFieldsToMove = new HashSet<>();
+    private final Collection<Coords> markedFieldsToAttack = new HashSet<>();
     private Coords selectedField;
 
     private final List<Observer> observerList = new LinkedList<>();
@@ -141,23 +144,32 @@ public class BoardFactory {
     }
 
     @Override
-    public Collection<Coords> getNearestFields(Coords coords, int range) {
+    public Pair<Collection<Coords>, Collection<Coords>> getNearestFields(Coords coords, int range) {
       Integer[][] distanceArray = getDistanceFrom(coords);
 
       if (!getField(coords).isFree()) {
-        return null;
+        return new Pair<>(null, null);
       }
 
-      Set<Coords> result = new HashSet<>();
+      Player player = null;
+      if(getField(coords).getMob() != null){
+        player = getField(coords).getMob().getOwner();
+      }
+
+      Set<Coords> resultOwner = new HashSet<>();
+      Set<Coords> resultNotOwner = new HashSet<>();
       for (int row=0; row<rows; row++) {
         for (int column=0; column<columns; column++) {
           if (distanceArray[row][column] <= range) {
-            result.add(new Coords(row, column));
+            if(fields[row][column].getOwner() != null && fields[row][column].getOwner() != player)
+              resultNotOwner.add(new Coords(row, column));
+            else
+              resultOwner.add(new Coords(row, column));
           }
         }
       }
 
-      return result;
+      return new Pair<>(resultOwner, resultNotOwner);
     }
 
     @Override
@@ -189,20 +201,29 @@ public class BoardFactory {
     }
 
     @Override
-    public void markFields(Collection<Coords> collection) {
-      if (collection != null) {
-        markedFields.addAll(collection);
+    public void markFields(Collection<Coords> toMove, Collection<Coords> toAttack) {
+      if (toMove != null) {
+        markedFieldsToMove.addAll(toMove);
+      }
+      if (toAttack != null) {
+        markedFieldsToAttack.addAll(toAttack);
       }
     }
 
     @Override
     public void unmarkAllFields() {
-      markedFields.clear();
+      markedFieldsToMove.clear();
+      markedFieldsToAttack.clear();
     }
 
     @Override
-    public Collection<Coords> getMarkedFields() {
-      return markedFields;
+    public Collection<Coords> getMarkedFieldsToMove() {
+      return markedFieldsToMove;
+    }
+
+    @Override
+    public Collection<Coords> getMarkedFieldsToAttack() {
+      return markedFieldsToAttack;
     }
 
     @Override
@@ -248,7 +269,31 @@ public class BoardFactory {
     return fieldFactory.produce(background, building, mob, free);
   }
 
-  public Building produceBuilding(String type) {
-    return buildingFactory.produce(type);
+  public Building produceBuilding(String type, Player player) {
+    return buildingFactory.produce(type, player);
+  }
+
+  public void build(Board board, Coords coords, String buildingType, Player owner) {
+    Field field = board.getField(coords);
+    Field newField = produceField(
+        field.getBackground(),
+        produceBuilding(buildingType, owner),
+        field.getMob(),
+        field.isFree()
+    );
+
+    board.setField(coords, newField);
+  }
+
+  public void destroyBuilding(Board board, Coords coords) {
+    Field field = board.getField(coords);
+    Field newField = produceField(
+        field.getBackground(),
+        null,
+        field.getMob(),
+        field.isFree()
+    );
+
+    board.setField(coords, newField);
   }
 }

@@ -16,7 +16,7 @@
       </HBox>
 
       <HBox style="-fx-background-color: blue;">
-         <Canvas fx:id="board" width="1080.0" height="690.0" />
+         <Canvas fx:id="boardCanvas" width="1080.0" height="690.0" />
 
          <VBox prefWidth="250.0" style="-fx-background-color: green;">
             <StackPane fx:id="minimap" prefHeight="160.0" style="-fx-background-color: blue;"/>

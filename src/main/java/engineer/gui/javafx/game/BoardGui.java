@@ -1,6 +1,7 @@
 package engineer.gui.javafx.game;
 
-import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.Camera;
+import engineer.engine.gamestate.board.Board;
 import engineer.engine.presenters.game.BoardPresenter;
 import engineer.gui.javafx.TextureManager;
 import engineer.gui.javafx.controllers.MouseController;
@@ -18,11 +19,11 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   private final TextureManager textureManager;
   private final MouseController mouseController;
 
-  public BoardGui(Canvas canvas, TextureManager textureManager, GameState gameState) {
+  public BoardGui(Canvas canvas, TextureManager textureManager, Board board, Camera camera) {
     this.canvas = canvas;
     this.textureManager = textureManager;
 
-    presenter = new BoardPresenter(gameState, this);
+    presenter = new BoardPresenter(board, camera, this);
     mouseController = new MouseController(canvas);
   }
 
@@ -42,6 +43,12 @@ public class BoardGui implements BoardPresenter.View, MouseController.Observer {
   public void markField(Box box) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.drawImage(textureManager.getTexture("tileEnlighten"), box.left(), box.top(), box.width(), box.height());
+  }
+
+  @Override
+  public void attackField(Box box) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.drawImage(textureManager.getTexture("tileAttack"), box.left(), box.top(), box.width(), box.height());
   }
 
   private static final double CAMERA_SPEED_SCALE = 1000.0;

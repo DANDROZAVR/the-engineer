@@ -35,7 +35,7 @@ public class FightSystem {
         int lifeAttacker = attacker.getMobsAmount() * attacker.getMobsLife();
         int lifeDefender = defender.getMobsAmount() * defender.getMobsLife();
 
-        while(lifeAttacker > 0 && lifeDefender > 0){
+        while(lifeAttacker > 0 && lifeDefender > 0)                     {
             int attackValue = 0;
             for(int i = 0; i < Math.ceil((double)lifeAttacker/attacker.getMobsLife()); i++)
                 attackValue += (int)rng.nextGaussian() + attacker.getMobsAttack();

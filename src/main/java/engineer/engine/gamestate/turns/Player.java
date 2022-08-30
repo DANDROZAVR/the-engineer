@@ -1,6 +1,5 @@
 package engineer.engine.gamestate.turns;
 
-import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.resource.Resource;
 
 import java.util.LinkedList;

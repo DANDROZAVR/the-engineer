@@ -4,6 +4,7 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
 import engineer.utils.Coords;
+import javafx.util.Pair;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,10 +30,12 @@ public interface Board {
   void selectField(Coords coords);
   Coords getSelectedCoords();
 
-  Collection<Coords> getNearestFields(Coords coords, int range);
+  Pair<Collection<Coords>, Collection<Coords>> getNearestFields(Coords coords, int range);
   List<Coords> findPath(Coords start, Coords finish);
 
-  void markFields(Collection<Coords> collection);
+  void markFields(Collection<Coords> fieldsToMark, Collection<Coords> fieldsToFight);
+
   void unmarkAllFields();
-  Collection<Coords> getMarkedFields();
+  Collection<Coords> getMarkedFieldsToMove();
+  Collection<Coords> getMarkedFieldsToAttack();
 }

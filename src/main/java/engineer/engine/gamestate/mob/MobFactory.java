@@ -19,11 +19,13 @@ public class MobFactory {
         private final Player owner;
         private int number;
         private int remainingSteps;
+        private boolean canAttackInThisTurn;
 
         public MobImpl(String type, int mobsAmount, Player owner) {
             this.type = type;
             this.number = mobsAmount;
             this.owner = owner;
+            this.canAttackInThisTurn = true;
             reset();
         }
 
@@ -76,6 +78,15 @@ public class MobFactory {
         @Override
         public void reset() {
             remainingSteps = descriptionMap.get(type).stepsPerTurn;
+            canAttackInThisTurn = true;
+        }
+
+        public boolean canAttackInThisTurn() {
+            return canAttackInThisTurn;
+        }
+
+        public void makeAttack() {
+            canAttackInThisTurn = false;
         }
     }
 

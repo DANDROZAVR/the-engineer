@@ -1,7 +1,6 @@
 package engineer.engine.presenters.game;
 
 import engineer.engine.gamestate.Camera;
-import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.utils.Box;
 import engineer.utils.Coords;
@@ -16,9 +15,9 @@ public class MinimapPresenter {
   private final Camera camera;
   private final View view;
 
-  public MinimapPresenter(GameState gameState, View view) {
-    board = gameState.getBoard();
-    camera = gameState.getCamera();
+  public MinimapPresenter(Board board, Camera camera, View view) {
+    this.board = board;
+    this.camera = camera;
     this.view = view;
   }
 

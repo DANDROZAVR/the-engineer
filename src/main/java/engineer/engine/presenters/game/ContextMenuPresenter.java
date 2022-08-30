@@ -1,13 +1,15 @@
 package engineer.engine.presenters.game;
 
-import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
+import engineer.engine.gamestate.building.BuildingsController;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.FightSystem;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.resource.Resource;
 import engineer.engine.gamestate.turns.Player;
+import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 
 import java.util.ArrayList;
@@ -17,21 +19,28 @@ public class ContextMenuPresenter {
   public interface View {
     void showGeneralInfoWindow(String playerName, List<Resource> resources);
     void showBuildingsChosenWindow(String picture, String type, List<Resource> input);
-    void showBuildingInfoWindow(String picture, String type);
+    void showBuildingInfoWindow(String picture, String type, int level);
     void showBuildingsListWindow(List<Building> buildings);
     void startFight();
-
     void showFight(List<String> newItems);
+    void showMobInfo();
   }
 
-  private final GameState gameState;
   private final Board board;
+  private final MobsController mobsController;
+  private final FightSystem fightSystem;
+  private final TurnSystem turnSystem;
+  private final BuildingsController buildingsController;
+
   private final View view;
   private List<Building> tempListOfAllBuildings;
-  public ContextMenuPresenter(GameState gameState, View view) {
-    this.gameState = gameState;
-    board = gameState.getBoard();
+  public ContextMenuPresenter(Board board, MobsController mobsController, FightSystem fightSystem, TurnSystem turnSystem, BuildingsController buildingsController, View view) {
+    this.board = board;
     this.view = view;
+    this.mobsController = mobsController;
+    this.fightSystem = fightSystem;
+    this.turnSystem = turnSystem;
+    this.buildingsController = buildingsController;
   }
 
   private Building chosenBuilding;
@@ -40,7 +49,7 @@ public class ContextMenuPresenter {
     @Override
     public void onSelectionChanged(Coords coords) {
       onFieldSelection(coords);
-      gameState.getMobsController().onSelectionChanged(coords);
+      mobsController.onSelectionChanged(coords);
     }
   };
 
@@ -64,33 +73,43 @@ public class ContextMenuPresenter {
   };
 
   public void start() {
-    gameState.getMobsController().getFightSystem().addObserver(fightObserver);
+    fightSystem.addObserver(fightObserver);
     board.addObserver(boardObserver);
   }
 
   public void close() {
     board.removeObserver(boardObserver);
-    gameState.getMobsController().getFightSystem().removeObserver(fightObserver);
+    fightSystem.removeObserver(fightObserver);
   }
 
   public void onFieldSelection(Coords coords) {
     Field field = board.getField(coords);
+    if (field.getMob() != null) {
+      onShowMobInfo();
+      return;
+    }
     if (field.getBuilding() == null) {
-      // we should somehow understand that field is covered with some resources
       onShowBuildingsList();
     } else {
-      view.showBuildingInfoWindow(field.getBuilding().getTexture(), field.getBuilding().getType());
+      chosenBuilding = field.getBuilding();
+      view.showBuildingInfoWindow(field.getBuilding().getTexture(), field.getBuilding().getType(), field.getBuilding().getLevel());
     }
   }
 
+  private void onShowMobInfo() {
+    view.showMobInfo();
+  }
+
   public void onShowGeneralInfo() {
-    Player player = gameState.getTurnSystem().getCurrentPlayer();
+    Player player = turnSystem.getCurrentPlayer();
     String nickname = player.getNickname();
     List<Resource> resources = player.getResources();
     view.showGeneralInfoWindow(nickname, resources);
   }
 
   public void onBuildingChoose(int index){
+    if (index >= tempListOfAllBuildings.size())
+      return;
     Building building = tempListOfAllBuildings.get(index);
     chosenBuilding = null;
     if (building != null) {
@@ -100,7 +119,7 @@ public class ContextMenuPresenter {
   }
 
   public void onShowBuildingsList() {
-    tempListOfAllBuildings = gameState.getAllBuildingsList();
+    tempListOfAllBuildings = buildingsController.getAllBuildingsList();
     view.showBuildingsListWindow(tempListOfAllBuildings);
   }
 
@@ -108,13 +127,30 @@ public class ContextMenuPresenter {
   public void onBuild() {
     Coords selectedField = board.getSelectedCoords();
     if (chosenBuilding != null && selectedField != null) {
-      Player player = gameState.getTurnSystem().getCurrentPlayer();
+      Player player = turnSystem.getCurrentPlayer();
       if (player.retrieveResourcesFromSchema(chosenBuilding.getResToBuild())) {
-        gameState.build(selectedField, chosenBuilding.getType());
-        view.showBuildingInfoWindow(chosenBuilding.getTexture(), chosenBuilding.getType());
+        buildingsController.build(selectedField, chosenBuilding.getType(), turnSystem.getCurrentPlayer());
+        view.showBuildingInfoWindow(chosenBuilding.getTexture(), chosenBuilding.getType(), chosenBuilding.getLevel());
       } else {
         // TODO: show pop-up about insufficient resources
       }
+    }
+  }
+  public void onDestroy() {
+    Coords selectedField = board.getSelectedCoords();
+    if (selectedField != null) {
+      buildingsController.destroyBuilding(selectedField);
+      onFieldSelection(selectedField);
+    }
+  }
+
+  public void onUpgrade() {
+    Coords selectedField = board.getSelectedCoords();
+    Player player = turnSystem.getCurrentPlayer();
+    if (player.retrieveResourcesFromSchema(chosenBuilding.getResToBuild())) {
+      Field field = board.getField(selectedField);
+      field.getBuilding().upgrade();
+      view.showBuildingInfoWindow(field.getBuilding().getTexture(), field.getBuilding().getType(), field.getBuilding().getLevel());
     }
   }
 }

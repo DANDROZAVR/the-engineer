@@ -1,7 +1,6 @@
 package engineer.engine.presenters.game;
 
 import engineer.engine.gamestate.Camera;
-import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
@@ -12,15 +11,16 @@ public class BoardPresenter {
     void drawField(Box box, String texture);
     void drawSelection(Box box);
     void markField(Box box);
+    void attackField(Box selectionBox);
   }
 
   private final Board board;
   private final Camera camera;
   private final View view;
 
-  public BoardPresenter(GameState gameState, View view) {
-    board = gameState.getBoard();
-    camera = gameState.getCamera();
+  public BoardPresenter(Board board, Camera camera, View view) {
+    this.board = board;
+    this.camera = camera;
     this.view = view;
   }
 
@@ -42,10 +42,17 @@ public class BoardPresenter {
       }
     }
 
-    for(Coords i : board.getMarkedFields()){
+    for(Coords i : board.getMarkedFieldsToMove()){
       Box selectionBox = camera.getFieldBox(i);
       if (camera.isFieldVisible(i)) {
         view.markField(selectionBox);
+      }
+    }
+
+    for(Coords i : board.getMarkedFieldsToAttack()){
+      Box selectionBox = camera.getFieldBox(i);
+      if (camera.isFieldVisible(i)) {
+        view.attackField(selectionBox);
       }
     }
 

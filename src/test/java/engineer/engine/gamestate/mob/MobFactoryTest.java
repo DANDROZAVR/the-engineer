@@ -4,7 +4,7 @@ import engineer.engine.gamestate.turns.Player;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MobFactoryTest {
     @Mock Player player;
@@ -37,5 +37,16 @@ class MobFactoryTest {
 
         mob.addMobs(-2);
         assertEquals(2, mob.getMobsAmount());
+    }
+
+    @Test
+    public void testAttack() {
+        MobFactory mobFactory = new MobFactory();
+        mobFactory.addMobType("mobType1", "texture1", 5, 3, 2);
+        Mob mob = mobFactory.produce( "mobType1", 4, null);
+
+        assertTrue(mob.canAttackInThisTurn());
+        mob.makeAttack();
+        assertFalse(mob.canAttackInThisTurn());
     }
 }

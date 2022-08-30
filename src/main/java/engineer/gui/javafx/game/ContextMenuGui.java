@@ -1,8 +1,12 @@
 package engineer.gui.javafx.game;
 
-import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
+import engineer.engine.gamestate.building.BuildingsController;
+import engineer.engine.gamestate.mob.FightSystem;
+import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.resource.Resource;
+import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.engine.presenters.game.ContextMenuPresenter;
 import engineer.gui.javafx.TextureManager;
 import javafx.collections.FXCollections;
@@ -24,7 +28,7 @@ import java.util.List;
 
 public class ContextMenuGui implements ContextMenuPresenter.View {
   @FXML private VBox root;
-  @FXML private AnchorPane rootBuildingTable, rootNewBuilding, rootBuildingInfo, rootGeneralInfo;
+  @FXML private AnchorPane rootBuildingTable, rootNewBuilding, rootBuildingInfo, rootGeneralInfo, rootMobInfo;
   @FXML private GridPane gridBuildingsTable;
   @FXML private Label nameNewBuilding, nameBuildingInfo, nameCurrentPlayer;
   @FXML private ImageView imageNewBuilding, imageBuildingInfo;
@@ -35,21 +39,26 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @FXML private HBox inputsNewBuilding;
 
   private TextureManager textureManager;
-  @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-  private GameState gameState;
   private ContextMenuPresenter presenter;
+  private TurnSystem turnSystem;
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
   private VBox window;
   private final int nGridColumns = 3;
 
   private final ObservableList<String> fightInfo = FXCollections.observableArrayList();
 
-  public void setup(VBox window, TextureManager textureManager, GameState gameState) {
+  public void setup(VBox window, TextureManager textureManager, Board board, MobsController mobsController, FightSystem fightSystem, TurnSystem turnSystem, BuildingsController buildingsController) {
     this.window = window;
-    this.presenter = new ContextMenuPresenter(gameState, this);
+    this.presenter = new ContextMenuPresenter(
+        board,
+        mobsController,
+        fightSystem,
+        turnSystem,
+        buildingsController,
+        this
+    );
+    this.turnSystem = turnSystem;
     this.textureManager = textureManager;
-    this.gameState = gameState;
-
     rootDynamicNode.getChildren().clear();
     onShowGeneralInfo();
     window.getChildren().add(root);
@@ -84,7 +93,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   }
 
   public void onTurnEnd() {
-    gameState.getTurnSystem().nextTurn();
+    turnSystem.nextTurn();
     presenter.onShowGeneralInfo();
   }
 
@@ -110,10 +119,10 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     rootDynamicNode.getChildren().add(rootNewBuilding);
   }
   @Override
-  public void showBuildingInfoWindow(String picture, String type) {
+  public void showBuildingInfoWindow(String picture, String type, int level) {
     rootDynamicNode.getChildren().clear();
     imageBuildingInfo.setImage(textureManager.getTexture(picture));
-    nameBuildingInfo.setText(type);
+    nameBuildingInfo.setText(type + " level " + level);
     rootDynamicNode.getChildren().add(rootBuildingInfo);
   }
   @Override
@@ -143,7 +152,14 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     showFight.setItems(fightInfo);
     rootDynamicNode.getChildren().add(showFight);
   }
-  
+
+  @Override
+  public void showMobInfo() {
+    rootDynamicNode.getChildren().clear();
+    rootDynamicNode.getChildren().add(rootMobInfo);
+  }
+
+
   private void setResourcesImageAndAmountHelper(ObservableList<Node> boxChildren, int idx, List<Resource> resourcesToBuild) {
     ImageView resImage = ((ImageView) boxChildren.get(0));
     Label resAmount = ((Label) boxChildren.get(1));
@@ -160,4 +176,13 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   private String getCssButtonConfigurationForPicture(String picture) {
     return "-fx-background-image: url('" + textureManager.getTexturePath() + picture + ".png'); -fx-background-size: 66.6px 66.6px; -fx-background-color: transparent;";
   }
+
+  public void onDestroy() {
+    presenter.onDestroy();
+  }
+
+  public void onUpgrade() {
+    presenter.onUpgrade();
+  }
+
 }

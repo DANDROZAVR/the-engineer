@@ -1,6 +1,7 @@
 package engineer.engine.gamestate.mob;
 
 import engineer.engine.gamestate.board.Board;
+import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
@@ -18,6 +19,7 @@ public class MobsController implements TurnSystem.Observer{
   private final TurnSystem turnSystem;
   private final FightSystem fightSystem;
   private Coords lastSelectedCoords;
+  public boolean attackSelected;
   private final Board board;
   private final List<Mob> mobList = new ArrayList<>();
 
@@ -26,6 +28,7 @@ public class MobsController implements TurnSystem.Observer{
     this.turnSystem = turnSystem;
     this.mobFactory = mobFactory;
     this.fightSystem = fightSystem;
+    this.attackSelected = false;
 
     turnSystem.addObserver(this);
   }
@@ -35,7 +38,8 @@ public class MobsController implements TurnSystem.Observer{
   }
 
   public void onSelectionChanged(Coords coords) {
-    boolean isReachable = board.getMarkedFields().contains(coords);
+    boolean isReachable = board.getMarkedFieldsToMove().contains(coords);
+    boolean isCausingFight = board.getMarkedFieldsToAttack().contains(coords);
     board.unmarkAllFields();
 
     Player player = turnSystem.getCurrentPlayer();
@@ -45,8 +49,16 @@ public class MobsController implements TurnSystem.Observer{
     if (isReachable && lastSelectedCoords != null) {
       moveMob(lastSelectedCoords, coords);
     } else if (mob != null && player.equals(mob.getOwner())) {
-      Collection<Coords> collection = board.getNearestFields(coords, mob.getRemainingSteps());
-      board.markFields(collection);
+      Pair<Collection<Coords>, Collection<Coords>> collection = board.getNearestFields(coords, mob.getRemainingSteps());
+      board.markFields(collection.getKey(), collection.getValue());
+    }
+
+    if (isCausingFight && lastSelectedCoords != null) {
+      if (board.getField(coords).getMob() != null) {
+        makeFight(lastSelectedCoords, coords);
+      } else if (board.getField(coords).getBuilding() != null) {
+        attackBuilding(lastSelectedCoords, coords);
+      }
     }
 
     lastSelectedCoords = coords;
@@ -64,7 +76,7 @@ public class MobsController implements TurnSystem.Observer{
 
     Mob mob = fieldFrom.getMob();
 
-    if(!mob.getOwner().equals(player)){
+    if(!mob.getOwner().equals(player)) {
       throw new RuntimeException("Forbidden mob move");
     }
 
@@ -75,7 +87,7 @@ public class MobsController implements TurnSystem.Observer{
 
       if(!player.equals(mobTo.getOwner())){
         mob.reduceRemainingSteps(stepsUsed);
-        makeFight(from, to, mob, mobTo);
+        makeFight(from, to);
         return;
       }
 
@@ -103,18 +115,41 @@ public class MobsController implements TurnSystem.Observer{
     ));
   }
 
-  void makeFight(Coords from, Coords to, Mob mob, Mob mobTo) {
+  private void makeFight(Coords from, Coords to) {
+    int stepsUsed = board.findPath(from, to).size() - 1;
+    Mob mob = board.getField(from).getMob();
+    Mob mobTo = board.getField(to).getMob();
+    mob.reduceRemainingSteps(stepsUsed);
     setMob(from, null);
     Pair<Integer, Integer> result = fightSystem.makeFight(mob, mobTo);
     mob.addMobs(result.getKey() - mob.getMobsAmount());
     mobTo.addMobs(result.getValue() - mobTo.getMobsAmount());
-    if(result.getKey() > result.getValue()){
+    if (result.getKey() > result.getValue()) {
       setMob(to, mob);
-    }
-    else{
-      if(mobTo.getMobsAmount() <= 0)
+    } else {
+      if (mobTo.getMobsAmount() <= 0)
         mobTo = null;
       setMob(to, mobTo);
+    }
+  }
+
+  private void attackBuilding(Coords mobCoords, Coords buildingCoords) {
+    Mob mob = board.getField(mobCoords).getMob();
+    Building building = board.getField(buildingCoords).getBuilding();
+
+    if (!mob.canAttackInThisTurn()) {
+      return;
+    }
+    mob.makeAttack();
+    building.reduceLifeRemaining(mob.getMobsAmount() * mob.getMobsAttack());
+    if (building.getLifeRemaining() == 0) {
+      Field fieldTo = board.getField(buildingCoords);
+      board.setField(buildingCoords, board.produceField(
+          fieldTo.getBackground(),
+          null,
+          fieldTo.getMob(),
+          fieldTo.isFree()
+      ));
     }
   }
 

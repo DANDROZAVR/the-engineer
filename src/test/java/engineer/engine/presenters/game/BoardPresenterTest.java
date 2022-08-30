@@ -1,29 +1,41 @@
 package engineer.engine.presenters.game;
 
 import engineer.engine.gamestate.Camera;
-import engineer.engine.gamestate.GameState;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
 import engineer.utils.Box;
 import engineer.utils.Coords;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 class BoardPresenterTest {
+  private AutoCloseable closeable;
+  @Mock private Camera camera;
+  @Mock private Board board;
+
+  @BeforeEach
+  public void setUp() {
+    closeable = MockitoAnnotations.openMocks(this);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeable.close();
+  }
+
   @Test
   public void testStartAndClose() {
-    GameState gameState = mock(GameState.class);
-    Camera camera = mock(Camera.class);
-    Board board = mock(Board.class);
-    when(gameState.getCamera()).thenReturn(camera);
-    when(gameState.getBoard()).thenReturn(board);
-    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
+    BoardPresenter presenter = new BoardPresenter(board, camera, mock(BoardPresenter.View.class));
 
     presenter.start();
     presenter.close();
@@ -39,10 +51,7 @@ class BoardPresenterTest {
 
   @Test
   public void testCameraInteractions() {
-    GameState gameState = mock(GameState.class);
-    Camera camera = mock(Camera.class);
-    when(gameState.getCamera()).thenReturn(camera);
-    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
+    BoardPresenter presenter = new BoardPresenter(board, camera, mock(BoardPresenter.View.class));
 
     presenter.moveCamera(6.0, 9.0);
     presenter.zoomCamera(8.7);
@@ -53,13 +62,8 @@ class BoardPresenterTest {
 
   @Test
   public void testSelection() {
-    GameState gameState = mock(GameState.class);
-    Camera camera = mock(Camera.class);
-    Board board = mock(Board.class);
-    when(gameState.getCamera()).thenReturn(camera);
-    when(gameState.getBoard()).thenReturn(board);
     doReturn(new Coords(3, 5)).when(camera).getFieldByPoint(4.0, 15.0);
-    BoardPresenter presenter = new BoardPresenter(gameState, mock(BoardPresenter.View.class));
+    BoardPresenter presenter = new BoardPresenter(board, camera, mock(BoardPresenter.View.class));
 
     presenter.selectField(4.0, 15.0);
     presenter.unselectField();
@@ -70,15 +74,8 @@ class BoardPresenterTest {
 
   @Test
   public void testRedrawVisibleFields() {
-    GameState gameState = mock(GameState.class);
-
-    Camera camera = mock(Camera.class);
-    Board board = mock(Board.class);
-    when(gameState.getCamera()).thenReturn(camera);
-    when(gameState.getBoard()).thenReturn(board);
-
     BoardPresenter.View view = mock(BoardPresenter.View.class);
-    BoardPresenter presenter = new BoardPresenter(gameState, view);
+    BoardPresenter presenter = new BoardPresenter(board, camera, view);
 
     Field visibleField = mock(Field.class), notVisibleField = mock(Field.class);
     Box visibleBox = new Box(3, 4, 15, 8);
@@ -116,7 +113,7 @@ class BoardPresenterTest {
     when(board.getSelectedCoords()).thenReturn(new Coords(3, 4));
     when(visibleField.getMob()).thenReturn(mob);
     when(notVisibleField.getBuilding()).thenReturn(building);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(5, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(5, 1)));
 
     presenter.redrawVisibleFields();
 
@@ -134,27 +131,22 @@ class BoardPresenterTest {
     when(board.getSelectedCoords()).thenReturn(new Coords(5, 1));
     when(visibleField.getBuilding()).thenReturn(building);
     when(notVisibleField.getMob()).thenReturn(mob);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(3, 4)));
-
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(3, 4)));
+    when(board.getMarkedFieldsToAttack()).thenReturn(List.of(new Coords(3, 4)));
     presenter.redrawVisibleFields();
 
     verify(view).drawField(visibleBox, "visibleFieldBackground");
     verify(view).drawField(visibleBox, "Building");
     verify(view).markField(visibleBox);
+    verify(view).attackField(visibleBox);
     verifyNoMoreInteractions(view);
   }
 
   @Test
   public void testBoardObserver() {
-    GameState gameState = mock(GameState.class);
-    Camera camera = mock(Camera.class);
-    Board board = mock(Board.class);
-    when(gameState.getCamera()).thenReturn(camera);
-    when(gameState.getBoard()).thenReturn(board);
     BoardPresenter.View view = mock(BoardPresenter.View.class);
     ArgumentCaptor<Board.Observer> boardCaptor = ArgumentCaptor.forClass(Board.Observer.class);
-
-    BoardPresenter presenter = new BoardPresenter(gameState, view);
+    BoardPresenter presenter = new BoardPresenter(board, camera, view);
 
     when(board.getRows()).thenReturn(3);
     when(board.getColumns()).thenReturn(3);

@@ -34,6 +34,7 @@ class MobsControllerTest {
   @Mock private Field fieldWithoutMob;
   @Mock private Mob mob;
   @Mock private FightSystem fightSystem;
+  @Mock private Building building;
 
   @BeforeEach
   public void setUp() {
@@ -47,6 +48,8 @@ class MobsControllerTest {
 
     doReturn(mob).when(fieldWithMob).getMob();
     doReturn(null).when(fieldWithoutMob).getMob();
+
+    when(board.getNearestFields(any(Coords.class), anyInt())).thenReturn(new Pair<>(null, null));
   }
 
   @AfterEach
@@ -61,7 +64,7 @@ class MobsControllerTest {
 
     mobsController.onSelectionChanged(new Coords(1, 1));
     verify(board).unmarkAllFields();
-    verify(board, never()).markFields(anyCollection());
+    verify(board, never()).markFields(anyCollection(), anyCollection());
     verify(board, never()).setField(any(Coords.class), any(Field.class));
   }
 
@@ -73,7 +76,7 @@ class MobsControllerTest {
 
     mobsController.onSelectionChanged(new Coords(1, 1));
     verify(board).unmarkAllFields();
-    verify(board, never()).markFields(anyCollection());
+    verify(board, never()).markFields(anyCollection(), anyCollection());
     verify(board, never()).setField(any(Coords.class), any(Field.class));
   }
 
@@ -84,11 +87,11 @@ class MobsControllerTest {
 
     when(board.getField(any(Coords.class))).thenReturn(fieldWithMob);
     when(fieldWithMob.getMob().getOwner()).thenReturn(player);
-    when(board.getNearestFields(any(Coords.class), anyInt())).thenReturn(collection);
+    when(board.getNearestFields(any(Coords.class), anyInt())).thenReturn(new Pair<>(collection, null));
 
     mobsController.onSelectionChanged(new Coords(1, 1));
     verify(board).unmarkAllFields();
-    verify(board).markFields(collection);
+    verify(board).markFields(collection, null);
     verify(board, never()).setField(any(Coords.class), any(Field.class));
   }
 
@@ -100,7 +103,7 @@ class MobsControllerTest {
 
     when(board.getField(any(Coords.class))).thenReturn(fieldWithoutMob);
     when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(2, 1)));
     when(board.findPath(new Coords(0, 0), new Coords(2, 1))).thenReturn(List.of(
             new Coords(0, 0),
             new Coords(1, 0),
@@ -137,7 +140,7 @@ class MobsControllerTest {
 
     when(board.getField(any(Coords.class))).thenReturn(fieldWithoutMob);
     when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(0, 0)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(0, 0)));
     when(board.findPath(new Coords(0, 0), new Coords(0, 0))).thenReturn(List.of(
             new Coords(0, 0)
     ));
@@ -157,13 +160,15 @@ class MobsControllerTest {
 
     mobsController.onSelectionChanged(new Coords(0, 0));
     mobsController.onSelectionChanged(new Coords(0, 0));
+
+    verify(board, never()).setField(any(), any());
   }
 
   @Test
   public void testExceptionOnEmptyStartField() {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     when(board.getField(any())).thenReturn(fieldWithoutMob);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(2, 1)));
     when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
 
     mobsController.onSelectionChanged(new Coords(0, 0));
@@ -179,7 +184,7 @@ class MobsControllerTest {
     when(mob.getOwner()).thenReturn(player2);
     when(board.getField(any())).thenReturn(fieldWithoutMob);
     when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(2, 1)));
     when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
 
     mobsController.onSelectionChanged(new Coords(0, 0));
@@ -202,7 +207,7 @@ class MobsControllerTest {
     when(otherMob.getOwner()).thenReturn(player);
     when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
     when(board.getField(new Coords(2, 1))).thenReturn(targetField);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(2, 1)));
     when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
 
     mobsController.onSelectionChanged(new Coords(0, 0));
@@ -217,6 +222,8 @@ class MobsControllerTest {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     Field targetField = mock(Field.class);
     Mob otherMob = mock(Mob.class);
+    Coords from = new Coords(0, 0);
+    Coords to = new Coords(0, 1);
 
     when(otherMob.getType()).thenReturn("troop");
     when(targetField.getMob()).thenReturn(otherMob);
@@ -224,13 +231,37 @@ class MobsControllerTest {
 
     when(mob.getOwner()).thenReturn(player);
     when(otherMob.getOwner()).thenReturn(null);
-    when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
-    when(board.getField(new Coords(2, 1))).thenReturn(targetField);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getField(from)).thenReturn(fieldWithMob);
+    when(board.getField(to)).thenReturn(targetField);
+    when(board.getMarkedFieldsToAttack()).thenReturn(List.of(to));
     when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
 
-    mobsController.onSelectionChanged(new Coords(0, 0));
-    mobsController.onSelectionChanged(new Coords(2, 1));
+    mobsController.onSelectionChanged(from);
+    mobsController.onSelectionChanged(to);
+    verify(fightSystem).makeFight(mob, otherMob);
+  }
+
+  @Test
+  public void testFightOnTargetNotOwnedMobWhileMoving() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+    Field targetField = mock(Field.class);
+    Mob otherMob = mock(Mob.class);
+    Coords from = new Coords(0, 0);
+    Coords to = new Coords(0, 1);
+
+    when(otherMob.getType()).thenReturn("troop");
+    when(targetField.getMob()).thenReturn(otherMob);
+    doReturn(new Pair<>(1, 0)).when(fightSystem).makeFight(any(), any());
+
+    when(mob.getOwner()).thenReturn(player);
+    when(otherMob.getOwner()).thenReturn(null);
+    when(board.getField(from)).thenReturn(fieldWithMob);
+    when(board.getField(to)).thenReturn(targetField);
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(to));
+    when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
+
+    mobsController.onSelectionChanged(from);
+    mobsController.onSelectionChanged(to);
     verify(fightSystem).makeFight(mob, otherMob);
   }
 
@@ -239,19 +270,23 @@ class MobsControllerTest {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
 
     Field targetField = mock(Field.class);
-    Field fieldWithNullMob = mock(Field.class);
     Field fieldWithMob = mock(Field.class);
-    Mob otherMob = mock(Mob.class);
+    Field fieldWithNullMob = mock(Field.class);
     Coords from = new Coords(0, 0);
     Coords to = new Coords(0, 1);
 
+    when(fieldWithMob.getMob()).thenReturn(mob);
+    when(targetField.getMob()).thenReturn(mob);
     when(board.getField(from)).thenReturn(fieldWithMob);
     when(board.getField(to)).thenReturn(targetField);
     when(board.produceField(any(), any(), eq(null), anyBoolean())).thenReturn(fieldWithNullMob);
     when(board.produceField(any(), any(), notNull(), anyBoolean())).thenReturn(fieldWithMob);
+    when(board.getMarkedFieldsToAttack()).thenReturn(List.of(to));
     doReturn(new Pair<>(0, 0)).when(fightSystem).makeFight(any(), any());
+    doReturn(0).when(mob).getMobsAmount();
 
-    mobsController.makeFight(from, to, mob, otherMob);
+    mobsController.onSelectionChanged(from);
+    mobsController.onSelectionChanged(to);
     verify(board).setField(eq(from), eq(fieldWithNullMob));
     verify(board).setField(eq(to), eq(fieldWithNullMob));
   }
@@ -263,19 +298,48 @@ class MobsControllerTest {
     Field targetField = mock(Field.class);
     Field fieldWithNullMob = mock(Field.class);
     Field fieldWithMob = mock(Field.class);
-    Mob otherMob = mock(Mob.class);
     Coords from = new Coords(0, 0);
     Coords to = new Coords(0, 1);
 
+    when(fieldWithMob.getMob()).thenReturn(mob);
+    when(targetField.getMob()).thenReturn(mob);
     when(board.getField(from)).thenReturn(fieldWithMob);
     when(board.getField(to)).thenReturn(targetField);
     when(board.produceField(any(), any(), eq(null), anyBoolean())).thenReturn(fieldWithNullMob);
     when(board.produceField(any(), any(), notNull(), anyBoolean())).thenReturn(fieldWithMob);
+    when(board.getMarkedFieldsToAttack()).thenReturn(List.of(to));
     doReturn(new Pair<>(2, 0)).when(fightSystem).makeFight(any(), any());
 
-    mobsController.makeFight(from, to, mob, otherMob);
+    mobsController.onSelectionChanged(from);
+    mobsController.onSelectionChanged(to);
     verify(board).setField(eq(from), eq(fieldWithNullMob));
     verify(board).setField(eq(to), eq(fieldWithMob));
+  }
+
+  @Test
+  public void testMobBuildingAttack() {
+    MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
+
+    Field fieldWithBuilding = mock(Field.class);
+    Field emptyField = mock(Field.class);
+    Field fieldWithMob = mock(Field.class);
+    Coords from = new Coords(0, 0);
+    Coords to = new Coords(0, 1);
+
+    when(fieldWithMob.getMob()).thenReturn(mob);
+    when(fieldWithBuilding.getBuilding()).thenReturn(building);
+    when(board.getField(from)).thenReturn(fieldWithMob);
+    when(board.getField(to)).thenReturn(fieldWithBuilding);
+    when(board.produceField(any(), notNull(), any(), anyBoolean())).thenReturn(fieldWithBuilding);
+    when(board.produceField(any(), eq(null), eq(null), anyBoolean())).thenReturn(emptyField);
+    when(board.produceField(any(), any(), notNull(), anyBoolean())).thenReturn(fieldWithMob);
+    when(board.getMarkedFieldsToAttack()).thenReturn(List.of(to));
+    when(mob.canAttackInThisTurn()).thenReturn(true);
+    doReturn(new Pair<>(2, 0)).when(fightSystem).makeFight(any(), any()); /* change to when()..thenReturn() */
+
+    mobsController.onSelectionChanged(from);
+    mobsController.onSelectionChanged(to);
+    verify(board).setField(eq(to), eq(emptyField));
   }
 
   @Test
@@ -292,7 +356,7 @@ class MobsControllerTest {
     when(otherMob.getOwner()).thenReturn(player);
     when(board.getField(new Coords(0, 0))).thenReturn(fieldWithMob);
     when(board.getField(new Coords(2, 1))).thenReturn(targetField);
-    when(board.getMarkedFields()).thenReturn(List.of(new Coords(2, 1)));
+    when(board.getMarkedFieldsToMove()).thenReturn(List.of(new Coords(2, 1)));
     when(board.findPath(any(), any())).thenReturn(Collections.emptyList());
 
     mobsController.onSelectionChanged(new Coords(0, 0));
@@ -355,7 +419,7 @@ class MobsControllerTest {
   }
 
   @Test
-  void onTurnChange() {
+  void testOnTurnChange() {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     mobsController.addMob(mob);
     mobsController.onTurnChange();
@@ -364,7 +428,7 @@ class MobsControllerTest {
   }
 
   @Test
-  void getFightSystem() {
+  void testGetFightSystem() {
     MobsController mobsController = new MobsController(board, turnSystem, mobFactory, fightSystem);
     assertEquals(mobsController.getFightSystem(), fightSystem);
   }

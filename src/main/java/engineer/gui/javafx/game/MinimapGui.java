@@ -1,6 +1,6 @@
 package engineer.gui.javafx.game;
 
-import engineer.engine.gamestate.GameState;
+import engineer.engine.gamestate.Camera;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.presenters.game.MinimapPresenter;
 import engineer.gui.javafx.TextureManager;
@@ -28,12 +28,12 @@ public class MinimapGui implements MinimapPresenter.View {
   private double fieldSize;
   private double offsetX, offsetY;
 
-  public MinimapGui(StackPane window, TextureManager textureManager, GameState gameState) {
+  public MinimapGui(StackPane window, TextureManager textureManager, Board board, Camera camera) {
     this.window = window;
     this.textureManager = textureManager;
-    board = gameState.getBoard();
+    this.board = board;
 
-    presenter = new MinimapPresenter(gameState, this);
+    presenter = new MinimapPresenter(board, camera, this);
   }
 
   @Override

@@ -5,8 +5,10 @@ import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.turns.Player;
 import engineer.utils.JsonLoader;
 import engineer.utils.Coords;
+import javafx.util.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,23 +125,30 @@ public class BoardTest {
   @Test
   public void testGetNearestFields() {
     JsonObject boardJson = new JsonLoader().loadJson("/board/mock-2-4.json");
-
     BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
     Board board = boardFactory.produceBoard(boardJson);
-
     Field blockedField = boardFactory.produceField(null, null, null, false);
     board.setField(new Coords(0, 1), blockedField);
 
-    assertNull(board.getNearestFields(new Coords(0, 1), 5));
-    assertThat(board.getNearestFields(new Coords(1, 2), 2))
-            .containsExactlyInAnyOrder(
-                    new Coords(0, 2),
-                    new Coords(0, 3),
-                    new Coords(1, 0),
-                    new Coords(1, 1),
-                    new Coords(1, 2),
-                    new Coords(1, 3)
-            );
+    Mob mob1 = mock(Mob.class);
+    Player player1 = mock(Player.class);
+    Player player2 = mock(Player.class);
+    doReturn(mob1).when(board.getField(new Coords(1, 2))).getMob();
+    doReturn(player1).when(mob1).getOwner();
+    doReturn(player2).when(board.getField(new Coords(1, 3))).getOwner();
+
+    assertNull(board.getNearestFields(new Coords(0, 1), 5).getKey());
+    Pair<Collection<Coords>, Collection<Coords>> pair = board.getNearestFields(new Coords(1, 2), 2);
+    assertThat(pair.getKey()).containsExactlyInAnyOrder(
+        new Coords(0, 2),
+        new Coords(0, 3),
+        new Coords(1, 0),
+        new Coords(1, 1),
+        new Coords(1, 2)
+    );
+    assertThat(pair.getValue()).containsExactlyInAnyOrder(
+        new Coords(1, 3)
+    );
   }
 
   @Test
@@ -152,11 +162,11 @@ public class BoardTest {
     board.setField(new Coords(0, 0), blockedField);
 
     assertThat(board.findPath(new Coords(1, 0), new Coords(0, 1)))
-            .containsExactly(
-                    new Coords(1, 0),
-                    new Coords(1, 1),
-                    new Coords(0, 1)
-            );
+        .containsExactly(
+            new Coords(1, 0),
+            new Coords(1, 1),
+            new Coords(0, 1)
+        );
 
     board.setField(new Coords(1, 1), blockedField);
 
@@ -166,26 +176,32 @@ public class BoardTest {
   @Test
   public void testMarkFields() {
     JsonObject boardJson = new JsonLoader().loadJson("/board/mock-6-6.json");
-
     BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
     Board board = boardFactory.produceBoard(boardJson);
 
-    assertThat(board.getMarkedFields()).isEmpty();
+    assertThat(board.getMarkedFieldsToMove()).isEmpty();
 
     board.markFields(List.of(
-            new Coords(3, 5),
-            new Coords(3, 5),
-            new Coords(2, 1)
+        new Coords(3, 5),
+        new Coords(3, 5),
+        new Coords(2, 1)
+    ), List.of(
+        new Coords(1, 11),
+        new Coords(12, 2)
     ));
-    board.markFields(null);
+    board.markFields(null, null);
 
-    assertThat(board.getMarkedFields()).containsExactlyInAnyOrder(
-            new Coords(3, 5),
-            new Coords(2, 1)
+    assertThat(board.getMarkedFieldsToMove()).containsExactlyInAnyOrder(
+        new Coords(3, 5),
+        new Coords(2, 1)
+    );
+    assertThat(board.getMarkedFieldsToAttack()).containsExactlyInAnyOrder(
+        new Coords(1, 11),
+        new Coords(12, 2)
     );
 
     board.unmarkAllFields();
 
-    assertThat(board.getMarkedFields()).isEmpty();
+    assertThat(board.getMarkedFieldsToMove()).isEmpty();
   }
 }

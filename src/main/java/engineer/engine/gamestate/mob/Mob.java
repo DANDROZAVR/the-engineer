@@ -12,6 +12,8 @@ public interface Mob {
     int getMobsLife();
     int getRemainingSteps();
     void reduceRemainingSteps(int steps);
+    boolean canAttackInThisTurn();
+    void makeAttack();
     Player getOwner();
     void reset();
 }
