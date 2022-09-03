@@ -1,8 +1,10 @@
 package engineer.engine.gamestate.mob;
 
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.turns.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MobFactory {
@@ -25,6 +27,16 @@ public class MobFactory {
             this.type = type;
             this.number = mobsAmount;
             this.owner = owner;
+            this.canAttackInThisTurn = true;
+            reset();
+        }
+
+        public MobImpl(JsonObject jsonMob, List<Player> players) {
+            if (jsonMob == null)
+                throw new RuntimeException("Passing nullable JsonObject for mob's constructor");
+            this.type = jsonMob.get("type").getAsString();
+            this.number = jsonMob.get("mobs_amount").getAsInt();
+            this.owner = players.stream().filter(x -> x.getNickname().equals(jsonMob.get("player").getAsString())).findAny().orElse(null);
             this.canAttackInThisTurn = true;
             reset();
         }
@@ -92,5 +104,11 @@ public class MobFactory {
 
     public Mob produce(String type, int number, Player owner) {
         return new MobImpl(type, number, owner);
+    }
+
+    public Mob produce(JsonObject jsonMob, List<Player> players) {
+        if (jsonMob.size() == 0)
+            return null;
+        return new MobImpl(jsonMob, players);
     }
 }

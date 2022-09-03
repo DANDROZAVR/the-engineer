@@ -6,6 +6,7 @@ import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.turns.Player;
 import engineer.utils.Coords;
 import javafx.util.Pair;
@@ -15,7 +16,6 @@ import java.util.stream.Stream;
 
 public class BoardFactory {
   private final FieldFactory fieldFactory;
-  private final BuildingFactory buildingFactory;
 
   private class BoardImpl implements Board {
     private final int rows, columns;
@@ -25,6 +25,7 @@ public class BoardFactory {
     private Coords selectedField;
 
     private final List<Observer> observerList = new LinkedList<>();
+
 
     public BoardImpl(int rows, int columns) {
       this.rows = rows;
@@ -232,36 +233,33 @@ public class BoardFactory {
     }
   }
 
-  public BoardFactory(FieldFactory fieldFactory, BuildingFactory buildingFactory) {
+  public BoardFactory(FieldFactory fieldFactory) {
     this.fieldFactory = fieldFactory;
-    this.buildingFactory = buildingFactory;
   }
 
-  public Board produceBoard(JsonObject json) {
+  public Board produceBoard(JsonObject json, BuildingFactory buildingFactory, MobFactory mobFactory, List<Player> players) {
     int rows = json.get("rows").getAsInt();
     int columns = json.get("columns").getAsInt();
-
-    Board board = new BoardImpl(rows, columns);
+    Board board = new BoardFactory.BoardImpl(rows, columns);
 
     for (int row = 0; row < board.getRows(); row++) {
       for (int column = 0; column < board.getColumns(); column++) {
         JsonObject fieldJson = json.get("board")
-                .getAsJsonArray()
-                .get(row)
-                .getAsJsonArray()
-                .get(column)
-                .getAsJsonObject();
+            .getAsJsonArray()
+            .get(row)
+            .getAsJsonArray()
+            .get(column)
+            .getAsJsonObject();
 
         Field field = produceField(
-                fieldJson.get("background").getAsString(),
-                null,
-                null,
-                fieldJson.get("free").getAsBoolean()
+            fieldJson.get("background").getAsString(),
+            buildingFactory.produce(fieldJson.get("building").getAsJsonObject(), players),
+            mobFactory.produce(fieldJson.get("mob").getAsJsonObject(), players),
+            fieldJson.get("free").getAsBoolean()
         );
         board.setField(new Coords(row, column), field);
       }
     }
-
     return board;
   }
 
@@ -269,15 +267,11 @@ public class BoardFactory {
     return fieldFactory.produce(background, building, mob, free);
   }
 
-  public Building produceBuilding(String type, Player player) {
-    return buildingFactory.produce(type, player);
-  }
-
-  public void build(Board board, Coords coords, String buildingType, Player owner) {
+  public void build(Board board, Coords coords, Building building) {
     Field field = board.getField(coords);
     Field newField = produceField(
         field.getBackground(),
-        produceBuilding(buildingType, owner),
+        building,
         field.getMob(),
         field.isFree()
     );

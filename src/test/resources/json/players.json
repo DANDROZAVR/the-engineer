@@ -1,0 +1,17 @@
+{
+  "players":[
+    {
+      "nickname":"Winner",
+      "resources":[
+        {
+          "type":"wood",
+          "res_amount":88
+        }
+      ]
+    },
+    {
+      "nickname":"Loser",
+      "resources":[]
+    }
+  ]
+}

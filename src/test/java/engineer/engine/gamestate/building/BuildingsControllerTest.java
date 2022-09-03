@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 class BuildingsControllerTest {
@@ -18,10 +21,14 @@ class BuildingsControllerTest {
   @Mock private BoardFactory boardFactory;
   @Mock private Board board;
   @Mock private Player player;
+  @Mock private BuildingFactory buildingFactory;
+  @Mock private Building standardBuilding;
 
   @BeforeEach
   public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
+
+    doReturn(standardBuilding).when(buildingFactory).produce(any(String.class), any(Player.class));
   }
 
   @AfterEach
@@ -31,23 +38,23 @@ class BuildingsControllerTest {
 
   @Test
   public void getAllBuildingsList() {
-    BuildingsController buildingsController = new BuildingsController(boardFactory, board);
+    BuildingsController buildingsController = new BuildingsController(boardFactory, buildingFactory, board);
     buildingsController.getAllBuildingsList();
-    verify(boardFactory).produceBuilding("Mayor's house", null);
+    verify(buildingFactory).produce("Mayor's house", null);
   }
 
   @Test
   public void build() {
-    BuildingsController buildingsController = new BuildingsController(boardFactory, board);
+    BuildingsController buildingsController = new BuildingsController(boardFactory, buildingFactory, board);
     Coords coords = new Coords(3, 5);
 
     buildingsController.build(coords, "type", player);
-    verify(boardFactory).build(board, coords, "type", player);
+    verify(boardFactory).build(board, coords, standardBuilding);
   }
 
   @Test
   public void destroyBuild() {
-    BuildingsController buildingsController = new BuildingsController(boardFactory, board);
+    BuildingsController buildingsController = new BuildingsController(boardFactory, buildingFactory, board);
     Coords coords = new Coords(3, 5);
 
     buildingsController.destroyBuilding(coords);

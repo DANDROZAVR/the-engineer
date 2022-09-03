@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonLoaderTest {
   @Test
   public void testLoadJson() {
-    JsonObject object = new JsonLoader().loadJson("/json/sample.json");
+    JsonObject object = new JsonLoader().loadJson("src/test/resources/json/sample.json");
     assertEquals("value", object.get("name").getAsString());
   }
 
@@ -16,7 +16,7 @@ class JsonLoaderTest {
   public void testFileNotFound() {
     assertThrows(
             RuntimeException.class,
-            () -> new JsonLoader().loadJson("/json/not_found.json")
+            () -> new JsonLoader().loadJson("src/test/resources/json/not_found.json")
     );
   }
 
@@ -24,7 +24,7 @@ class JsonLoaderTest {
   public void testMalformedFile() {
     assertThrows(
             RuntimeException.class,
-            () -> new JsonLoader().loadJson("/json/malformed.json")
+            () -> new JsonLoader().loadJson("src/test/resources/json/malformed.json")
     );
   }
 }

@@ -1,5 +1,6 @@
 package engineer.engine.gamestate;
 
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.Building;
@@ -21,8 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class GameStateFactoryTest {
   private AutoCloseable closeable;
@@ -39,7 +39,7 @@ class GameStateFactoryTest {
   @BeforeEach
   void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
-    doReturn(resource).when(resourceFactory).produce(any());
+    doReturn(resource).when(resourceFactory).produce(any(String.class));
   }
 
   @AfterEach
@@ -66,7 +66,7 @@ class GameStateFactoryTest {
   @Test
   void testProduceBoardFactory() {
     GameStateFactory gameStateFactory = new GameStateFactory();
-    assertNotNull(gameStateFactory.produceBoardFactory(fieldFactory, buildingFactory));
+    assertNotNull(gameStateFactory.produceBoardFactory(fieldFactory));
   }
 
   @Test
@@ -74,7 +74,7 @@ class GameStateFactoryTest {
     GameStateFactory gameStateFactory = new GameStateFactory();
     assertThrows(
         RuntimeException.class,
-        () -> gameStateFactory.produceBoard(boardFactory, "not found")
+        () -> gameStateFactory.produceBoard(boardFactory, "not found", null, null, null)
     );
   }
 
@@ -90,6 +90,18 @@ class GameStateFactoryTest {
     List<Player> players = gameStateFactory.producePlayers(List.of("one", "another"), resourceFactory);
     assertEquals("one", players.get(0).getNickname());
     assertEquals("another", players.get(1).getNickname());
+  }
+
+  @Test
+  void testProducePlayersFromJSon() {
+    GameStateFactory gameStateFactory = new GameStateFactory();
+    List<Player> players = gameStateFactory.producePlayers("src/test/resources/json/players.json", resourceFactory);
+    JsonObject jsonWood = new JsonObject();
+    jsonWood.addProperty("type", "wood");
+    jsonWood.addProperty("res_amount", 88);
+
+    assertEquals(2, players.size());
+    verify(resourceFactory).produce(eq(jsonWood));
   }
 
   @Test
@@ -121,6 +133,6 @@ class GameStateFactoryTest {
   @Test
   void testProduceBuildingController() {
     GameStateFactory gameStateFactory = new GameStateFactory();
-    assertNotNull(gameStateFactory.produceBuildingController(boardFactory, board));
+    assertNotNull(gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board));
   }
 }

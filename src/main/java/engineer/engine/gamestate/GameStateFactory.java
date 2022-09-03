@@ -1,5 +1,7 @@
 package engineer.engine.gamestate;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.building.BuildingFactory;
@@ -35,12 +37,12 @@ public class GameStateFactory {
     return buildingFactory;
   }
 
-  public BoardFactory produceBoardFactory(FieldFactory fieldFactory, BuildingFactory buildingFactory) {
-    return new BoardFactory(fieldFactory, buildingFactory);
+  public BoardFactory produceBoardFactory(FieldFactory fieldFactory) {
+    return new BoardFactory(fieldFactory);
   }
 
-  public Board produceBoard(BoardFactory boardFactory, String boardPath) {
-    return boardFactory.produceBoard(new JsonLoader().loadJson(boardPath));
+  public Board produceBoard(BoardFactory boardFactory, String boardPath, BuildingFactory buildingFactory, MobFactory mobFactory, List<Player> players) {
+    return boardFactory.produceBoard(new JsonLoader().loadJson(boardPath), buildingFactory, mobFactory, players);
   }
 
   public FightSystem produceFightSystem() {
@@ -53,6 +55,14 @@ public class GameStateFactory {
       players.add(new Player(name));
     players.get(0).addResource(resourceFactory.produce("wood"));
     players.get(0).getResources().get(0).addResAmount(100);
+    return players;
+  }
+
+  public List<Player> producePlayers(String boardPath, ResourceFactory resourceFactory) {
+    JsonObject jsonPlayers = new JsonLoader().loadJson(boardPath);
+    List<Player> players = new LinkedList<>();
+    for (JsonElement jsonElement : jsonPlayers.get("players").getAsJsonArray())
+      players.add(new Player(jsonElement.getAsJsonObject(), resourceFactory));
     return players;
   }
 
@@ -78,7 +88,7 @@ public class GameStateFactory {
     return new MobsController(board, turnSystem, mobFactory, fightSystem);
   }
 
-  public BuildingsController produceBuildingController(BoardFactory boardFactory, Board board) {
-    return new BuildingsController(boardFactory, board);
+  public BuildingsController produceBuildingController(BoardFactory boardFactory, BuildingFactory buildingFactory, Board board) {
+    return new BuildingsController(boardFactory, buildingFactory, board);
   }
 }

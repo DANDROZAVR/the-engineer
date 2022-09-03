@@ -1,6 +1,9 @@
 package engineer.engine.gamestate.turns;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.resource.Resource;
+import engineer.engine.gamestate.resource.ResourceFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +15,15 @@ public class Player {
 
   public Player(String nickname) {
     this.nickname = nickname;
+  }
+  public Player(JsonObject jsonPlayer, ResourceFactory resourceFactory) {
+    if (jsonPlayer == null)
+      throw new RuntimeException("Passing nullable JsonObject for player's constructor");
+    this.nickname = jsonPlayer.get("nickname").getAsString();
+    for (JsonElement jsonResource : jsonPlayer.getAsJsonArray("resources")) {
+      Resource resource = resourceFactory.produce(jsonResource.getAsJsonObject());
+      resources.add(resource);
+    }
   }
 
   public String getNickname() {

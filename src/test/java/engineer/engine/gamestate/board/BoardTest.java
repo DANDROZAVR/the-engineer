@@ -2,9 +2,11 @@ package engineer.engine.gamestate.board;
 
 import com.google.gson.JsonObject;
 import engineer.engine.gamestate.building.Building;
+import engineer.engine.gamestate.building.BuildingFactory;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.field.FieldFactory;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.turns.Player;
 import engineer.utils.JsonLoader;
 import engineer.utils.Coords;
@@ -17,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +30,9 @@ public class BoardTest {
   private AutoCloseable closeable;
 
   @Mock private FieldFactory fieldFactory;
+  @Mock private BuildingFactory buildingFactory;
+  @Mock private MobFactory mobFactory;
+  private final List<Player> players = new LinkedList<>();
 
   @BeforeEach
   public void setUp() {
@@ -44,14 +50,15 @@ public class BoardTest {
   @AfterEach
   public void tearDown() throws Exception {
     closeable.close();
+
   }
 
   @Test
   public void testConstructor() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-3-5.json");
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-3-5.json");
 
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
     assertEquals(3, board.getRows());
     assertEquals(5, board.getColumns());
 
@@ -63,12 +70,14 @@ public class BoardTest {
     }
   }
 
+
+
   @Test
   public void testSetFields() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-3-5.json");
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-3-5.json");
 
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
     Field field = fieldFactory.produce("background", null, null,false);
 
     board.setField(new Coords(0, 0), field);
@@ -78,10 +87,10 @@ public class BoardTest {
 
   @Test
   public void testFieldObservers() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-3-5.json");
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-3-5.json");
 
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
     Board.Observer observer = Mockito.spy(new Board.Observer() {});
     Field field = mock(Field.class);
     Mob mob = mock(Mob.class);
@@ -107,10 +116,10 @@ public class BoardTest {
 
   @Test
   public void testSelectingField() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-3-5.json");
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-3-5.json");
 
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
     Board.Observer observer = mock(Board.Observer.class);
 
     assertNull(board.getSelectedCoords());
@@ -124,9 +133,9 @@ public class BoardTest {
 
   @Test
   public void testGetNearestFields() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-2-4.json");
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-2-4.json");
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
     Field blockedField = boardFactory.produceField(null, null, null, false);
     board.setField(new Coords(0, 1), blockedField);
 
@@ -153,10 +162,10 @@ public class BoardTest {
 
   @Test
   public void testGetPath() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-2-4.json");
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-2-4.json");
 
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
 
     Field blockedField = boardFactory.produceField(null, null, null, false);
     board.setField(new Coords(0, 0), blockedField);
@@ -175,9 +184,9 @@ public class BoardTest {
 
   @Test
   public void testMarkFields() {
-    JsonObject boardJson = new JsonLoader().loadJson("/board/mock-6-6.json");
-    BoardFactory boardFactory = new BoardFactory(fieldFactory, null);
-    Board board = boardFactory.produceBoard(boardJson);
+    JsonObject boardJson = new JsonLoader().loadJson("src/test/resources/board/mock-6-6.json");
+    BoardFactory boardFactory = new BoardFactory(fieldFactory);
+    Board board = boardFactory.produceBoard(boardJson, buildingFactory, mobFactory, players);
 
     assertThat(board.getMarkedFieldsToMove()).isEmpty();
 

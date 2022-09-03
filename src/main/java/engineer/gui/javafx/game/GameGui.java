@@ -1,6 +1,7 @@
 package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.Camera;
+import engineer.engine.gamestate.GameStateConvertor;
 import engineer.engine.gamestate.GameStateFactory;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
@@ -15,7 +16,7 @@ import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.gui.javafx.GuiLoader;
 import engineer.gui.javafx.TextureManager;
-import engineer.utils.Coords;
+import engineer.utils.JsonSaver;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -33,11 +34,10 @@ public class GameGui {
 
   public static final String TITLE = "The Engineer";
 
-  public static void start(Stage window, MenuController menuController) {
+  public static void start(Stage window, MenuController menuController, String jsonGamePath) {
     GameGui gameGui = GuiLoader.loadGui("/fxml/game.fxml");
-    gameGui.setup(window, menuController);
+    gameGui.setup(window, menuController, jsonGamePath);
   }
-
 
 
   private Stage window;
@@ -58,28 +58,28 @@ public class GameGui {
   private ContextMenuGui contextMenuGui;
   private PauseGui pauseGui;
 
-  private void setup(Stage window, MenuController menuController) {
+  private Board tempBoard;
+  private List<Player> tempPlayers;
+
+  private void setup(Stage window, MenuController menuController, String jsonGamePath) {
     this.window = window;
     this.menuController = menuController;
-
     GameStateFactory gameStateFactory = new GameStateFactory();
     FieldFactory fieldFactory = new FieldFactory(); // should it be also in gamestate?
     ResourceFactory resourceFactory = gameStateFactory.produceResourceFactory();
     BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory);
-    BoardFactory boardFactory = gameStateFactory.produceBoardFactory(fieldFactory, buildingFactory);
+    BoardFactory boardFactory = gameStateFactory.produceBoardFactory(fieldFactory);
     MobFactory mobFactory = gameStateFactory.produceMobFactory();
     FightSystem fightSystem = gameStateFactory.produceFightSystem();
-    Board board = gameStateFactory.produceBoard(boardFactory, "/board/sample.json");
+    // List<Player> players = gameStateFactory.producePlayers(List.of("Winner", "Loser"), resourceFactory);
+    List<Player> players = gameStateFactory.producePlayers(jsonGamePath, resourceFactory);
+    Board board = gameStateFactory.produceBoard(boardFactory, jsonGamePath, buildingFactory, mobFactory, players);
+    //Board board = gameStateFactory.produceBoard(boardFactory, "/board/sample.json");
     Camera camera = gameStateFactory.produceCamera(board, boardCanvas.getWidth(), boardCanvas.getHeight());
-    List<Player> players = gameStateFactory.producePlayers(List.of("Winner", "Loser"), resourceFactory);
+
     TurnSystem turnSystem = gameStateFactory.produceTurnSystem(players);
     MobsController mobsController = gameStateFactory.produceMobsController(board, turnSystem, mobFactory, fightSystem);
-    BuildingsController buildingsController = gameStateFactory.produceBuildingController(boardFactory, board);
-
-    // TODO: temp
-    mobsController.setMob(new Coords(3, 5), mobsController.produceMob("wood", 15, players.get(0)));
-    mobsController.setMob(new Coords(8, 8), mobsController.produceMob("wood", 5, players.get(1)));
-    mobsController.setMob(new Coords(2, 7), mobsController.produceMob("exit", 1, players.get(1)));
+    BuildingsController buildingsController = gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board);
 
     boardGui = new BoardGui(boardCanvas, textureManager, board, camera);
     minimapGui = new MinimapGui(minimap, textureManager, board, camera);
@@ -87,6 +87,12 @@ public class GameGui {
     contextMenuGui.setup(contextMenu, textureManager, board, mobsController, fightSystem, turnSystem, buildingsController);
     pauseGui = GuiLoader.loadGui("/fxml/pause.fxml");
     pauseGui.setup(root, this::endGame);
+
+    root.getScene().getWindow().setOnCloseRequest(x ->
+        new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(board, players)));
+
+    tempBoard = board;
+    tempPlayers = players;
 
     scene = new Scene(root);
     startGame();
@@ -109,10 +115,10 @@ public class GameGui {
   }
 
   public void endGame() {
+    new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(tempBoard, tempPlayers));
     boardGui.close();
     minimapGui.close();
     contextMenuGui.close();
-
     menuController.endGame();
   }
 }

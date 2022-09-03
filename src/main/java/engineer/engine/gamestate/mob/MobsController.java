@@ -1,5 +1,6 @@
 package engineer.engine.gamestate.mob;
 
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
@@ -30,6 +31,7 @@ public class MobsController implements TurnSystem.Observer{
     this.fightSystem = fightSystem;
     this.attackSelected = false;
 
+    parseMobs(board);
     turnSystem.addObserver(this);
   }
   @Override
@@ -153,6 +155,12 @@ public class MobsController implements TurnSystem.Observer{
     }
   }
 
+  public Mob produceMob(JsonObject jsonMob, List<Player> players) {
+    Mob mob = mobFactory.produce(jsonMob, players);
+    addMob(mob);
+    return mob;
+  }
+
   public Mob produceMob(String type, int mobsAmount, Player owner) {
     Mob newMob = mobFactory.produce(type, mobsAmount, owner);
     addMob(newMob);
@@ -178,5 +186,15 @@ public class MobsController implements TurnSystem.Observer{
 
   public FightSystem getFightSystem() {
     return fightSystem;
+  }
+
+  private void parseMobs(Board board) {
+    for (int i = 0; i < board.getRows(); ++i)
+      for (int j = 0; j < board.getColumns(); ++j) {
+        Field field = board.getField(new Coords(i, j));
+        Mob mob = field.getMob();
+        if (mob != null)
+          addMob(mob);
+      }
   }
 }

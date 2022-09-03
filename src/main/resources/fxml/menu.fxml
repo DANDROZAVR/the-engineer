@@ -5,17 +5,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<StackPane xmlns="http://javafx.com/javafx/18"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="engineer.gui.javafx.menu.MenuGui"
-           fx:id="root">
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="engineer.gui.javafx.menu.MenuGui">
    <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../images/menu/background.png" />
    </ImageView>
    <VBox alignment="CENTER" spacing="5.0">
-      <Button prefHeight="50.0" prefWidth="200.0" text="New Game" onAction="#startGame"
-              style="-fx-font-size: 1.5em;" />
-      <Button prefHeight="50.0" prefWidth="200.0" text="Exit" onAction="#exitGame"
-              style="-fx-font-size: 1.5em;" />
+      <Button onAction="#startGame" prefHeight="50.0" prefWidth="200.0" style="-fx-font-size: 1.5em;" text="New Game" />
+      <Button fx:id="continueButton" onAction="#continueGame" prefHeight="50.0" prefWidth="200.0" style="-fx-font-size: 1.5em;" text="Continue" />
+      <Button onAction="#exitGame" prefHeight="50.0" prefWidth="200.0" style="-fx-font-size: 1.5em;" text="Exit" />
    </VBox>
 </StackPane>

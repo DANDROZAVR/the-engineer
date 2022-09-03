@@ -1,6 +1,8 @@
 package engineer.engine.gamestate.resource;
 
 
+import com.google.gson.JsonObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,13 @@ public class ResourceFactory {
       this.type = type;
       if (!descriptionMap.containsKey(type))
         throw new RuntimeException("Resource type isn't added [" + type + "]");
+    }
+
+    public ResImpl(JsonObject jsonResource) {
+      if (jsonResource == null)
+        throw new RuntimeException("Passing nullable JsonObject for resource's constructor");
+      this.type = jsonResource.get("type").getAsString();
+      this.resAmount = jsonResource.get("res_amount").getAsInt();
     }
 
     @Override
@@ -52,6 +61,10 @@ public class ResourceFactory {
 
   public Resource produce(String type) {
     return new ResImpl(type);
+  }
+
+  public Resource produce(JsonObject jsonResource) {
+    return new ResImpl(jsonResource);
   }
 
 }

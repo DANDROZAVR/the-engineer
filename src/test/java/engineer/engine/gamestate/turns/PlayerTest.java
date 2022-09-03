@@ -1,11 +1,10 @@
 package engineer.engine.gamestate.turns;
 
-import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.resource.Resource;
+import engineer.engine.gamestate.resource.ResourceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
@@ -16,9 +15,6 @@ import static org.mockito.Mockito.*;
 
 class PlayerTest {
   private AutoCloseable closeable;
-
-  @Mock private Mob mob;
-  @Mock private Mob mob2;
 
   @BeforeEach
   public void setUp() {
@@ -70,5 +66,12 @@ class PlayerTest {
     anotherWoodResource.addResAmount(-10);
     player.retrieveResourcesFromSchema(singleWoodResource);
     verify(woodResource).addResAmount(-10);
+  }
+
+  @Test
+  void testConstructorFromJson() {
+    assertThrows(RuntimeException.class,
+        () -> new Player(null, mock(ResourceFactory.class))
+    );
   }
 }

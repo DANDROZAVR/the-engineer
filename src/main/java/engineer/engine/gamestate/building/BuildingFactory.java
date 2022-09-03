@@ -1,5 +1,6 @@
 package engineer.engine.gamestate.building;
 
+import com.google.gson.JsonObject;
 import engineer.engine.gamestate.resource.Resource;
 import engineer.engine.gamestate.turns.Player;
 
@@ -26,6 +27,15 @@ public class BuildingFactory {
       this.lifeRemaining = descriptionMap.get(type).life;
       this.player = player;
       this.level = 1;
+    }
+
+    public BuildingImpl(JsonObject jsonBuilding, List<Player> players) {
+      if (jsonBuilding == null)
+        throw new RuntimeException("Passing nullable JsonObject for resource's constructor");
+      this.type = jsonBuilding.get("type").getAsString();
+      this.lifeRemaining = jsonBuilding.get("life_remaining").getAsInt();
+      this.level = jsonBuilding.get("level").getAsInt();
+      this.player = players.stream().filter(x -> x.getNickname().equals(jsonBuilding.get("owner").getAsString())).findAny().orElse(null);
     }
 
     @Override
@@ -71,4 +81,9 @@ public class BuildingFactory {
     return new BuildingImpl(type, player);
   }
 
+  public Building produce(JsonObject jsonBuilding, List<Player> players) {
+    if (jsonBuilding.size() == 0)
+      return null;
+    return new BuildingImpl(jsonBuilding, players);
+  }
 }
