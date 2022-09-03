@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MobFactoryTest {
     @Mock Player player;
-
+/*
     @Test
     public void testProduceMob() {
         MobFactory mobFactory = new MobFactory();
@@ -37,6 +37,7 @@ class MobFactoryTest {
 
         mob.addMobs(-2);
         assertEquals(2, mob.getMobsAmount());
+<<<<<<< HEAD
     }
 
     @Test
@@ -49,4 +50,6 @@ class MobFactoryTest {
         mob.makeAttack();
         assertFalse(mob.canAttackInThisTurn());
     }
+=======
+    }*/
 }

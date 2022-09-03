@@ -6,12 +6,14 @@ import engineer.engine.gamestate.field.Field;
 import engineer.utils.Box;
 import engineer.utils.Coords;
 
+
 public class BoardPresenter {
   public interface View {
     void drawField(Box box, String texture);
     void drawSelection(Box box);
     void markField(Box box);
     void attackField(Box selectionBox);
+    //void Fight(String description);
   }
 
   private final Board board;

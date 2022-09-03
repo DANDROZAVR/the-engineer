@@ -67,9 +67,9 @@ public class GameGui {
     GameStateFactory gameStateFactory = new GameStateFactory();
     FieldFactory fieldFactory = new FieldFactory(); // should it be also in gamestate?
     ResourceFactory resourceFactory = gameStateFactory.produceResourceFactory();
-    BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory);
+    MobFactory mobFactory = gameStateFactory.produceMobFactory(resourceFactory);
+    BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory, mobFactory);
     BoardFactory boardFactory = gameStateFactory.produceBoardFactory(fieldFactory);
-    MobFactory mobFactory = gameStateFactory.produceMobFactory();
     FightSystem fightSystem = gameStateFactory.produceFightSystem();
     // List<Player> players = gameStateFactory.producePlayers(List.of("Winner", "Loser"), resourceFactory);
     List<Player> players = gameStateFactory.producePlayers(jsonGamePath, resourceFactory);
@@ -79,7 +79,8 @@ public class GameGui {
 
     TurnSystem turnSystem = gameStateFactory.produceTurnSystem(players);
     MobsController mobsController = gameStateFactory.produceMobsController(board, turnSystem, mobFactory, fightSystem);
-    BuildingsController buildingsController = gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board);
+
+    BuildingsController buildingsController = gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board, turnSystem);
 
     boardGui = new BoardGui(boardCanvas, textureManager, board, camera);
     minimapGui = new MinimapGui(minimap, textureManager, board, camera);
@@ -88,8 +89,8 @@ public class GameGui {
     pauseGui = GuiLoader.loadGui("/fxml/pause.fxml");
     pauseGui.setup(root, this::endGame);
 
-    root.getScene().getWindow().setOnCloseRequest(x ->
-        new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(board, players)));
+    //root.getScene().getWindow().setOnCloseRequest(x ->
+    //        new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(board, players)));
 
     tempBoard = board;
     tempPlayers = players;

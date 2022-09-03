@@ -58,7 +58,7 @@ class GameStateFactoryTest {
   @Test
   void testProduceBuildingFactory() {
     GameStateFactory gameStateFactory = new GameStateFactory();
-    BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory);
+    BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory, mobFactory);
     Building building = buildingFactory.produce("Armorer House", null);
     assertEquals("house", building.getTexture());
   }
@@ -120,7 +120,7 @@ class GameStateFactoryTest {
   @Test
   void testProduceMobFactory() {
     GameStateFactory gameStateFactory = new GameStateFactory();
-    MobFactory mobFactory = gameStateFactory.produceMobFactory();
+    MobFactory mobFactory = gameStateFactory.produceMobFactory(resourceFactory);
     assertEquals("wood", mobFactory.produce("wood", 1, null).getTexture());
   }
 
@@ -133,6 +133,6 @@ class GameStateFactoryTest {
   @Test
   void testProduceBuildingController() {
     GameStateFactory gameStateFactory = new GameStateFactory();
-    assertNotNull(gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board));
+    assertNotNull(gameStateFactory.produceBuildingController(boardFactory, buildingFactory, board, turnSystem));
   }
 }

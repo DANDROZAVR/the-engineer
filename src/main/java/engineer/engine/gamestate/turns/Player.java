@@ -43,14 +43,14 @@ public class Player {
     }
   }
 
-  public boolean retrieveResourcesFromSchema(List<Resource> resourcesToBuild) {
+  public boolean retrieveResourcesFromSchema(List<Resource> resourcesToBuild, int numberOfCopies) {
     for (Resource buildRes : resourcesToBuild) {
-      if (!enoughResource(buildRes))
+      if (!enoughResource(buildRes, numberOfCopies))
         return false;
     }
     for (Resource buildRes : resourcesToBuild) {
       Resource playerRes = findPlayerResource(buildRes);
-      playerRes.addResAmount(-buildRes.getResAmount()); // change to reduce?
+      playerRes.addResAmount(-buildRes.getResAmount() * numberOfCopies); // change to reduce?
     }
     return true;
   }
@@ -60,9 +60,9 @@ public class Player {
     return foundedRes.orElse(null);
   }
 
-  private boolean enoughResource(Resource res) {
+  private boolean enoughResource(Resource res, int numberOfCopies) {
     Resource foundedRes = findPlayerResource(res);
     if (foundedRes == null) return false;
-    return foundedRes.getResAmount() >= res.getResAmount();
+    return foundedRes.getResAmount() >= res.getResAmount() * numberOfCopies;
   }
 }

@@ -14,10 +14,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -27,17 +26,19 @@ import java.util.List;
 
 
 public class ContextMenuGui implements ContextMenuPresenter.View {
+
   @FXML private VBox root;
   @FXML private AnchorPane rootBuildingTable, rootNewBuilding, rootBuildingInfo, rootGeneralInfo, rootMobInfo;
   @FXML private GridPane gridBuildingsTable;
-  @FXML private Label nameNewBuilding, nameBuildingInfo, nameCurrentPlayer;
+  @FXML private Label nameNewBuilding, nameBuildingInfo, nameCurrentPlayer, infoMob, buildingHp;
   @FXML private ImageView imageNewBuilding, imageBuildingInfo;
   @FXML private VBox resVBox;
   @FXML private VBox rootDynamicNode;
   @FXML private ListView<String> showFight;
-
   @FXML private HBox inputsNewBuilding;
-
+  @FXML private Slider chooseMobNumber, numberOfMobsToMove;
+  @FXML private Label chooseMobLabel;
+  @FXML private Button destroyButton, updateButton, produceMobsButton;
   private TextureManager textureManager;
   private ContextMenuPresenter presenter;
   private TurnSystem turnSystem;
@@ -52,7 +53,6 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     this.presenter = new ContextMenuPresenter(
         board,
         mobsController,
-        fightSystem,
         turnSystem,
         buildingsController,
         this
@@ -119,10 +119,23 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     rootDynamicNode.getChildren().add(rootNewBuilding);
   }
   @Override
-  public void showBuildingInfoWindow(String picture, String type, int level) {
+  public void showBuildingInfoWindow(String picture, String type, int level, int life, boolean isOwner) {
     rootDynamicNode.getChildren().clear();
     imageBuildingInfo.setImage(textureManager.getTexture(picture));
     nameBuildingInfo.setText(type + " level " + level);
+    buildingHp.setText("Remaining HP: " + life);
+    if (isOwner && !rootBuildingInfo.getChildren().contains(destroyButton)) {
+      rootBuildingInfo.getChildren().add(destroyButton);
+      rootBuildingInfo.getChildren().add(updateButton);
+      rootBuildingInfo.getChildren().add(produceMobsButton);
+      rootBuildingInfo.getChildren().add(chooseMobNumber);
+    }
+   if (!isOwner) {
+      rootBuildingInfo.getChildren().remove(destroyButton);
+      rootBuildingInfo.getChildren().remove(updateButton);
+      rootBuildingInfo.getChildren().remove(produceMobsButton);
+      rootBuildingInfo.getChildren().remove(chooseMobNumber);
+    }
     rootDynamicNode.getChildren().add(rootBuildingInfo);
   }
   @Override
@@ -141,24 +154,18 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   }
 
   @Override
-  public void startFight() {
-    fightInfo.clear();
-  }
-
-  @Override
-  public void showFight(List<String> newItems) {
-    fightInfo.addAll(newItems);
+  public void showMobInfo(String type, int amount, boolean isOwner) {
     rootDynamicNode.getChildren().clear();
-    showFight.setItems(fightInfo);
-    rootDynamicNode.getChildren().add(showFight);
-  }
-
-  @Override
-  public void showMobInfo() {
-    rootDynamicNode.getChildren().clear();
+    infoMob.setText(amount + " " + type + " mobs");
+    rootMobInfo.getChildren().remove(chooseMobLabel);
+    rootMobInfo.getChildren().remove(numberOfMobsToMove);
+    if (isOwner) {
+      rootMobInfo.getChildren().add(chooseMobLabel);
+      numberOfMobsToMove.setMax(amount);
+      rootMobInfo.getChildren().add(numberOfMobsToMove);
+    }
     rootDynamicNode.getChildren().add(rootMobInfo);
   }
-
 
   private void setResourcesImageAndAmountHelper(ObservableList<Node> boxChildren, int idx, List<Resource> resourcesToBuild) {
     ImageView resImage = ((ImageView) boxChildren.get(0));
@@ -185,4 +192,12 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     presenter.onUpgrade();
   }
 
+  public void onMobProductionRequest() {
+    int number = (int) chooseMobNumber.getValue();
+    presenter.onMobProductionRequest(number);
+  }
+
+  public void changeNumberOfMobsSelected() {
+    presenter.setNumberOfMobsToMove((int) numberOfMobsToMove.getValue());
+  }
 }

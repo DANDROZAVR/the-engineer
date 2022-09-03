@@ -9,7 +9,6 @@ import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.mob.MobFactory;
 import engineer.engine.gamestate.turns.Player;
 import engineer.utils.Coords;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -61,6 +60,14 @@ public class BoardFactory {
       observerList.forEach(o -> o.onMobAdded(mob));
     }
 
+    private void onBuildingRemoved(Building building) {
+      observerList.forEach(o -> o.onBuildingRemoved(building));
+    }
+
+    private void onBuildingAdded(Building building) {
+      observerList.forEach(o -> o.onBuildingAdded(building));
+    }
+
     private void onSelectionChanged() {
       observerList.forEach(o -> o.onSelectionChanged(selectedField));
     }
@@ -82,15 +89,21 @@ public class BoardFactory {
 
     @Override
     public void setField(Coords coords, Field field) {
-      if(fields[coords.row()][coords.column()].getMob() != null){
+      if (fields[coords.row()][coords.column()].getMob() != null) {
         onMobRemoved(fields[coords.row()][coords.column()].getMob());
+      }
+      if (fields[coords.row()][coords.column()].getBuilding() != null) {
+        onBuildingRemoved(fields[coords.row()][coords.column()].getBuilding());
       }
 
       fields[coords.row()][coords.column()] = field;
       onFieldChanged(coords);
 
-      if(fields[coords.row()][coords.column()].getMob() != null){
+      if (fields[coords.row()][coords.column()].getMob() != null) {
         onMobAdded(fields[coords.row()][coords.column()].getMob());
+      }
+      if (fields[coords.row()][coords.column()].getBuilding() != null) {
+        onBuildingAdded(fields[coords.row()][coords.column()].getBuilding());
       }
     }
 
@@ -105,7 +118,7 @@ public class BoardFactory {
       return selectedField;
     }
 
-    private List<Coords> getNeighbours(Coords v) {
+    private List<Coords> getNeighbours(Coords v, Player player) {
       return Stream.of(
               new Coords(v.row()-1, v.column()),
               new Coords(v.row()+1, v.column()),
@@ -115,11 +128,13 @@ public class BoardFactory {
               0 <= c.row() && c.row() < rows
               && 0 <= c.column() && c.column() < columns
               && getField(c).isFree()
+              && (getField(c).getOwner() == null || getField(c).getOwner().equals(player))
       ).toList();
     }
 
     private Integer[][] getDistanceFrom(Coords start) {
       Integer[][] distance = new Integer[rows][columns];
+      Player player = getField(start).getOwner();
 
       for (int row=0; row<rows; row++) {
         for (int column=0; column<columns; column++) {
@@ -133,7 +148,7 @@ public class BoardFactory {
 
       Coords v;
       while ((v = queue.poll()) != null) {
-        for (Coords u : getNeighbours(v)) {
+        for (Coords u : getNeighbours(v, player)) {
           if (distance[u.row()][u.column()] == Integer.MAX_VALUE) {
             queue.add(u);
             distance[u.row()][u.column()] = distance[v.row()][v.column()] + 1;
@@ -145,38 +160,45 @@ public class BoardFactory {
     }
 
     @Override
-    public Pair<Collection<Coords>, Collection<Coords>> getNearestFields(Coords coords, int range) {
+    public Collection<Coords> getNearestFields(Coords coords, int range) {
       Integer[][] distanceArray = getDistanceFrom(coords);
 
       if (!getField(coords).isFree()) {
-        return new Pair<>(null, null);
-      }
-
-      Player player = null;
-      if(getField(coords).getMob() != null){
-        player = getField(coords).getMob().getOwner();
+        return null;
       }
 
       Set<Coords> resultOwner = new HashSet<>();
-      Set<Coords> resultNotOwner = new HashSet<>();
       for (int row=0; row<rows; row++) {
         for (int column=0; column<columns; column++) {
-          if (distanceArray[row][column] <= range) {
-            if(fields[row][column].getOwner() != null && fields[row][column].getOwner() != player)
-              resultNotOwner.add(new Coords(row, column));
-            else
-              resultOwner.add(new Coords(row, column));
+          if (distanceArray[row][column] <= range && fields[row][column].getBuilding() == null) {
+            resultOwner.add(new Coords(row, column));
           }
         }
       }
 
-      return new Pair<>(resultOwner, resultNotOwner);
+      return resultOwner;
+    }
+
+    @Override
+    public Collection<Coords> getFieldsToAttack(Coords v, Player player) {
+      return Stream.of(
+              new Coords(v.row()-1, v.column()),
+              new Coords(v.row()+1, v.column()),
+              new Coords(v.row(), v.column()-1),
+              new Coords(v.row(), v.column()+1)
+      ).filter(c ->
+              0 <= c.row() && c.row() < rows
+                      && 0 <= c.column() && c.column() < columns
+                      && getField(c).getOwner() != null
+                      && !player.equals(getField(c).getOwner())
+      ).toList();
     }
 
     @Override
     public List<Coords> findPath(Coords start, Coords finish) {
       Integer[][] distanceArray = getDistanceFrom(start);
       int distance = distanceArray[finish.row()][finish.column()];
+      Player player = getField(start).getOwner();
 
       if (distance == Integer.MAX_VALUE) {
         return null;
@@ -186,7 +208,7 @@ public class BoardFactory {
       result.add(finish);
 
       while (!start.equals(finish)) {
-        for (Coords c : getNeighbours(finish)) {
+        for (Coords c : getNeighbours(finish, player)) {
           if (distanceArray[c.row()][c.column()] == distance-1) {
             finish = c;
             break;

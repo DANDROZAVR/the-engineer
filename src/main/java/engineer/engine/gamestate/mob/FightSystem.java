@@ -10,8 +10,7 @@ import static java.lang.Math.max;
 
 public class FightSystem {
     public interface Observer {
-        void onFightStart(Mob attacker, Mob defender);
-        void onFightTurn(Integer attack, Integer defence);
+        void onFight(Mob attacker, Mob defender);
     }
     private final List<FightSystem.Observer> observerList = new LinkedList<>();
 
@@ -23,40 +22,18 @@ public class FightSystem {
         observerList.remove(observer);
     }
 
-    private final Random rng;
-
-    public FightSystem(Random rng){
-        this.rng = rng;
-    }
-
     public Pair<Integer, Integer> makeFight(Mob attacker, Mob defender) {
-        observerList.forEach(o -> o.onFightStart(attacker, defender));
-
         int lifeAttacker = attacker.getMobsAmount() * attacker.getMobsLife();
         int lifeDefender = defender.getMobsAmount() * defender.getMobsLife();
 
-        while(lifeAttacker > 0 && lifeDefender > 0)                     {
-            int attackValue = 0;
-            for(int i = 0; i < Math.ceil((double)lifeAttacker/attacker.getMobsLife()); i++)
-                attackValue += (int)rng.nextGaussian() + attacker.getMobsAttack();
-
-            int defenceValue = 0;
-            for(int i = 0; i < Math.ceil((double)lifeDefender/defender.getMobsLife()); i++)
-                defenceValue += (int)rng.nextGaussian() + defender.getMobsAttack();
-
-            int finalLifeAttacker = lifeAttacker;
-            int finalLifeDefender = lifeDefender;
-
-            observerList.forEach(o -> o.onFightTurn(finalLifeAttacker, finalLifeDefender));
-
+        while (lifeAttacker > 0 && lifeDefender > 0) {
+            int attackValue = (int)Math.ceil((double)lifeAttacker/attacker.getMobsLife()) * attacker.getMobsAttack();
+            int defenceValue = (int)Math.ceil((double)lifeDefender/defender.getMobsLife()) * defender.getMobsAttack();
             lifeAttacker -= defenceValue;
             lifeDefender -= attackValue;
         }
 
-        int finalLifeDefender1 = lifeDefender;
-        int finalLifeAttacker1 = lifeAttacker;
-
-        observerList.forEach(o -> o.onFightTurn(finalLifeAttacker1, finalLifeDefender1));
+        observerList.forEach(o -> o.onFight(attacker, defender));
 
         return new Pair<>(max((int)Math.ceil((double)lifeAttacker/attacker.getMobsLife()), 0), max((int)Math.ceil((double)lifeDefender/defender.getMobsLife()), 0));
     }

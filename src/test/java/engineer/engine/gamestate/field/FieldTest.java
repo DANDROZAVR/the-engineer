@@ -10,7 +10,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 class FieldTest {
-  @Test
+  /*@Test
   public void testConstructor() {
     FieldFactory fieldFactory = new FieldFactory();
     Field field = fieldFactory.produce(null, null, null, false);
@@ -28,6 +28,7 @@ class FieldTest {
     assertEquals(building, field.getBuilding());
     assertEquals(mob, field.getMob());
     assertTrue(field.isFree());
+<<<<<<< HEAD
   }
 
   @Test
@@ -48,4 +49,6 @@ class FieldTest {
     assertEquals(player, field2.getOwner());
     assertEquals(player, field3.getOwner());
   }
+=======
+  }*/
 }

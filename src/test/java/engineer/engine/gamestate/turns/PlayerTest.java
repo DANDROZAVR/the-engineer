@@ -56,7 +56,7 @@ class PlayerTest {
     assertEquals(15, player.getResources().get(0).getResAmount());
 
     List<Resource> singleWoodResource = Collections.singletonList(anotherWoodResource);
-    player.retrieveResourcesFromSchema(singleWoodResource);
+    player.retrieveResourcesFromSchema(singleWoodResource, 1);
     assertEquals(1, player.getResources().size());
     assertEquals("wood", player.getResources().get(0).getType());
     assertEquals(15, player.getResources().get(0).getResAmount());
@@ -64,7 +64,7 @@ class PlayerTest {
 
     doReturn(10).when(anotherWoodResource).getResAmount();
     anotherWoodResource.addResAmount(-10);
-    player.retrieveResourcesFromSchema(singleWoodResource);
+    player.retrieveResourcesFromSchema(singleWoodResource, 1);
     verify(woodResource).addResAmount(-10);
   }
 

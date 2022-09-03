@@ -1,5 +1,6 @@
 package engineer.engine.gamestate.mob;
 
+import engineer.engine.gamestate.resource.Resource;
 import com.google.gson.JsonObject;
 import engineer.engine.gamestate.turns.Player;
 
@@ -8,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 public class MobFactory {
-    private record MobTraits(String texture, int stepsPerTurn, int attack, int life) {}
+    private record MobTraits(String texture, int stepsPerTurn, int attack, int life, List<Resource> resToProduce) {}
 
     private final Map<String, MobTraits> descriptionMap = new HashMap<>();
 
-    public void addMobType(String type, String texture, int stepsPerTurn, int attack, int life) {
-        descriptionMap.put(type, new MobTraits(texture, stepsPerTurn, attack, life));
+    public void addMobType(String type, String texture, int stepsPerTurn, int attack, int life, List<Resource> resToProduce) {
+        descriptionMap.put(type, new MobTraits(texture, stepsPerTurn, attack, life, resToProduce));
     }
 
     private class MobImpl implements Mob {
@@ -54,6 +55,11 @@ public class MobFactory {
         @Override
         public void addMobs(int value) {
             number += value;
+        }
+
+        @Override
+        public void reduceMobs(int value) {
+            number -= value;
         }
 
         @Override
@@ -99,6 +105,11 @@ public class MobFactory {
 
         public void makeAttack() {
             canAttackInThisTurn = false;
+        }
+
+        @Override
+        public List<Resource> getResToProduce() {
+            return descriptionMap.get(type).resToProduce;
         }
     }
 

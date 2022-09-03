@@ -3,8 +3,8 @@ package engineer.engine.gamestate.board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
 import engineer.engine.gamestate.mob.Mob;
+import engineer.engine.gamestate.turns.Player;
 import engineer.utils.Coords;
-import javafx.util.Pair;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +15,8 @@ public interface Board {
     default void onFieldChanged(Coords coords) {}
     default void onMobRemoved(Mob mob) {}
     default void onMobAdded(Mob mob) {}
+    default void onBuildingRemoved(Building building) {}
+    default void onBuildingAdded(Building building) {}
   }
 
   void addObserver(Observer observer);
@@ -30,7 +32,10 @@ public interface Board {
   void selectField(Coords coords);
   Coords getSelectedCoords();
 
-  Pair<Collection<Coords>, Collection<Coords>> getNearestFields(Coords coords, int range);
+  Collection<Coords> getNearestFields(Coords coords, int range);
+
+  Collection<Coords> getFieldsToAttack(Coords v, Player player);
+
   List<Coords> findPath(Coords start, Coords finish);
 
   void markFields(Collection<Coords> fieldsToMark, Collection<Coords> fieldsToFight);

@@ -9,18 +9,15 @@ import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.max;
 
-public class MobsController implements TurnSystem.Observer{
+public class MobsController implements TurnSystem.Observer, Board.Observer{
   private final MobFactory mobFactory;
   private final TurnSystem turnSystem;
   private final FightSystem fightSystem;
   private Coords lastSelectedCoords;
-  public boolean attackSelected;
   private final Board board;
   private final List<Mob> mobList = new ArrayList<>();
 
@@ -29,19 +26,19 @@ public class MobsController implements TurnSystem.Observer{
     this.turnSystem = turnSystem;
     this.mobFactory = mobFactory;
     this.fightSystem = fightSystem;
-    this.attackSelected = false;
 
     parseMobs(board);
     turnSystem.addObserver(this);
+    board.addObserver(this);
   }
   @Override
-  public void onTurnChange(){
+  public void onTurnChange(Player currentPlayer){
     mobList.forEach(Mob::reset);
   }
 
-  public void onSelectionChanged(Coords coords) {
+  public void onSelectionChangedMobs(Coords coords, int numberOfMobsToMove) {
     boolean isReachable = board.getMarkedFieldsToMove().contains(coords);
-    boolean isCausingFight = board.getMarkedFieldsToAttack().contains(coords);
+    boolean isCauseingFight = board.getMarkedFieldsToAttack().contains(coords);
     board.unmarkAllFields();
 
     Player player = turnSystem.getCurrentPlayer();
@@ -49,24 +46,26 @@ public class MobsController implements TurnSystem.Observer{
     Mob mob = field.getMob();
 
     if (isReachable && lastSelectedCoords != null) {
-      moveMob(lastSelectedCoords, coords);
+      moveMob(lastSelectedCoords, coords, numberOfMobsToMove);
     } else if (mob != null && player.equals(mob.getOwner())) {
-      Pair<Collection<Coords>, Collection<Coords>> collection = board.getNearestFields(coords, mob.getRemainingSteps());
-      board.markFields(collection.getKey(), collection.getValue());
+      Collection<Coords> fieldsToAttack = board.getFieldsToAttack(coords, mob.getOwner()).stream().filter(
+                                          c -> (board.getField(c).getMob() != null && mob.getRemainingSteps() > 0)
+                                                  || (board.getField(c).getBuilding() != null && mob.canAttackInThisTurn())).toList();
+      Collection<Coords> nearestFields = board.getNearestFields(coords, mob.getRemainingSteps());
+      board.markFields(nearestFields, fieldsToAttack);
     }
 
-    if (isCausingFight && lastSelectedCoords != null) {
-      if (board.getField(coords).getMob() != null) {
-        makeFight(lastSelectedCoords, coords);
-      } else if (board.getField(coords).getBuilding() != null) {
+    if (isCauseingFight && lastSelectedCoords != null) {
+      if(board.getField(coords).getMob() != null)
+        makeFight(lastSelectedCoords, coords, numberOfMobsToMove);
+      else if(board.getField(coords).getBuilding() != null)
         attackBuilding(lastSelectedCoords, coords);
-      }
     }
 
     lastSelectedCoords = coords;
   }
 
-  private void moveMob(Coords from, Coords to) {
+  private void moveMob(Coords from, Coords to, int numberOfMobsToMove) {
     if (from.equals(to)) {
       return;
     }
@@ -78,56 +77,61 @@ public class MobsController implements TurnSystem.Observer{
 
     Mob mob = fieldFrom.getMob();
 
-    if(!mob.getOwner().equals(player)) {
+    if (!mob.getOwner().equals(player)) {
       throw new RuntimeException("Forbidden mob move");
     }
 
+    Mob moving = produceMob(mob.getType(), Math.min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
+    moving.reduceRemainingSteps(moving.getRemainingSteps() - mob.getRemainingSteps());
+    mob.reduceMobs(numberOfMobsToMove);
+    if (mob.getMobsAmount() <= 0) {
+      mob = null;
+    }
     int stepsUsed = board.findPath(from, to).size() - 1;
 
     if (fieldTo.getMob() != null) {
       Mob mobTo = fieldTo.getMob();
 
-      if(!player.equals(mobTo.getOwner())){
-        mob.reduceRemainingSteps(stepsUsed);
-        makeFight(from, to);
-        return;
-      }
-
-      if (!mob.getType().equals(mobTo.getType())) {
+      if (!moving.getType().equals(mobTo.getType()) || !player.equals(mobTo.getOwner())) {
         throw new RuntimeException("Forbidden mob move");
       }
 
-      stepsUsed = max(stepsUsed, mob.getRemainingSteps() - mobTo.getRemainingSteps());
-      mob.addMobs(mobTo.getMobsAmount());
+      stepsUsed = max(stepsUsed, moving.getRemainingSteps() - mobTo.getRemainingSteps());
+      moving.addMobs(mobTo.getMobsAmount());
     }
-
-    mob.reduceRemainingSteps(stepsUsed);
+    moving.reduceRemainingSteps(stepsUsed);
 
     board.setField(from, board.produceField(
             fieldFrom.getBackground(),
             fieldFrom.getBuilding(),
-            null,
+            mob,
             fieldFrom.isFree()
     ));
     board.setField(to, board.produceField(
             fieldTo.getBackground(),
             fieldTo.getBuilding(),
-            mob,
+            moving,
             fieldTo.isFree()
     ));
   }
 
-  private void makeFight(Coords from, Coords to) {
-    int stepsUsed = board.findPath(from, to).size() - 1;
+
+  void makeFight(Coords from, Coords to, int numberOfMobsToMove) {
+    int stepsUsed = 1;
     Mob mob = board.getField(from).getMob();
+    Mob attacking = produceMob(mob.getType(), Math.min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
     Mob mobTo = board.getField(to).getMob();
-    mob.reduceRemainingSteps(stepsUsed);
-    setMob(from, null);
-    Pair<Integer, Integer> result = fightSystem.makeFight(mob, mobTo);
-    mob.addMobs(result.getKey() - mob.getMobsAmount());
+    attacking.reduceRemainingSteps(attacking.getRemainingSteps() - mob.getRemainingSteps() + stepsUsed);
+    mob.reduceMobs(numberOfMobsToMove);
+    if (mob.getMobsAmount() <= 0) {
+      mob = null;
+    }
+    setMob(from, mob);
+    Pair<Integer, Integer> result = fightSystem.makeFight(attacking, mobTo);
+    attacking.addMobs(result.getKey() - attacking.getMobsAmount());
     mobTo.addMobs(result.getValue() - mobTo.getMobsAmount());
     if (result.getKey() > result.getValue()) {
-      setMob(to, mob);
+      setMob(to, attacking);
     } else {
       if (mobTo.getMobsAmount() <= 0)
         mobTo = null;
@@ -155,6 +159,10 @@ public class MobsController implements TurnSystem.Observer{
     }
   }
 
+  private void addMob(Mob mob) {
+    mobList.add(mob);
+  }
+
   public Mob produceMob(JsonObject jsonMob, List<Player> players) {
     Mob mob = mobFactory.produce(jsonMob, players);
     addMob(mob);
@@ -162,9 +170,7 @@ public class MobsController implements TurnSystem.Observer{
   }
 
   public Mob produceMob(String type, int mobsAmount, Player owner) {
-    Mob newMob = mobFactory.produce(type, mobsAmount, owner);
-    addMob(newMob);
-    return newMob;
+    return mobFactory.produce(type, mobsAmount, owner);
   }
 
   public void setMob(Coords coords, Mob mob) {
@@ -180,12 +186,22 @@ public class MobsController implements TurnSystem.Observer{
     board.setField(coords, newField);
   }
 
-  void addMob(Mob mob){
+  public FightSystem getFightSystem() {
+    return fightSystem;
+  }
+
+  @Override
+  public void onMobAdded(Mob mob){
     mobList.add(mob);
   }
 
-  public FightSystem getFightSystem() {
-    return fightSystem;
+  @Override
+  public void onMobRemoved(Mob mob){
+    mobList.remove(mob);
+  }
+
+  public void makeMob(Coords selectedField, String mobRequestedType, int mobRequestedNumber, Player currentPlayer) {
+    setMob(selectedField, produceMob(mobRequestedType, mobRequestedNumber, currentPlayer));
   }
 
   private void parseMobs(Board board) {

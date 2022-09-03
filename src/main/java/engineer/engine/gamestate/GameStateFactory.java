@@ -29,11 +29,11 @@ public class GameStateFactory {
     return resourceFactory;
   }
 
-  public BuildingFactory produceBuildingFactory(ResourceFactory resourceFactory) {
+  public BuildingFactory produceBuildingFactory(ResourceFactory resourceFactory, MobFactory mobFactory) {
     BuildingFactory buildingFactory = new BuildingFactory();
     // TODO: add from all existing buildings types there
-    buildingFactory.addBuildingType("Armorer House", "house", Collections.singletonList(resourceFactory.produce("wood").addResAmount(2)), 40);
-    buildingFactory.addBuildingType("Mayor's house", "house2", Arrays.asList(resourceFactory.produce("wood").addResAmount(15), resourceFactory.produce("stone").addResAmount(24)), 50);
+    buildingFactory.addBuildingType("Armorer House", "house", Collections.singletonList(resourceFactory.produce("wood").addResAmount(2)), Collections.singletonList(resourceFactory.produce("wood").addResAmount(3)), Collections.singletonList(resourceFactory.produce("wood").addResAmount(4)), 40, mobFactory.produce("wood", 0, null));
+    buildingFactory.addBuildingType("Mayor's house", "house2", Arrays.asList(resourceFactory.produce("wood").addResAmount(15), resourceFactory.produce("stone").addResAmount(24)), Collections.singletonList(resourceFactory.produce("wood").addResAmount(3)), Collections.singletonList(resourceFactory.produce("wood").addResAmount(3)), 50, mobFactory.produce("exit", 0, null));
     return buildingFactory;
   }
 
@@ -46,7 +46,7 @@ public class GameStateFactory {
   }
 
   public FightSystem produceFightSystem() {
-    return new FightSystem(new Random());
+    return new FightSystem();
   }
 
   public List<Player> producePlayers(List<String> names, ResourceFactory resourceFactory) {
@@ -76,19 +76,18 @@ public class GameStateFactory {
     return new Camera(board.getRows(), board.getColumns(), boardViewWidth, boardViewHeight);
   }
 
-  public MobFactory produceMobFactory() {
+  public MobFactory produceMobFactory(ResourceFactory resourceFactory) {
     MobFactory mobFactory = new MobFactory();
-    // TODO: temp, let's find normal names and textures
-    mobFactory.addMobType("wood", "wood", 5, 6, 3);
-    mobFactory.addMobType("exit", "stop", 3, 2, 6);
+    mobFactory.addMobType("wood", "wood", 5, 6, 3, Collections.singletonList(resourceFactory.produce("wood").addResAmount(2)));
+    mobFactory.addMobType("exit", "stop", 3, 2, 6, Collections.singletonList(resourceFactory.produce("wood").addResAmount(2)));
     return mobFactory;
   }
 
   public MobsController produceMobsController(Board board, TurnSystem turnSystem, MobFactory mobFactory, FightSystem fightSystem) {
     return new MobsController(board, turnSystem, mobFactory, fightSystem);
   }
-
-  public BuildingsController produceBuildingController(BoardFactory boardFactory, BuildingFactory buildingFactory, Board board) {
-    return new BuildingsController(boardFactory, buildingFactory, board);
+  
+  public BuildingsController produceBuildingController(BoardFactory boardFactory, BuildingFactory buildingFactory, Board board, TurnSystem turnSystem) {
+    return new BuildingsController(boardFactory, buildingFactory, board, turnSystem);
   }
 }

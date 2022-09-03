@@ -8,7 +8,7 @@ public class BuildingTest {
   @Test
   public void testLife() {
     BuildingFactory buildingFactory = new BuildingFactory();
-    buildingFactory.addBuildingType("type", "texture", null, 10);
+    buildingFactory.addBuildingType("type", "texture", null, null, null,10, null);
     Building building = buildingFactory.produce("type", null);
 
     building.reduceLifeRemaining(3);
@@ -18,7 +18,7 @@ public class BuildingTest {
   @Test
   public void testLevelUpgrade() {
     BuildingFactory buildingFactory = new BuildingFactory();
-    buildingFactory.addBuildingType("type", "texture", null, 10);
+    buildingFactory.addBuildingType("type", "texture", null, null, null,10, null);
     Building building = buildingFactory.produce("type", null);
 
     building.upgrade();

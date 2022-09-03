@@ -37,7 +37,7 @@ class TurnSystemTest {
     TurnSystem.Observer observer = mock(TurnSystem.Observer.class);
     turnSystem.addObserver(observer);
     turnSystem.nextTurn();
-    verify(observer).onTurnChange();
+    verify(observer).onTurnChange(any());
     turnSystem.removeObserver(observer);
     turnSystem.nextTurn();
     verifyNoMoreInteractions(observer);

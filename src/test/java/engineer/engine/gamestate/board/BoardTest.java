@@ -146,18 +146,16 @@ public class BoardTest {
     doReturn(player1).when(mob1).getOwner();
     doReturn(player2).when(board.getField(new Coords(1, 3))).getOwner();
 
-    assertNull(board.getNearestFields(new Coords(0, 1), 5).getKey());
-    Pair<Collection<Coords>, Collection<Coords>> pair = board.getNearestFields(new Coords(1, 2), 2);
-    assertThat(pair.getKey()).containsExactlyInAnyOrder(
+    assertNull(board.getNearestFields(new Coords(0, 1), 5));
+    Collection<Coords> pair = board.getNearestFields(new Coords(1, 2), 2);
+    assertThat(pair).containsExactlyInAnyOrder(
         new Coords(0, 2),
         new Coords(0, 3),
         new Coords(1, 0),
         new Coords(1, 1),
         new Coords(1, 2)
     );
-    assertThat(pair.getValue()).containsExactlyInAnyOrder(
-        new Coords(1, 3)
-    );
+    //assertThat(pair).containsExactlyInAnyOrder(new Coords(1, 3));
   }
 
   @Test
