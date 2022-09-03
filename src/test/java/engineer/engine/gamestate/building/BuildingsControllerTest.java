@@ -55,16 +55,7 @@ class BuildingsControllerTest {
   }
 
   @Test
-  public void destroyBuild() {
-    BuildingsController buildingsController = new BuildingsController(boardFactory, buildingFactory, board, turnSystem);
-    Coords coords = new Coords(3, 5);
-
-    buildingsController.destroyBuilding(coords);
-    verify(boardFactory).destroyBuilding(board, coords);
-  }
-
-  @Test
-  void destroyBuilding() {
+  void testDestroyBuilding() {
     BuildingsController buildingsController = new BuildingsController(boardFactory, buildingFactory, board, turnSystem);
     Coords coords = new Coords(3, 5);
     buildingsController.destroyBuilding(coords);

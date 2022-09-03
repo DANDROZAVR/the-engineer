@@ -1,6 +1,5 @@
 package engineer.engine.gamestate.building;
 
-import com.google.gson.JsonObject;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
 import engineer.engine.gamestate.field.Field;
@@ -32,10 +31,6 @@ public class BuildingsController implements TurnSystem.Observer, Board.Observer 
     Building bigHouse = buildingFactory.produce("Mayor's house", null);
     return Arrays.asList(
         smallHouse, null, null, null, null, bigHouse);
-  }
-
-  public Building produceBuilding(JsonObject jsonBuilding, List<Player> players) {
-    return buildingFactory.produce(jsonBuilding, players);
   }
 
   public void build(Coords coords, String buildingType, Player owner) {

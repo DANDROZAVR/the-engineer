@@ -1,0 +1,65 @@
+{
+  "players": [
+    {
+      "nickname": "Winner",
+      "resources": [
+        {
+          "type": "wood",
+          "res_amount": 88
+        }
+      ]
+    },
+    {
+      "nickname": "Loser",
+      "resources": []
+    }
+  ],
+  "rows": 1,
+  "columns": 4,
+  "board": [
+    [
+      {
+        "background": "",
+        "building": {
+          "type": "Armorer House",
+          "owner": "Winner",
+          "life_remaining": 40,
+          "level": 6
+        },
+        "mob": {},
+        "free": true
+      },
+      {
+        "background": "",
+        "building": {},
+        "mob": {
+          "type": "wood",
+          "mobs_amount": 5,
+          "player": "Loser"
+        },
+        "free": true
+      },
+      {
+        "background": "",
+        "building": {},
+        "mob": {
+          "type": "wood",
+          "mobs_amount": 5,
+          "player": "Winner"
+        },
+        "free": true
+      },
+      {
+        "background": "",
+        "building": {
+          "type": "Armorer House",
+          "owner": "Loser",
+          "life_remaining": 40,
+          "level": 6
+        },
+        "mob": {},
+        "free": true
+      }
+    ]
+  ]
+}

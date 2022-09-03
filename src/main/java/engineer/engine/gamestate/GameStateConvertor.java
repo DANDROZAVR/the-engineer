@@ -33,7 +33,7 @@ public class GameStateConvertor {
         JsonObject jsonBuilding = produceJsonFromBuilding(building);
         JsonObject jsonMob = produceJsonFromMob(field.getMob());
 
-        jsonField.add("background", JsonParser.parseString(field.getBackground()));
+        jsonField.addProperty("background", field.getBackground());
         jsonField.add("building", jsonBuilding);
         jsonField.add("mob", jsonMob);
         jsonField.addProperty("free", field.isFree());
