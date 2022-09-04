@@ -2,7 +2,6 @@ package engineer.engine.gamestate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
@@ -13,7 +12,7 @@ import engineer.utils.Coords;
 
 import java.util.List;
 
-public class GameStateConvertor {
+public class GameStateConverter {
   public static JsonObject produceJsonFromBoard(Board board, List<Player> players) {
     JsonObject jsonResult = new JsonObject();
     jsonResult.addProperty("rows", board.getRows());
@@ -36,7 +35,6 @@ public class GameStateConvertor {
         jsonField.addProperty("background", field.getBackground());
         jsonField.add("building", jsonBuilding);
         jsonField.add("mob", jsonMob);
-        jsonField.addProperty("free", field.isFree());
         jsonColumn.add(jsonField);
       }
       jsonBoard.add(jsonColumn);
@@ -49,7 +47,7 @@ public class GameStateConvertor {
     if (building == null) return new JsonObject();
     JsonObject buildingJson = new JsonObject();
     buildingJson.addProperty("type", building.getType().trim());
-    buildingJson.add("owner", JsonParser.parseString(building.getOwner().getNickname()));
+    buildingJson.addProperty("owner", building.getOwner().getNickname());
     buildingJson.addProperty("life_remaining", building.getLifeRemaining());
     buildingJson.addProperty("level", building.getLevel());
     return buildingJson;

@@ -13,6 +13,7 @@ public interface Building {
   Player getOwner();
 
   List<Resource> getResToUpgrade();
+  List<Resource> getResProduced();
 
   int getLifeRemaining();
   void reduceLifeRemaining(int amount);

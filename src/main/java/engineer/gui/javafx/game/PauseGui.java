@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 
 public class PauseGui {
   public interface EndGameCallback {
-    void endGame();
+    void endGame(boolean endedNormally);
   }
 
   @FXML public VBox root;
@@ -28,6 +28,6 @@ public class PauseGui {
   }
 
   public void endGame() {
-    endGameCallback.endGame();
+    endGameCallback.endGame(false);
   }
 }

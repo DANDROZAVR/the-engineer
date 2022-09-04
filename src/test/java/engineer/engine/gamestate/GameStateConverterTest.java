@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameStateConvertorTest {
+class GameStateConverterTest {
 
   @Test
   void testProduceJsonFromBoard() {
@@ -33,7 +33,7 @@ class GameStateConvertorTest {
     List<Player> players = gameStateFactory.producePlayers(pathJsonBoard, resourceFactory);
     Board board = boardFactory.produceBoard(loadedJsonBoard, buildingFactory, mobFactory, players);
 
-    JsonObject jsonBoard = GameStateConvertor.produceJsonFromBoard(board, players);
+    JsonObject jsonBoard = GameStateConverter.produceJsonFromBoard(board, players);
     assertEquals(loadedJsonBoard, jsonBoard);
   }
 }

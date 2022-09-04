@@ -4,13 +4,12 @@ import javafx.util.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import static java.lang.Math.max;
 
 public class FightSystem {
     public interface Observer {
-        void onFight(Mob attacker, Mob defender);
+        void onShowFight(Mob attacker, Mob defender, int finalLifeAttacker, int finalLifeDefender);
     }
     private final List<FightSystem.Observer> observerList = new LinkedList<>();
 
@@ -33,8 +32,10 @@ public class FightSystem {
             lifeDefender -= attackValue;
         }
 
-        observerList.forEach(o -> o.onFight(attacker, defender));
+        int survivedAttacker = max((int)Math.ceil((double)lifeAttacker/attacker.getMobsLife()), 0);
+        int survivedDefender = max((int)Math.ceil((double)lifeDefender/defender.getMobsLife()), 0);
+        observerList.forEach(o -> o.onShowFight(attacker, defender, survivedAttacker, survivedDefender));
 
-        return new Pair<>(max((int)Math.ceil((double)lifeAttacker/attacker.getMobsLife()), 0), max((int)Math.ceil((double)lifeDefender/defender.getMobsLife()), 0));
+        return new Pair<>(survivedAttacker, survivedDefender);
     }
 }

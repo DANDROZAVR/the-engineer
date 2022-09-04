@@ -11,16 +11,15 @@ import engineer.engine.gamestate.turns.Player;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContextMenuPresenter {
   public interface View {
     void showGeneralInfoWindow(String playerName, List<Resource> resources);
-    void showBuildingsChosenWindow(String picture, String type, List<Resource> input);
+    void showBuildingsChosenWindow(String picture, String type, List<Resource> input, List<Resource> resToUpgrade, List<Resource> resProduced);
     void showBuildingInfoWindow(String picture, String type, int level, int life, boolean isOwner);
     void showBuildingsListWindow(List<Building> buildings);
-    void showMobInfo(String type, int amount, boolean isOwner);
+    void showMobInfo(String type, int amount, boolean isOwner, int mobsLife, int mobsAttack);
   }
 
   private final Board board;
@@ -42,12 +41,12 @@ public class ContextMenuPresenter {
   private boolean mobProductionRequested;
   private Mob mobRequestedType;
   private int mobRequestedNumber;
-  private int NumberOfMobsToMove = 1;
+  private int numberOfMobsToMove = 1;
 
   private final Board.Observer boardObserver = new Board.Observer() {
     @Override
     public void onSelectionChanged(Coords coords) {
-      mobsController.onSelectionChangedMobs(coords, NumberOfMobsToMove);
+      mobsController.onSelectionChangedMobs(coords, numberOfMobsToMove);
       onFieldSelection(coords);
     }
   };
@@ -79,7 +78,7 @@ public class ContextMenuPresenter {
   }
 
   private void onShowMobInfo(Mob mob) {
-    view.showMobInfo(mob.getType(), mob.getMobsAmount(), mob.getOwner().equals(turnSystem.getCurrentPlayer()));
+    view.showMobInfo(mob.getType(), mob.getMobsAmount(), mob.getOwner().equals(turnSystem.getCurrentPlayer()), mob.getMobsLife(), mob.getMobsAttack());
   }
 
   public void onShowGeneralInfo() {
@@ -97,7 +96,7 @@ public class ContextMenuPresenter {
     chosenBuilding = null;
     if (building != null) {
       chosenBuilding = building;
-      view.showBuildingsChosenWindow(building.getTexture(), building.getType(), building.getResToBuild());
+      view.showBuildingsChosenWindow(building.getTexture(), building.getType(), building.getResToBuild(), building.getResToUpgrade(), building.getResProduced());
     }
   }
 
@@ -130,6 +129,7 @@ public class ContextMenuPresenter {
 
   public void onUpgrade() {
     Coords selectedField = board.getSelectedCoords();
+    chosenBuilding = board.getField(selectedField).getBuilding();
     Player player = turnSystem.getCurrentPlayer();
     if (player.retrieveResourcesFromSchema(chosenBuilding.getResToUpgrade(), 1)) {
       Field field = board.getField(selectedField);
@@ -155,6 +155,6 @@ public class ContextMenuPresenter {
   }
 
   public void setNumberOfMobsToMove(int value) {
-    NumberOfMobsToMove = value;
+    numberOfMobsToMove = value;
   }
 }

@@ -12,12 +12,12 @@
 
 <AnchorPane fx:id="rootNewBuilding" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <ImageView fx:id="imageNewBuilding" fitHeight="88.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <Image url="@../images/house.png" />
+      <Image url="@../images/buildings/house.png" />
    </ImageView>
    <HBox fx:id="inputsNewBuilding" layoutX="14.0" layoutY="110.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="110.0">
       <VBox>
          <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../images/house.png" />
+            <Image url="@../images/buildings/house.png" />
          </ImageView>
          <Label alignment="CENTER" prefWidth="40.0" text="x1" />
       </VBox>

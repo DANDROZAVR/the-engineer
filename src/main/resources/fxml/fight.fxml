@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox fx:id="root" alignment="CENTER" spacing="5.0" style="-fx-background-color: rgba(0, 0, 0, 0.7)" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="engineer.gui.javafx.game.FightGui">
+   <Label fx:id="fightDescription" text="Label" textAlignment="CENTER" textFill="WHITE">
+      <font>
+         <Font size="24.0" />
+      </font>
+   </Label>
+
+    <Button onAction="#resumeGame" prefHeight="50.0" prefWidth="200.0" style="-fx-font-size: 1.5em;" text="Resume" />
+</VBox>

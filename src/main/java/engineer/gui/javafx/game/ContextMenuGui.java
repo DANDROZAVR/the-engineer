@@ -3,20 +3,17 @@ package engineer.gui.javafx.game;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.building.BuildingsController;
-import engineer.engine.gamestate.mob.FightSystem;
 import engineer.engine.gamestate.mob.MobsController;
 import engineer.engine.gamestate.resource.Resource;
 import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.engine.presenters.game.ContextMenuPresenter;
 import engineer.gui.javafx.TextureManager;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -34,8 +31,9 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @FXML private ImageView imageNewBuilding, imageBuildingInfo;
   @FXML private VBox resVBox;
   @FXML private VBox rootDynamicNode;
-  @FXML private ListView<String> showFight;
   @FXML private HBox inputsNewBuilding;
+  @FXML private HBox resBuildingUpgrade;
+  @FXML private HBox resBuildingProduction;
   @FXML private Slider chooseMobNumber, numberOfMobsToMove;
   @FXML private Label chooseMobLabel;
   @FXML private Button destroyButton, updateButton, produceMobsButton;
@@ -45,10 +43,7 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
   private VBox window;
   private final int nGridColumns = 3;
-
-  private final ObservableList<String> fightInfo = FXCollections.observableArrayList();
-
-  public void setup(VBox window, TextureManager textureManager, Board board, MobsController mobsController, FightSystem fightSystem, TurnSystem turnSystem, BuildingsController buildingsController) {
+  public void setup(VBox window, TextureManager textureManager, Board board, MobsController mobsController, TurnSystem turnSystem, BuildingsController buildingsController) {
     this.window = window;
     this.presenter = new ContextMenuPresenter(
         board,
@@ -108,13 +103,21 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
     rootDynamicNode.getChildren().add(rootGeneralInfo);
   }
   @Override
-  public void showBuildingsChosenWindow(String picture, String type, List<Resource> resToBuild) {
+  public void showBuildingsChosenWindow(String picture, String type, List<Resource> resToBuild, List<Resource> resToUpgrade, List<Resource> resProduction) {
     rootDynamicNode.getChildren().clear();
     imageNewBuilding.setImage(textureManager.getTexture(picture));
     nameNewBuilding.setText(type);
     for (int idx = 0; idx < inputsNewBuilding.getChildren().size(); ++idx) {
       VBox resBox = ((VBox) inputsNewBuilding.getChildren().get(idx));
       setResourcesImageAndAmountHelper(resBox.getChildren(), idx, resToBuild);
+    }
+    for (int idx = 0; idx < resBuildingUpgrade.getChildren().size(); ++idx) {
+      VBox resBox = ((VBox) resBuildingUpgrade.getChildren().get(idx));
+      setResourcesImageAndAmountHelper(resBox.getChildren(), idx, resToUpgrade);
+    }
+    for (int idx = 0; idx < resBuildingProduction.getChildren().size(); ++idx) {
+      VBox resBox = ((VBox) resBuildingProduction.getChildren().get(idx));
+      setResourcesImageAndAmountHelper(resBox.getChildren(), idx, resProduction);
     }
     rootDynamicNode.getChildren().add(rootNewBuilding);
   }
@@ -154,9 +157,9 @@ public class ContextMenuGui implements ContextMenuPresenter.View {
   }
 
   @Override
-  public void showMobInfo(String type, int amount, boolean isOwner) {
+  public void showMobInfo(String type, int amount, boolean isOwner, int mobsLife, int mobsAttack) {
     rootDynamicNode.getChildren().clear();
-    infoMob.setText(amount + " " + type + " mobs");
+    infoMob.setText("     " + amount + " " + type + " mobs\n     Each has " + mobsLife + " lifes\n     And his attack is " + mobsAttack);
     rootMobInfo.getChildren().remove(chooseMobLabel);
     rootMobInfo.getChildren().remove(numberOfMobsToMove);
     if (isOwner) {

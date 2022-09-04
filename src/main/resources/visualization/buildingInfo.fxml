@@ -13,7 +13,7 @@
             xmlns:fx="http://javafx.com/fxml/1">
    <ImageView fx:id="imageBuildingInfo" fitHeight="88.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true"
               AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <Image url="@../images/house.png"/>
+      <Image url="@../images/buildings/house.png"/>
    </ImageView>
    <Line endX="-2.0999755859375" endY="48.00000762939453" layoutX="76.0" layoutY="26.0" startX="-2.0999908447265625"
          startY="-25.000003814697266"/>

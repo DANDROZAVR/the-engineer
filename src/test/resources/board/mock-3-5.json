@@ -7,7 +7,7 @@
     [
       {
         "background": "",
-        "building": {},
+        "building": {"type":"Castle","owner":"Winner","life_remaining":40,"level":6},
         "mob": {},
         "free": true
       },

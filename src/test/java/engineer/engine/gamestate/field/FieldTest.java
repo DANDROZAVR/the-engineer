@@ -10,25 +10,22 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 class FieldTest {
-  /*@Test
+  @Test
   public void testConstructor() {
     FieldFactory fieldFactory = new FieldFactory();
-    Field field = fieldFactory.produce(null, null, null, false);
+    Field field = fieldFactory.produce(null, null, null);
     Mob mob = mock(Mob.class);
     Building building = mock(Building.class);
 
     assertNull(field.getBackground());
     assertNull(field.getBuilding());
     assertNull(field.getMob());
-    assertFalse(field.isFree());
 
-    field = fieldFactory.produce("Background name", building, mob, true);
+    field = fieldFactory.produce("Background name", building, mob);
 
     assertEquals("Background name", field.getBackground());
     assertEquals(building, field.getBuilding());
     assertEquals(mob, field.getMob());
-    assertTrue(field.isFree());
-<<<<<<< HEAD
   }
 
   @Test
@@ -38,9 +35,9 @@ class FieldTest {
     Building building = mock(Building.class);
     Mob mob = mock(Mob.class);
 
-    Field field1 = fieldFactory.produce("backgroud", null, null, true);
-    Field field2 = fieldFactory.produce("backgroud", building, null, true);
-    Field field3 = fieldFactory.produce("backgroud", null, mob, true);
+    Field field1 = fieldFactory.produce("backgroud", null, null);
+    Field field2 = fieldFactory.produce("backgroud", building, null);
+    Field field3 = fieldFactory.produce("backgroud", null, mob);
 
     doReturn(player).when(mob).getOwner();
     doReturn(player).when(building).getOwner();
@@ -49,6 +46,4 @@ class FieldTest {
     assertEquals(player, field2.getOwner());
     assertEquals(player, field3.getOwner());
   }
-=======
-  }*/
 }

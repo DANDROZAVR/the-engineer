@@ -14,11 +14,10 @@ public class FieldFactoryTest {
     FieldFactory fieldFactory = new FieldFactory();
     Building building = mock(Building.class);
     Mob mob = mock(Mob.class);
-    Field field = fieldFactory.produce("picture", building, mob, true);
+    Field field = fieldFactory.produce("picture", building, mob);
 
     assertEquals(field.getBackground(), "picture");
     assertEquals(field.getBuilding(), building);
     assertEquals(field.getMob(), mob);
-    assertTrue(field.isFree());
   }
 }

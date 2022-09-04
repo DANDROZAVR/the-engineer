@@ -5,7 +5,7 @@ import engineer.engine.gamestate.mob.Mob;
 import engineer.engine.gamestate.turns.Player;
 
 public class FieldFactory {
-  private record FieldImpl(String background, Building building, Mob mob, boolean free) implements Field {
+  private record FieldImpl(String background, Building building, Mob mob) implements Field {
     @Override
     public String getBackground() {
       return background;
@@ -29,14 +29,9 @@ public class FieldFactory {
         return getBuilding().getOwner();
       return null;
     }
-
-    @Override
-    public boolean isFree() {
-      return free;
-    }
   }
 
-  public Field produce(String background, Building building, Mob mob, boolean free) {
-    return new FieldImpl(background, building, mob, free);
+  public Field produce(String background, Building building, Mob mob) {
+    return new FieldImpl(background, building, mob);
   }
 }

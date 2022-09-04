@@ -9,5 +9,4 @@ public interface Field {
   Building getBuilding();
   Mob getMob();
   Player getOwner();
-  boolean isFree();
 }

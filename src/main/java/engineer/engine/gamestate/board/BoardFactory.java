@@ -33,7 +33,7 @@ public class BoardFactory {
 
       for (int row=0; row<rows; row++) {
         for (int column=0; column<columns; column++) {
-          fields[row][column] = produceField(null, null, null, true);
+          fields[row][column] = produceField(null, null, null);
         }
       }
     }
@@ -58,6 +58,9 @@ public class BoardFactory {
 
     private void onMobAdded(Mob mob) {
       observerList.forEach(o -> o.onMobAdded(mob));
+    }
+    private void onEndGame() {
+      observerList.forEach(Observer::onGameEnded);
     }
 
     private void onBuildingRemoved(Building building) {
@@ -89,12 +92,17 @@ public class BoardFactory {
 
     @Override
     public void setField(Coords coords, Field field) {
-      if (fields[coords.row()][coords.column()].getMob() != null) {
+      Field oldField = fields[coords.row()][coords.column()];
+      if (oldField.getMob() != null) {
         onMobRemoved(fields[coords.row()][coords.column()].getMob());
       }
-      if (fields[coords.row()][coords.column()].getBuilding() != null) {
+      if (oldField.getBuilding() != null) {
         onBuildingRemoved(fields[coords.row()][coords.column()].getBuilding());
+        if (oldField.getBuilding().getType() != null && oldField.getBuilding().getType().equals("Castle") && field.getBuilding() == null) {
+          onEndGame();
+        }
       }
+
 
       fields[coords.row()][coords.column()] = field;
       onFieldChanged(coords);
@@ -127,7 +135,6 @@ public class BoardFactory {
       ).filter(c ->
               0 <= c.row() && c.row() < rows
               && 0 <= c.column() && c.column() < columns
-              && getField(c).isFree()
               && (getField(c).getOwner() == null || getField(c).getOwner().equals(player))
       ).toList();
     }
@@ -162,10 +169,6 @@ public class BoardFactory {
     @Override
     public Collection<Coords> getNearestFields(Coords coords, int range) {
       Integer[][] distanceArray = getDistanceFrom(coords);
-
-      if (!getField(coords).isFree()) {
-        return null;
-      }
 
       Set<Coords> resultOwner = new HashSet<>();
       for (int row=0; row<rows; row++) {
@@ -250,8 +253,8 @@ public class BoardFactory {
     }
 
     @Override
-    public Field produceField(String background, Building building, Mob mob, boolean free) {
-      return fieldFactory.produce(background, building, mob, free);
+    public Field produceField(String background, Building building, Mob mob) {
+      return fieldFactory.produce(background, building, mob);
     }
   }
 
@@ -276,8 +279,7 @@ public class BoardFactory {
         Field field = produceField(
             fieldJson.get("background").getAsString(),
             buildingFactory.produce(fieldJson.get("building").getAsJsonObject(), players),
-            mobFactory.produce(fieldJson.get("mob").getAsJsonObject(), players),
-            fieldJson.get("free").getAsBoolean()
+            mobFactory.produce(fieldJson.get("mob").getAsJsonObject(), players)
         );
         board.setField(new Coords(row, column), field);
       }
@@ -285,8 +287,8 @@ public class BoardFactory {
     return board;
   }
 
-  public Field produceField(String background, Building building, Mob mob, boolean free) {
-    return fieldFactory.produce(background, building, mob, free);
+  public Field produceField(String background, Building building, Mob mob) {
+    return fieldFactory.produce(background, building, mob);
   }
 
   public void build(Board board, Coords coords, Building building) {
@@ -294,8 +296,7 @@ public class BoardFactory {
     Field newField = produceField(
         field.getBackground(),
         building,
-        field.getMob(),
-        field.isFree()
+        field.getMob()
     );
 
     board.setField(coords, newField);
@@ -306,8 +307,7 @@ public class BoardFactory {
     Field newField = produceField(
         field.getBackground(),
         null,
-        field.getMob(),
-        field.isFree()
+        field.getMob()
     );
 
     board.setField(coords, newField);

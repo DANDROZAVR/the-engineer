@@ -1,6 +1,5 @@
 package engineer.engine.gamestate.mob;
 
-import com.google.gson.JsonObject;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.building.Building;
 import engineer.engine.gamestate.field.Field;
@@ -11,9 +10,9 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-import static java.lang.Math.max;
+import static java.lang.Math.min;
 
-public class MobsController implements TurnSystem.Observer, Board.Observer{
+public class MobsController implements TurnSystem.Observer, Board.Observer {
   private final MobFactory mobFactory;
   private final TurnSystem turnSystem;
   private final FightSystem fightSystem;
@@ -38,7 +37,7 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
 
   public void onSelectionChangedMobs(Coords coords, int numberOfMobsToMove) {
     boolean isReachable = board.getMarkedFieldsToMove().contains(coords);
-    boolean isCauseingFight = board.getMarkedFieldsToAttack().contains(coords);
+    boolean isCausingFight = board.getMarkedFieldsToAttack().contains(coords);
     board.unmarkAllFields();
 
     Player player = turnSystem.getCurrentPlayer();
@@ -55,7 +54,7 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
       board.markFields(nearestFields, fieldsToAttack);
     }
 
-    if (isCauseingFight && lastSelectedCoords != null) {
+    if (isCausingFight && lastSelectedCoords != null) {
       if(board.getField(coords).getMob() != null)
         makeFight(lastSelectedCoords, coords, numberOfMobsToMove);
       else if(board.getField(coords).getBuilding() != null)
@@ -77,17 +76,21 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
 
     Mob mob = fieldFrom.getMob();
 
+    int stepsAfterMove = mob.getRemainingSteps() - (board.findPath(from, to).size() - 1);
+
     if (!mob.getOwner().equals(player)) {
       throw new RuntimeException("Forbidden mob move");
     }
 
-    Mob moving = produceMob(mob.getType(), Math.min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
-    moving.reduceRemainingSteps(moving.getRemainingSteps() - mob.getRemainingSteps());
-    mob.reduceMobs(numberOfMobsToMove);
-    if (mob.getMobsAmount() <= 0) {
+    Mob moving;
+    if(mob.getMobsAmount() == numberOfMobsToMove) {
+      moving = mob;
       mob = null;
     }
-    int stepsUsed = board.findPath(from, to).size() - 1;
+    else {
+      moving = produceMob(mob.getType(), min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
+      mob.reduceMobs(numberOfMobsToMove);
+    }
 
     if (fieldTo.getMob() != null) {
       Mob mobTo = fieldTo.getMob();
@@ -96,30 +99,28 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
         throw new RuntimeException("Forbidden mob move");
       }
 
-      stepsUsed = max(stepsUsed, moving.getRemainingSteps() - mobTo.getRemainingSteps());
+      stepsAfterMove = min(stepsAfterMove, mobTo.getRemainingSteps());
       moving.addMobs(mobTo.getMobsAmount());
     }
-    moving.reduceRemainingSteps(stepsUsed);
+    moving.reduceRemainingSteps(moving.getRemainingSteps() - stepsAfterMove);
 
     board.setField(from, board.produceField(
             fieldFrom.getBackground(),
             fieldFrom.getBuilding(),
-            mob,
-            fieldFrom.isFree()
+            mob
     ));
     board.setField(to, board.produceField(
             fieldTo.getBackground(),
             fieldTo.getBuilding(),
-            moving,
-            fieldTo.isFree()
+            moving
     ));
   }
 
 
-  void makeFight(Coords from, Coords to, int numberOfMobsToMove) {
+  private void makeFight(Coords from, Coords to, int numberOfMobsToMove) {
     int stepsUsed = 1;
     Mob mob = board.getField(from).getMob();
-    Mob attacking = produceMob(mob.getType(), Math.min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
+    Mob attacking = produceMob(mob.getType(), min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
     Mob mobTo = board.getField(to).getMob();
     attacking.reduceRemainingSteps(attacking.getRemainingSteps() - mob.getRemainingSteps() + stepsUsed);
     mob.reduceMobs(numberOfMobsToMove);
@@ -147,26 +148,19 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
       return;
     }
     mob.makeAttack();
-    building.reduceLifeRemaining(mob.getMobsAmount() * mob.getMobsAttack());
+    building.reduceLifeRemaining(Math.max(mob.getMobsAmount() * mob.getMobsAttack() - (building.getLevel() -1), 0));
     if (building.getLifeRemaining() == 0) {
       Field fieldTo = board.getField(buildingCoords);
       board.setField(buildingCoords, board.produceField(
           fieldTo.getBackground(),
           null,
-          fieldTo.getMob(),
-          fieldTo.isFree()
+          fieldTo.getMob()
       ));
     }
   }
 
   private void addMob(Mob mob) {
     mobList.add(mob);
-  }
-
-  public Mob produceMob(JsonObject jsonMob, List<Player> players) {
-    Mob mob = mobFactory.produce(jsonMob, players);
-    addMob(mob);
-    return mob;
   }
 
   public Mob produceMob(String type, int mobsAmount, Player owner) {
@@ -179,15 +173,10 @@ public class MobsController implements TurnSystem.Observer, Board.Observer{
     Field newField = board.produceField(
             oldField.getBackground(),
             oldField.getBuilding(),
-            mob,
-            oldField.isFree()
+            mob
     );
 
     board.setField(coords, newField);
-  }
-
-  public FightSystem getFightSystem() {
-    return fightSystem;
   }
 
   @Override

@@ -17,6 +17,7 @@ public interface Board {
     default void onMobAdded(Mob mob) {}
     default void onBuildingRemoved(Building building) {}
     default void onBuildingAdded(Building building) {}
+    default void onGameEnded() {}
   }
 
   void addObserver(Observer observer);
@@ -25,7 +26,7 @@ public interface Board {
   int getRows();
   int getColumns();
 
-  Field produceField(String background, Building building, Mob mob, boolean free);
+  Field produceField(String background, Building building, Mob mob);
   Field getField(Coords coords);
   void setField(Coords coords, Field field);
 

@@ -8,7 +8,7 @@ import engineer.engine.gamestate.turns.TurnSystem;
 import engineer.utils.Coords;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BuildingsController implements TurnSystem.Observer, Board.Observer {
@@ -27,10 +27,11 @@ public class BuildingsController implements TurnSystem.Observer, Board.Observer 
     parseBuildings(board);
   }
   public List<Building> getAllBuildingsList() {
-    Building smallHouse = buildingFactory.produce("Armorer House", null);
-    Building bigHouse = buildingFactory.produce("Mayor's house", null);
-    return Arrays.asList(
-        smallHouse, null, null, null, null, bigHouse);
+    List<String> buildingNames = List.of("Armorer House", "Mayor's house", "The Home", "Wall", "Pyramid", "Castle");
+    List<Building> list = new LinkedList<>();
+    for (String name : buildingNames)
+      list.add(buildingFactory.produce(name, null));
+    return list;
   }
 
   public void build(Coords coords, String buildingType, Player owner) {

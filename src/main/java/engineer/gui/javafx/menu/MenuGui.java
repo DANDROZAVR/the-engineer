@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 public class MenuGui {
   private static final String TITLE = "The Engineer";
   private final String lastGamePath = "src/main/resources/board/lastGame.json";
-  private final String sampleGamePath = "src/main/resources/board/sample3.json";
+  private final String sampleGamePath = "src/main/resources/board/sample.json";
   @FXML private Button continueButton;
 
   public static void start(Stage window) {

@@ -14,4 +14,11 @@ public class JsonSaver {
       throw new RuntimeException(e);
     }
   }
+  public void clearJson(String path) {
+    try (Writer writer = new FileWriter(path)) {
+      writer.write("");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

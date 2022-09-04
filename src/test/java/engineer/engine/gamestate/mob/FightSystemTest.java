@@ -5,11 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -34,13 +30,7 @@ class FightSystemTest {
         fightSystem.addObserver(observer);
 
         Pair<Integer, Integer> result = fightSystem.makeFight(mob1, mob2);
-/*
-        verify(observer).onFightStart(mob1, mob2);
-        verify(observer).onFightTurn(540, 500);
-        verify(observer).onFightTurn(390, 275);
-        verify(observer).onFightTurn(306, 110);
-        verify(observer).onFightTurn(273, -20);
-*/
+
         assertEquals(result.getKey(), 28);
         assertEquals(result.getValue(), 0);
 

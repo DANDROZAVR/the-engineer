@@ -52,7 +52,7 @@ class GameStateFactoryTest {
     GameStateFactory gameStateFactory = new GameStateFactory();
     ResourceFactory resourceFactory = gameStateFactory.produceResourceFactory();
     Resource resource = resourceFactory.produce("wood");
-    assertEquals("wood", resource.getTexture());
+    assertEquals("resources/wood", resource.getTexture());
   }
 
   @Test
@@ -60,7 +60,7 @@ class GameStateFactoryTest {
     GameStateFactory gameStateFactory = new GameStateFactory();
     BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory, mobFactory);
     Building building = buildingFactory.produce("Armorer House", null);
-    assertEquals("house", building.getTexture());
+    assertEquals("buildings/house", building.getTexture());
   }
 
   @Test
@@ -85,16 +85,10 @@ class GameStateFactoryTest {
   }
 
   @Test
-  void testProducePlayers() {
-    GameStateFactory gameStateFactory = new GameStateFactory();
-    List<Player> players = gameStateFactory.producePlayers(List.of("one", "another"), resourceFactory);
-    assertEquals("one", players.get(0).getNickname());
-    assertEquals("another", players.get(1).getNickname());
-  }
-
-  @Test
   void testProducePlayersFromJSon() {
     GameStateFactory gameStateFactory = new GameStateFactory();
+    doReturn(resource).when(resourceFactory).produce(any(JsonObject.class));
+
     List<Player> players = gameStateFactory.producePlayers("src/test/resources/json/players.json", resourceFactory);
     JsonObject jsonWood = new JsonObject();
     jsonWood.addProperty("type", "wood");
@@ -121,7 +115,7 @@ class GameStateFactoryTest {
   void testProduceMobFactory() {
     GameStateFactory gameStateFactory = new GameStateFactory();
     MobFactory mobFactory = gameStateFactory.produceMobFactory(resourceFactory);
-    assertEquals("wood", mobFactory.produce("wood", 1, null).getTexture());
+    assertEquals("mobs/dino", mobFactory.produce("Dino", 1, null).getTexture());
   }
 
   @Test

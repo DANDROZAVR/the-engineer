@@ -13,7 +13,6 @@ public class BoardPresenter {
     void drawSelection(Box box);
     void markField(Box box);
     void attackField(Box selectionBox);
-    //void Fight(String description);
   }
 
   private final Board board;

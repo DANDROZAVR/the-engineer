@@ -1,4 +1,6 @@
 {
+  "rows": 1,
+  "columns": 4,
   "players": [
     {
       "nickname": "Winner",
@@ -6,16 +8,36 @@
         {
           "type": "wood",
           "res_amount": 88
+        },
+        {
+          "type":"stone",
+          "res_amount": 0
+        },
+        {
+          "type":"heart",
+          "res_amount": 0
         }
       ]
     },
     {
       "nickname": "Loser",
-      "resources": []
+      "resources": [
+        {
+          "type": "wood",
+          "res_amount": 0
+        },
+        {
+          "type": "stone",
+          "res_amount": 0
+        },
+        {
+          "type": "heart",
+          "res_amount":0
+        }
+      ]
     }
   ],
-  "rows": 1,
-  "columns": 4,
+
   "board": [
     [
       {
@@ -26,28 +48,25 @@
           "life_remaining": 40,
           "level": 6
         },
-        "mob": {},
-        "free": true
+        "mob": {}
       },
       {
         "background": "",
         "building": {},
         "mob": {
-          "type": "wood",
+          "type": "Dino",
           "mobs_amount": 5,
           "player": "Loser"
-        },
-        "free": true
+        }
       },
       {
         "background": "",
         "building": {},
         "mob": {
-          "type": "wood",
+          "type": "Dino",
           "mobs_amount": 5,
           "player": "Winner"
-        },
-        "free": true
+        }
       },
       {
         "background": "",
@@ -57,8 +76,7 @@
           "life_remaining": 40,
           "level": 6
         },
-        "mob": {},
-        "free": true
+        "mob": {}
       }
     ]
   ]

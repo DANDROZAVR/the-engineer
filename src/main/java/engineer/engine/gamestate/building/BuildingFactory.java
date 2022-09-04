@@ -32,8 +32,6 @@ public class BuildingFactory {
     }
 
     public BuildingImpl(JsonObject jsonBuilding, List<Player> players) {
-      if (jsonBuilding == null)
-        throw new RuntimeException("Passing nullable JsonObject for resource's constructor");
       this.type = jsonBuilding.get("type").getAsString();
       this.lifeRemaining = jsonBuilding.get("life_remaining").getAsInt();
       this.level = jsonBuilding.get("level").getAsInt();
@@ -58,6 +56,11 @@ public class BuildingFactory {
     @Override
     public List<Resource> getResToUpgrade() {
       return descriptionMap.get(type).resToUpgrade;
+    }
+
+    @Override
+    public List<Resource> getResProduced() {
+      return descriptionMap.get(type).resProduced;
     }
 
     public int getLifeRemaining() {

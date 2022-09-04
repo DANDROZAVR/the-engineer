@@ -1,7 +1,7 @@
 package engineer.gui.javafx.game;
 
 import engineer.engine.gamestate.Camera;
-import engineer.engine.gamestate.GameStateConvertor;
+import engineer.engine.gamestate.GameStateConverter;
 import engineer.engine.gamestate.GameStateFactory;
 import engineer.engine.gamestate.board.Board;
 import engineer.engine.gamestate.board.BoardFactory;
@@ -33,6 +33,7 @@ public class GameGui {
   }
 
   public static final String TITLE = "The Engineer";
+  private static final String lastGamePath = "src/main/resources/board/lastGame.json";
 
   public static void start(Stage window, MenuController menuController, String jsonGamePath) {
     GameGui gameGui = GuiLoader.loadGui("/fxml/game.fxml");
@@ -57,6 +58,8 @@ public class GameGui {
   private MinimapGui minimapGui;
   private ContextMenuGui contextMenuGui;
   private PauseGui pauseGui;
+  private EndGameGui endGameGui;
+  private FightGui fightGui;
 
   private Board tempBoard;
   private List<Player> tempPlayers;
@@ -71,10 +74,8 @@ public class GameGui {
     BuildingFactory buildingFactory = gameStateFactory.produceBuildingFactory(resourceFactory, mobFactory);
     BoardFactory boardFactory = gameStateFactory.produceBoardFactory(fieldFactory);
     FightSystem fightSystem = gameStateFactory.produceFightSystem();
-    // List<Player> players = gameStateFactory.producePlayers(List.of("Winner", "Loser"), resourceFactory);
     List<Player> players = gameStateFactory.producePlayers(jsonGamePath, resourceFactory);
     Board board = gameStateFactory.produceBoard(boardFactory, jsonGamePath, buildingFactory, mobFactory, players);
-    //Board board = gameStateFactory.produceBoard(boardFactory, "/board/sample.json");
     Camera camera = gameStateFactory.produceCamera(board, boardCanvas.getWidth(), boardCanvas.getHeight());
 
     TurnSystem turnSystem = gameStateFactory.produceTurnSystem(players);
@@ -85,18 +86,20 @@ public class GameGui {
     boardGui = new BoardGui(boardCanvas, textureManager, board, camera);
     minimapGui = new MinimapGui(minimap, textureManager, board, camera);
     contextMenuGui = GuiLoader.loadGui("/fxml/contextMenu.fxml");
-    contextMenuGui.setup(contextMenu, textureManager, board, mobsController, fightSystem, turnSystem, buildingsController);
+    contextMenuGui.setup(contextMenu, textureManager, board, mobsController, turnSystem, buildingsController);
     pauseGui = GuiLoader.loadGui("/fxml/pause.fxml");
     pauseGui.setup(root, this::endGame);
-
-    //root.getScene().getWindow().setOnCloseRequest(x ->
-    //        new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(board, players)));
+    endGameGui = GuiLoader.loadGui("/fxml/endGame.fxml");
+    endGameGui.setup(root, board, turnSystem, this::endGame);
+    fightGui = GuiLoader.loadGui("/fxml/fight.fxml");
+    fightGui.setup(root, fightSystem);
 
     tempBoard = board;
     tempPlayers = players;
 
     scene = new Scene(root);
     startGame();
+    root.getScene().getWindow().setOnCloseRequest(x -> endGame(false));
   }
 
   private void startGame() {
@@ -107,6 +110,8 @@ public class GameGui {
     boardGui.start();
     minimapGui.start();
     contextMenuGui.start();
+    endGameGui.start();
+    fightGui.start();
 
     window.show();
   }
@@ -115,8 +120,13 @@ public class GameGui {
     pauseGui.pauseGame();
   }
 
-  public void endGame() {
-    new JsonSaver().saveJson("src/main/resources/board/lastGame.json", GameStateConvertor.produceJsonFromBoard(tempBoard, tempPlayers));
+  public void endGame(boolean endedNormally) {
+    if (!endedNormally) {
+      new JsonSaver().saveJson(lastGamePath, GameStateConverter.produceJsonFromBoard(tempBoard, tempPlayers));
+    } else {
+      new JsonSaver().clearJson(lastGamePath);
+    }
+
     boardGui.close();
     minimapGui.close();
     contextMenuGui.close();

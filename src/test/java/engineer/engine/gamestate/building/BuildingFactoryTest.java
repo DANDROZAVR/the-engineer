@@ -34,6 +34,8 @@ public class BuildingFactoryTest {
     assertEquals(mob, building.getTypeOfProducedMob());
     assertEquals(player, building.getOwner());
     assertEquals(1, building.getLevel());
+    assertEquals(listProduce, building.getResProduced());
+
     building.upgrade();
     assertEquals(2, building.getLevel());
     assertEquals(10, building.getLifeRemaining());

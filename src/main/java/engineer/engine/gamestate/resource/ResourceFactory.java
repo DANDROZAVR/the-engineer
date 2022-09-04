@@ -26,8 +26,6 @@ public class ResourceFactory {
     }
 
     public ResImpl(JsonObject jsonResource) {
-      if (jsonResource == null)
-        throw new RuntimeException("Passing nullable JsonObject for resource's constructor");
       this.type = jsonResource.get("type").getAsString();
       this.resAmount = jsonResource.get("res_amount").getAsInt();
     }

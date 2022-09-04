@@ -33,8 +33,6 @@ public class MobFactory {
         }
 
         public MobImpl(JsonObject jsonMob, List<Player> players) {
-            if (jsonMob == null)
-                throw new RuntimeException("Passing nullable JsonObject for mob's constructor");
             this.type = jsonMob.get("type").getAsString();
             this.number = jsonMob.get("mobs_amount").getAsInt();
             this.owner = players.stream().filter(x -> x.getNickname().equals(jsonMob.get("player").getAsString())).findAny().orElse(null);

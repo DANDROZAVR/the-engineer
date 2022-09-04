@@ -32,11 +32,11 @@ public class BoardFactoryTests {
   public void setUp() {
     closeable = MockitoAnnotations.openMocks(this);
 
-    when(fieldFactory.produce(anyString(), any(), any(), anyBoolean())).thenReturn(standardField);
+    when(fieldFactory.produce(anyString(), any(), any())).thenReturn(standardField);
     when(buildingFactory.produce(any(String.class), any(Player.class))).thenReturn(standardBuilding);
     when(mobFactory.produce(any(), anyInt(), any())).thenReturn(standardMob);
     when(board.getField(any())).thenReturn(standardField);
-    when(fieldFactory.produce(any(), any(), any(), anyBoolean())).thenReturn(standardField);
+    when(fieldFactory.produce(any(), any(), any())).thenReturn(standardField);
   }
 
   @AfterEach
@@ -47,10 +47,10 @@ public class BoardFactoryTests {
   @Test
   public void testFieldsProduction() {
     BoardFactory boardFactory = new BoardFactory(fieldFactory);
-    Field field = boardFactory.produceField("background", null, null,false);
+    Field field = boardFactory.produceField("background", null, null);
 
     assertEquals(standardField, field);
-    verify(fieldFactory, atLeastOnce()).produce("background", null, null,false);
+    verify(fieldFactory, atLeastOnce()).produce("background", null, null);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class BoardFactoryTests {
     boardFactory.build(board, coords, standardBuilding);
 
     verify(board).setField(coords, standardField);
-    verify(fieldFactory).produce(standardField.getBackground(), standardBuilding, standardField.getMob(), standardField.isFree());
+    verify(fieldFactory).produce(standardField.getBackground(), standardBuilding, standardField.getMob());
   }
 
   @Test
@@ -71,7 +71,7 @@ public class BoardFactoryTests {
 
     boardFactory.destroyBuilding(board, coords);
 
-    verify(fieldFactory).produce(any(), isNull(), any(), anyBoolean());
+    verify(fieldFactory).produce(any(), isNull(), any());
     verify(board).setField(coords, standardField);
   }
 }
