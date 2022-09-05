@@ -81,6 +81,7 @@ public class MobsController implements TurnSystem.Observer, Board.Observer {
     if (!mob.getOwner().equals(player)) {
       throw new RuntimeException("Forbidden mob move");
     }
+    numberOfMobsToMove = min(mob.getMobsAmount(), numberOfMobsToMove);
 
     Mob moving;
     if(mob.getMobsAmount() == numberOfMobsToMove) {
@@ -88,7 +89,7 @@ public class MobsController implements TurnSystem.Observer, Board.Observer {
       mob = null;
     }
     else {
-      moving = produceMob(mob.getType(), min(mob.getMobsAmount(), numberOfMobsToMove), mob.getOwner());
+      moving = produceMob(mob.getType(), numberOfMobsToMove, mob.getOwner());
       mob.reduceMobs(numberOfMobsToMove);
     }
 

@@ -9,7 +9,7 @@ import static java.lang.Math.max;
 
 public class FightSystem {
     public interface Observer {
-        void onShowFight(Mob attacker, Mob defender, int finalLifeAttacker, int finalLifeDefender);
+        void onShowFight(Mob attacker, Mob defender, int survivedAttacker, int survivedDefender);
     }
     private final List<FightSystem.Observer> observerList = new LinkedList<>();
 
